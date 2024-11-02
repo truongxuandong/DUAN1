@@ -2,5 +2,5 @@
 
 class HomeController 
 {
-    
+    public $home;
 }
