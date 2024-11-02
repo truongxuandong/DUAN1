@@ -1,10 +1,10 @@
 <?php 
 
-class DashboardController extends BaseController
+class DashboardController 
 {
     protected function loadModels() {}
 
     public function dashboard() {
-        $this->viewApp->requestView('dashboard');
+       
     }
 }
