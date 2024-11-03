@@ -1,26 +1,41 @@
 <?php
-session_start();
+
 require_once '../commons/env.php';
 require_once '../commons/core.php';
 
+require_once './views/layout/header.php';
+#require Controller
+require_once '../admin/controllers/HomeController.php';
+
+
+
+
+ #require Model
+
+
+
+ $home = new HomeController();
 
 
 
 
 
+ // Route
+ $act = $_GET['act'] ?? '/';
 
 
-
-
-
-
-
-
-// index phục vụ request của admin
 
 // kiểm tra act và điều hướng tới các controller phù hợp
-match ($route->getAct()) {
-    '/' => (new DashboardController())->dashboard()
+match ($act) {
+    
+    '/' => $home ->views_home(),
 
     
 };
+
+
+
+
+
+
+require_once './views/layout/footer.php';
