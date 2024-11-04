@@ -1,10 +1,14 @@
 <?php 
 
-class HomeController extends BaseController
+class HomeController 
 {
-    protected function loadModels() {}
+    public $home;
 
-    public function index() {
-        $this->viewApp->requestView('index');
+    public function __construct() {
+
     }
-}
+
+    public function views_home() {
+        include './views/home.php';
+    }
+} 
