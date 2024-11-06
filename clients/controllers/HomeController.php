@@ -9,6 +9,15 @@ class HomeController
     }
 
     public function views_home() {
-        include './views/home.php';
+        require_once './views/home.php';
+    }
+    public function listsanpham(){
+        require_once './views/sanpham.php';
+    }
+    public function giohang(){
+        require_once './views/cart.php';
+    }
+    public function lienhe(){
+        require_once './views/contact.php';
     }
 } 
