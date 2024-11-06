@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 31, 2024 at 10:25 AM
+-- Generation Time: Nov 05, 2024 at 05:51 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -24,19 +24,13 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_addresses`
+-- Table structure for table `authors`
 --
 
-CREATE TABLE `tbl_addresses` (
-  `address_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
-  `full_name` varchar(100) NOT NULL,
-  `phone_number` varchar(15) NOT NULL,
-  `address_line` varchar(255) NOT NULL,
-  `city` varchar(100) NOT NULL,
-  `state` varchar(100) DEFAULT NULL,
-  `postal_code` varchar(20) DEFAULT NULL,
-  `country` varchar(100) NOT NULL,
+CREATE TABLE `authors` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `bio` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -44,42 +38,40 @@ CREATE TABLE `tbl_addresses` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_authors`
+-- Table structure for table `cart`
 --
 
-CREATE TABLE `tbl_authors` (
-  `author_id` int NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `bio` text
+CREATE TABLE `cart` (
+  `id` int NOT NULL,
+  `customer_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_cart`
+-- Table structure for table `cart_items`
 --
 
-CREATE TABLE `tbl_cart` (
-  `cart_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
+CREATE TABLE `cart_items` (
+  `id` int NOT NULL,
+  `cart_id` int DEFAULT NULL,
   `comic_id` int DEFAULT NULL,
-  `quantity` int NOT NULL
+  `quantity` int NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_comics`
+-- Table structure for table `categories`
 --
 
-CREATE TABLE `tbl_comics` (
-  `comic_id` int NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `author_id` int NOT NULL,
+CREATE TABLE `categories` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
   `description` text,
-  `price` float NOT NULL,
-  `status` enum('Đang cập nhật','Hoàn thành') NOT NULL,
-  `cover_image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -87,82 +79,164 @@ CREATE TABLE `tbl_comics` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_comic_genres`
+-- Table structure for table `comics`
 --
 
-CREATE TABLE `tbl_comic_genres` (
-  `comic_id` int NOT NULL,
-  `genre_id` int NOT NULL
+CREATE TABLE `comics` (
+  `id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `author_id` int DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
+  `description` text,
+  `publication_date` date DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `stock_quantity` int DEFAULT NULL,
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_genres`
+-- Table structure for table `comic_variants`
 --
 
-CREATE TABLE `tbl_genres` (
-  `genre_id` int NOT NULL,
-  `name` varchar(50) NOT NULL
+CREATE TABLE `comic_variants` (
+  `id` int NOT NULL,
+  `comic_id` int DEFAULT NULL,
+  `format` enum('print','ebook','special_edition') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `language` varchar(50) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `stock_quantity` int DEFAULT NULL,
+  `publication_date` date DEFAULT NULL,
+  `isbn` varchar(20) DEFAULT NULL,
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_orders`
+-- Table structure for table `orders`
 --
 
-CREATE TABLE `tbl_orders` (
-  `order_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
+CREATE TABLE `orders` (
+  `id` int NOT NULL,
+  `customer_id` int DEFAULT NULL,
   `order_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `total_price` float DEFAULT NULL,
-  `status` enum('Chờ xử lý','Đang giao hàng','Đã thanh toán','Đã giao') NOT NULL
+  `total_amount` decimal(10,2) DEFAULT NULL,
+  `payment_status` enum('pending','completed','failed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `shipping_status` enum('pending','shipped','delivered','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `shipping_address` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_order_details`
+-- Table structure for table `order_items`
 --
 
-CREATE TABLE `tbl_order_details` (
-  `order_detail_id` int NOT NULL,
+CREATE TABLE `order_items` (
+  `id` int NOT NULL,
   `order_id` int DEFAULT NULL,
   `comic_id` int DEFAULT NULL,
   `quantity` int NOT NULL,
-  `price` float NOT NULL
+  `unit_price` decimal(10,2) NOT NULL,
+  `subtotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_reviews`
+-- Table structure for table `promotions`
 --
 
-CREATE TABLE `tbl_reviews` (
-  `review_id` int NOT NULL,
-  `comic_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `rating` int DEFAULT NULL,
-  `comment` text,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ;
+CREATE TABLE `promotions` (
+  `id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `discount_type` enum('percentage','fixed') NOT NULL,
+  `discount_value` decimal(10,2) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `status` enum('active','inactive') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_users`
+-- Table structure for table `promotion_comic`
 --
 
-CREATE TABLE `tbl_users` (
-  `user_id` int NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `role` enum('admin','customer') NOT NULL,
+CREATE TABLE `promotion_comic` (
+  `id` int NOT NULL,
+  `promotion_id` int DEFAULT NULL,
+  `comic_variant_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promotion_order`
+--
+
+CREATE TABLE `promotion_order` (
+  `id` int NOT NULL,
+  `promotion_id` int DEFAULT NULL,
+  `order_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id` int NOT NULL,
+  `comic_id` int DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
+  `rating` int DEFAULT NULL,
+  `review_text` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `phone` varchar(10) NOT NULL,
+  `avatar` varchar(255) NOT NULL,
+  `role` enum('user','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'user',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `variant_options`
+--
+
+CREATE TABLE `variant_options` (
+  `id` int NOT NULL,
+  `comic_variant_id` int DEFAULT NULL,
+  `option_name` varchar(50) DEFAULT NULL,
+  `option_value` varchar(50) DEFAULT NULL,
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -170,183 +244,262 @@ CREATE TABLE `tbl_users` (
 --
 
 --
--- Indexes for table `tbl_addresses`
+-- Indexes for table `authors`
 --
-ALTER TABLE `tbl_addresses`
-  ADD PRIMARY KEY (`address_id`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE `authors`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tbl_authors`
+-- Indexes for table `cart`
 --
-ALTER TABLE `tbl_authors`
-  ADD PRIMARY KEY (`author_id`);
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
 
 --
--- Indexes for table `tbl_cart`
+-- Indexes for table `cart_items`
 --
-ALTER TABLE `tbl_cart`
-  ADD PRIMARY KEY (`cart_id`),
-  ADD KEY `user_id` (`user_id`),
+ALTER TABLE `cart_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cart_id` (`cart_id`),
   ADD KEY `comic_id` (`comic_id`);
 
 --
--- Indexes for table `tbl_comics`
+-- Indexes for table `categories`
 --
-ALTER TABLE `tbl_comics`
-  ADD PRIMARY KEY (`comic_id`),
-  ADD KEY `author_id` (`author_id`);
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tbl_comic_genres`
+-- Indexes for table `comics`
 --
-ALTER TABLE `tbl_comic_genres`
-  ADD PRIMARY KEY (`comic_id`,`genre_id`),
-  ADD KEY `genre_id` (`genre_id`);
+ALTER TABLE `comics`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `author_id` (`author_id`),
+  ADD KEY `category_id` (`category_id`);
 
 --
--- Indexes for table `tbl_genres`
+-- Indexes for table `comic_variants`
 --
-ALTER TABLE `tbl_genres`
-  ADD PRIMARY KEY (`genre_id`);
+ALTER TABLE `comic_variants`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comic_id` (`comic_id`);
 
 --
--- Indexes for table `tbl_orders`
+-- Indexes for table `orders`
 --
-ALTER TABLE `tbl_orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
 
 --
--- Indexes for table `tbl_order_details`
+-- Indexes for table `order_items`
 --
-ALTER TABLE `tbl_order_details`
-  ADD PRIMARY KEY (`order_detail_id`),
+ALTER TABLE `order_items`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `order_id` (`order_id`),
   ADD KEY `comic_id` (`comic_id`);
 
 --
--- Indexes for table `tbl_reviews`
+-- Indexes for table `promotions`
 --
-ALTER TABLE `tbl_reviews`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `comic_id` (`comic_id`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE `promotions`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tbl_users`
+-- Indexes for table `promotion_comic`
 --
-ALTER TABLE `tbl_users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `email` (`email`);
+ALTER TABLE `promotion_comic`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `promotion_id` (`promotion_id`),
+  ADD KEY `comic_variant_id` (`comic_variant_id`);
+
+--
+-- Indexes for table `promotion_order`
+--
+ALTER TABLE `promotion_order`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `promotion_id` (`promotion_id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comic_id` (`comic_id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `variant_options`
+--
+ALTER TABLE `variant_options`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comic_variant_id` (`comic_variant_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `tbl_addresses`
+-- AUTO_INCREMENT for table `authors`
 --
-ALTER TABLE `tbl_addresses`
-  MODIFY `address_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `authors`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_authors`
+-- AUTO_INCREMENT for table `cart`
 --
-ALTER TABLE `tbl_authors`
-  MODIFY `author_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `cart`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_cart`
+-- AUTO_INCREMENT for table `cart_items`
 --
-ALTER TABLE `tbl_cart`
-  MODIFY `cart_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `cart_items`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_comics`
+-- AUTO_INCREMENT for table `categories`
 --
-ALTER TABLE `tbl_comics`
-  MODIFY `comic_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_genres`
+-- AUTO_INCREMENT for table `comics`
 --
-ALTER TABLE `tbl_genres`
-  MODIFY `genre_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `comics`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_orders`
+-- AUTO_INCREMENT for table `comic_variants`
 --
-ALTER TABLE `tbl_orders`
-  MODIFY `order_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `comic_variants`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_order_details`
+-- AUTO_INCREMENT for table `orders`
 --
-ALTER TABLE `tbl_order_details`
-  MODIFY `order_detail_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `orders`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_reviews`
+-- AUTO_INCREMENT for table `order_items`
 --
-ALTER TABLE `tbl_reviews`
-  MODIFY `review_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `order_items`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_users`
+-- AUTO_INCREMENT for table `promotions`
 --
-ALTER TABLE `tbl_users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `promotions`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `promotion_comic`
+--
+ALTER TABLE `promotion_comic`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `promotion_order`
+--
+ALTER TABLE `promotion_order`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `variant_options`
+--
+ALTER TABLE `variant_options`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `tbl_addresses`
+-- Constraints for table `cart`
 --
-ALTER TABLE `tbl_addresses`
-  ADD CONSTRAINT `tbl_addresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`);
+ALTER TABLE `cart`
+  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `tbl_cart`
+-- Constraints for table `cart_items`
 --
-ALTER TABLE `tbl_cart`
-  ADD CONSTRAINT `tbl_cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`),
-  ADD CONSTRAINT `tbl_cart_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `tbl_comics` (`comic_id`);
+ALTER TABLE `cart_items`
+  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
+  ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`);
 
 --
--- Constraints for table `tbl_comics`
+-- Constraints for table `comics`
 --
-ALTER TABLE `tbl_comics`
-  ADD CONSTRAINT `tbl_comics_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `tbl_authors` (`author_id`);
+ALTER TABLE `comics`
+  ADD CONSTRAINT `comics_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`),
+  ADD CONSTRAINT `comics_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
 
 --
--- Constraints for table `tbl_comic_genres`
+-- Constraints for table `comic_variants`
 --
-ALTER TABLE `tbl_comic_genres`
-  ADD CONSTRAINT `tbl_comic_genres_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `tbl_comics` (`comic_id`),
-  ADD CONSTRAINT `tbl_comic_genres_ibfk_2` FOREIGN KEY (`genre_id`) REFERENCES `tbl_genres` (`genre_id`);
+ALTER TABLE `comic_variants`
+  ADD CONSTRAINT `comic_variants_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`);
 
 --
--- Constraints for table `tbl_orders`
+-- Constraints for table `orders`
 --
-ALTER TABLE `tbl_orders`
-  ADD CONSTRAINT `tbl_orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`);
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `tbl_order_details`
+-- Constraints for table `order_items`
 --
-ALTER TABLE `tbl_order_details`
-  ADD CONSTRAINT `tbl_order_details_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `tbl_orders` (`order_id`),
-  ADD CONSTRAINT `tbl_order_details_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `tbl_comics` (`comic_id`);
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
+  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`);
 
 --
--- Constraints for table `tbl_reviews`
+-- Constraints for table `promotion_comic`
 --
-ALTER TABLE `tbl_reviews`
-  ADD CONSTRAINT `tbl_reviews_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `tbl_comics` (`comic_id`),
-  ADD CONSTRAINT `tbl_reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`);
+ALTER TABLE `promotion_comic`
+  ADD CONSTRAINT `promotion_comic_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `promotion_comic_ibfk_2` FOREIGN KEY (`comic_variant_id`) REFERENCES `comic_variants` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `promotion_order`
+--
+ALTER TABLE `promotion_order`
+  ADD CONSTRAINT `promotion_order_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `promotion_order_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`),
+  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `variant_options`
+--
+ALTER TABLE `variant_options`
+  ADD CONSTRAINT `variant_options_ibfk_1` FOREIGN KEY (`comic_variant_id`) REFERENCES `comic_variants` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
