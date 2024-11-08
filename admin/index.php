@@ -1,20 +1,26 @@
 <?php
-
+session_start();
 require_once '../commons/env.php';
 require_once '../commons/core.php';
 
 require_once './views/layout/header.php';
+require_once './views/layout/sidebar.php';
+
 #require Controller
-require_once '../admin/controllers/HomeController.php';
+require_once './controllers/HomeController.php';
+require_once './controllers/UserController.php';
+
 
 
 
 
  #require Model
-
+require_once './models/User.php';
 
 
  $home = new HomeController();
+ $user = new userController();
+
 
 
 
@@ -27,11 +33,38 @@ require_once '../admin/controllers/HomeController.php';
 
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
-    
+    //home
     '/' => $home ->views_home(),
 
-    
+
+
+
+    //user
+    'user' => $user ->views_user(),
+    'add-user' => $user ->views_add_user(),
+    'post-add-user' => $user ->views_post_add_user(),
+    'edit-user' => $user ->views_edit_user(),
+    'post-edit-user' => $user ->views_post_edit_user(),
+    'delete-user' => $user ->delete_user(),
+
+
+
+
+    //order
+    'order' => $user ->views_order(),
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

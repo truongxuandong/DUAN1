@@ -22,7 +22,7 @@
       </div>
       
       
-      <form action="" method="POST">
+      <form action="" method="POST" enctype="multipart/form-data">
       <div class="card-body">
       <div class="form-group">
       <label>Tên Danh Mục</label>
