@@ -1,3 +1,6 @@
+<?php
+ob_start();
+?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -68,6 +71,9 @@
 
 <body>
     <!-- Left Panel -->
+<<<<<<< HEAD
+    
+=======
     <aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
             <div id="main-menu" class="main-menu collapse navbar-collapse">
@@ -126,6 +132,7 @@
             </div><!-- /.navbar-collapse -->
         </nav>
     </aside>
+>>>>>>> 8093c555014e28826e9cae73bdfb20446f39ea50
     <!-- /#left-panel -->
     <!-- Right Panel -->
     <div id="right-panel" class="right-panel">
@@ -134,7 +141,7 @@
             <div class="top-left">
                 
                 <div class="navbar-header" style="height:50px ;">
-                    <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:300px; height:60px; margin-top:-6px ;"></a>
+                    <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:100px; height:60px; margin-top:-6px ;"></a>
                     
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>

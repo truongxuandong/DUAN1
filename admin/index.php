@@ -1,22 +1,24 @@
 <?php
-
+session_start();
 require_once '../commons/env.php';
 require_once '../commons/core.php';
 
 require_once './views/layout/header.php';
+require_once './views/layout/sidebar.php';
+
 #require Controller
 require_once '../admin/controllers/HomeController.php';
-require_once '../admin/controllers/GiaodienController.php';
-
 
 
 
 
  #require Model
-
+require_once './models/User.php';
 
 
  $home = new HomeController();
+ $user = new userController();
+
 
 
 
@@ -29,11 +31,10 @@ require_once '../admin/controllers/GiaodienController.php';
 
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
-    
+    //home
     '/' => $home ->views_home(),
 
-    //banner-noi dung
-    'giao-dien'=>(new AdminGiaodienController())->listBanner(),
+    
 };
 
 
