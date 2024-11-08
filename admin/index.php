@@ -7,9 +7,7 @@ require_once './views/layout/header.php';
 require_once './views/layout/sidebar.php';
 
 #require Controller
-require_once './controllers/HomeController.php';
-require_once './controllers/UserController.php';
-
+require_once '../admin/controllers/HomeController.php';
 
 
 
@@ -36,35 +34,8 @@ match ($act) {
     //home
     '/' => $home ->views_home(),
 
-
-
-
-    //user
-    'user' => $user ->views_user(),
-    'add-user' => $user ->views_add_user(),
-    'post-add-user' => $user ->views_post_add_user(),
-    'edit-user' => $user ->views_edit_user(),
-    'post-edit-user' => $user ->views_post_edit_user(),
-    'delete-user' => $user ->delete_user(),
-
-
-
-
-    //order
-    'order' => $user ->views_order(),
+    
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

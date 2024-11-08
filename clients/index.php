@@ -3,7 +3,6 @@
 require_once '../commons/env.php';
 require_once '../commons/core.php';
 
-require_once './views/layout/header.php';
 #require Controller
 require_once '../clients/controllers/HomeController.php';
 
@@ -29,6 +28,9 @@ require_once '../clients/controllers/HomeController.php';
 match ($act) {
     
     '/' => $home ->views_home(),
+    'san-pham' =>(new HomeController())->listsanpham(),
+    'gio-hang' =>(new HomeController())->giohang(),
+    'lien-he' =>(new HomeController())->lienhe(),
 
     
 };
@@ -37,5 +39,3 @@ match ($act) {
 
 
 
-
-require_once './views/layout/footer.php';
