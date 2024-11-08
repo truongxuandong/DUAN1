@@ -6,6 +6,8 @@ require_once '../commons/core.php';
 require_once './views/layout/header.php';
 #require Controller
 require_once '../admin/controllers/HomeController.php';
+require_once '../admin/controllers/GiaodienController.php';
+
 
 
 
@@ -30,7 +32,8 @@ match ($act) {
     
     '/' => $home ->views_home(),
 
-    
+    //banner-noi dung
+    'giao-dien'=>(new AdminGiaodienController())->listBanner(),
 };
 
 
