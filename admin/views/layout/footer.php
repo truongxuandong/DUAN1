@@ -1,4 +1,7 @@
  <!-- Footer -->
+  <?php
+  ob_start();
+  ?>
  <footer class="site-footer">
             <div class="footer-inner bg-white">
                 <div class="row">
