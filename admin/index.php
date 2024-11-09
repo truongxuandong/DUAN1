@@ -1,17 +1,31 @@
 <?php
 session_start();
-// Other code, includes, etc.
-
 
 require_once '../commons/env.php';
 require_once '../commons/core.php';
-require_once './views/layout/footer.php';
+
 require_once './views/layout/header.php';
+require_once './views/layout/sidebar.php';
+
 #require Controller
 
 require_once './controllers/DanhMucController.php';
-#require Model
+require_once './controllers/HomeController.php';
+
+
+
+
+ #require Model
+require_once './models/User.php';
 require_once './models/DanhMuc.php';
+
+ $home = new HomeController();
+ $user = new userController();
+
+
+
+
+
 
 // Route
 $act = $_GET['act'] ?? '/';
@@ -21,6 +35,8 @@ $act = $_GET['act'] ?? '/';
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
 
+
+    //home
     '/' => $home->views_home(),
 
     // route danh mục
@@ -31,3 +47,9 @@ match ($act) {
     'sua-danh-muc' => (new DanhMucController())->postEditDanhMuc(),
     'xoa-danh-muc' => (new DanhMucController())->deleteDanhMuc(),
 };
+
+
+
+
+
+require_once './views/layout/footer.php';

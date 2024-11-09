@@ -46,10 +46,10 @@
                                 
                                 <td>
                                   
-                                  <button class="btn btn-primary"><i class="far fa-eye"></i>hien thi</button>
+                                  <button class="btn btn-primary"><i class="far fa fa-eye" style="margin-right: 5px;"></i>hien thi</button>
                                   
                                   
-                                  <button class="btn btn-warning"><i class="fas fa-wrench"></i>sua</button>
+                                  <button class="btn btn-warning"><i class="fas fa fa-wrench" style="margin-right: 5px;"></i>sua</button>
                                   
           
                                                    

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 08, 2024 at 05:08 PM
+-- Generation Time: Nov 05, 2024 at 12:03 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -38,25 +38,12 @@ CREATE TABLE `authors` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `banners`
---
-
-CREATE TABLE `banners` (
-  `id` int NOT NULL,
-  `image_url` varchar(255) DEFAULT NULL,
-  `link` varchar(255) DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `cart`
 --
 
 CREATE TABLE `cart` (
   `id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -104,7 +91,7 @@ CREATE TABLE `comics` (
   `publication_date` date DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `stock_quantity` int DEFAULT NULL,
-  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -124,7 +111,23 @@ CREATE TABLE `comic_variants` (
   `stock_quantity` int DEFAULT NULL,
   `publication_date` date DEFAULT NULL,
   `isbn` varchar(20) DEFAULT NULL,
-  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customers`
+--
+
+CREATE TABLE `customers` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `address` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -137,13 +140,14 @@ CREATE TABLE `comic_variants` (
 
 CREATE TABLE `orders` (
   `id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
   `order_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `total_amount` decimal(10,2) DEFAULT NULL,
-  `payment_status` enum('unpaid','paid','refunded','failed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'unpaid',
-  `shipping_status` enum('pending','in_transit','delivered','returned','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
-  `payment_method` enum('Credit Card','Cash on Delivery','Internet Banking') NOT NULL,
-  `shipping_address` text
+  `payment_status` enum('pending','completed','failed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `shipping_status` enum('pending','shipped','delivered','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `shipping_address` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -164,85 +168,17 @@ CREATE TABLE `order_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `promotions`
---
-
-CREATE TABLE `promotions` (
-  `id` int NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text,
-  `discount_type` enum('percentage','fixed') NOT NULL,
-  `discount_value` decimal(10,2) NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  `status` enum('active','inactive') NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `promotion_comic`
---
-
-CREATE TABLE `promotion_comic` (
-  `id` int NOT NULL,
-  `promotion_id` int DEFAULT NULL,
-  `comic_variant_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `promotion_order`
---
-
-CREATE TABLE `promotion_order` (
-  `id` int NOT NULL,
-  `promotion_id` int DEFAULT NULL,
-  `order_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `reviews`
 --
 
 CREATE TABLE `reviews` (
   `id` int NOT NULL,
   `comic_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
   `rating` int DEFAULT NULL,
   `review_text` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `avatar` varchar(255) NOT NULL,
-  `role` enum('user','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'user',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `avatar`, `role`, `created_at`, `updated_at`) VALUES
-(53, 'duong', 'thanhhbph50161@gmail.com', 'g', '06995848445', '../uploads/user/default.jpg', 'user', '2024-11-07 16:52:34', '2024-11-07 16:52:34');
+) ;
 
 -- --------------------------------------------------------
 
@@ -255,7 +191,7 @@ CREATE TABLE `variant_options` (
   `comic_variant_id` int DEFAULT NULL,
   `option_name` varchar(50) DEFAULT NULL,
   `option_value` varchar(50) DEFAULT NULL,
-  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -269,17 +205,11 @@ ALTER TABLE `authors`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `banners`
---
-ALTER TABLE `banners`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `cart`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`user_id`);
+  ADD KEY `customer_id` (`customer_id`);
 
 --
 -- Indexes for table `cart_items`
@@ -311,11 +241,17 @@ ALTER TABLE `comic_variants`
   ADD KEY `comic_id` (`comic_id`);
 
 --
+-- Indexes for table `customers`
+--
+ALTER TABLE `customers`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`user_id`);
+  ADD KEY `customer_id` (`customer_id`);
 
 --
 -- Indexes for table `order_items`
@@ -326,40 +262,12 @@ ALTER TABLE `order_items`
   ADD KEY `comic_id` (`comic_id`);
 
 --
--- Indexes for table `promotions`
---
-ALTER TABLE `promotions`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `promotion_comic`
---
-ALTER TABLE `promotion_comic`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `promotion_id` (`promotion_id`),
-  ADD KEY `comic_variant_id` (`comic_variant_id`);
-
---
--- Indexes for table `promotion_order`
---
-ALTER TABLE `promotion_order`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `promotion_id` (`promotion_id`),
-  ADD KEY `order_id` (`order_id`);
-
---
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`id`),
   ADD KEY `comic_id` (`comic_id`),
-  ADD KEY `customer_id` (`user_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD KEY `customer_id` (`customer_id`);
 
 --
 -- Indexes for table `variant_options`
@@ -376,12 +284,6 @@ ALTER TABLE `variant_options`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `banners`
---
-ALTER TABLE `banners`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -415,6 +317,12 @@ ALTER TABLE `comic_variants`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
@@ -427,34 +335,10 @@ ALTER TABLE `order_items`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `promotions`
---
-ALTER TABLE `promotions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `promotion_comic`
---
-ALTER TABLE `promotion_comic`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `promotion_order`
---
-ALTER TABLE `promotion_order`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `variant_options`
@@ -470,7 +354,7 @@ ALTER TABLE `variant_options`
 -- Constraints for table `cart`
 --
 ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`);
 
 --
 -- Constraints for table `cart_items`
@@ -496,7 +380,7 @@ ALTER TABLE `comic_variants`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`);
 
 --
 -- Constraints for table `order_items`
@@ -506,25 +390,11 @@ ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`);
 
 --
--- Constraints for table `promotion_comic`
---
-ALTER TABLE `promotion_comic`
-  ADD CONSTRAINT `promotion_comic_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `promotion_comic_ibfk_2` FOREIGN KEY (`comic_variant_id`) REFERENCES `comic_variants` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `promotion_order`
---
-ALTER TABLE `promotion_order`
-  ADD CONSTRAINT `promotion_order_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `promotion_order_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
-
---
 -- Constraints for table `reviews`
 --
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`),
-  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`);
 
 --
 -- Constraints for table `variant_options`
