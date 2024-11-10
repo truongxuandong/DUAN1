@@ -8,9 +8,11 @@ require_once './views/layout/header.php';
 require_once './views/layout/sidebar.php';
 
 #require Controller
+require_once '../admin/controllers/HomeController.php';
+require_once '../admin/controllers/GiaodienController.php';
+require_once '../admin/controllers/SanPhamController.php';
+require_once '../admin/controllers/DanhMucController.php;';
 
-require_once './controllers/DanhMucController.php';
-require_once './controllers/HomeController.php';
 
 
 
@@ -18,6 +20,8 @@ require_once './controllers/HomeController.php';
  #require Model
 require_once './models/User.php';
 require_once './models/DanhMuc.php';
+require_once './models/SanPham.php';
+
 
  $home = new HomeController();
  $user = new userController();
@@ -39,13 +43,23 @@ match ($act) {
     //home
     '/' => $home->views_home(),
 
-    // route danh mục
+    //banner-noi dung
+    'giao-dien'=>(new AdminGiaodienController())->listBanner(),
+    // rou danh mục
     'listdm' => (new DanhMucController())->danhsachDanhMuc(),
     'form-them-danh-muc' => (new DanhMucController())->formAddDanhMuc(),
     'post-danh-muc' => (new DanhMucController())->postAddDanhMuc(),
     'form-sua-danh-muc' => (new DanhMucController())->formEditDanhMuc(),
     'sua-danh-muc' => (new DanhMucController())->postEditDanhMuc(),
     'xoa-danh-muc' => (new DanhMucController())->deleteDanhMuc(),
+    // rou sản phẩm
+    'san-pham'=>(new SanPhamController())->danhSachSanPham(),
+    'form-them-san-pham'=>(new SanPhamController())->formAddSanPham(),
+    'them-san-pham'=>(new SanPhamController())->postAddSanPham(),
+    // 'form-sua-san-pham'=>(new SanPhamController())->formEditSanPham(),
+    // 'sua-san-pham'=>(new SanPhamController())->postEditSanPham(),
+    // 'xoa-san-pham'=>(new SanPhamController())->deleteSanPham(),
+
 };
 
 
