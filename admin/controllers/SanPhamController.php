@@ -33,6 +33,7 @@ class SanPhamController {
             $description = $_POST['description'] ?? '';
             $publication_date = $_POST['publication_date'] ?? '';
             $price = $_POST['price'] ?? '';
+            $original_price = $_POST['original_price'] ?? '';
             $stock_quantity = $_POST['stock_quantity'] ?? '';
             $image = '';
 
@@ -51,9 +52,9 @@ class SanPhamController {
             }
 
             // Insert product
-            if ($this->modelSanPham->insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image)) {
+            if ($this->modelSanPham->insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $original_price, $stock_quantity, $image)) {
                 $_SESSION['success'] = "Thêm sản phẩm thành công!";
-                header('Location: ?act=san-pham');
+                header('Location:?act=san-pham');
                 exit();
             } else {
                 $_SESSION['error'] = "Có lỗi xảy ra khi thêm sản phẩm!";
@@ -73,7 +74,6 @@ class SanPhamController {
     public function postEditSanPham()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Get form data
             $comicId = $_POST['id'];
             $title = $_POST['title'];
             $author_id = $_POST['author_id'];
@@ -81,6 +81,7 @@ class SanPhamController {
             $description = $_POST['description'];
             $publication_date = $_POST['publication_date'];
             $price = $_POST['price'] ?? '';
+            $original_price = $_POST['original_price'] ?? '';
             $stock_quantity = $_POST['stock_quantity'];
             $image = $_POST['old_image']; // Keep the old image if not uploading a new one
 
@@ -100,7 +101,7 @@ class SanPhamController {
             }
 
             // Update product
-            if ($this->modelSanPham->updateSanPham($comicId, $title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image)) {
+            if ($this->modelSanPham->updateSanPham($comicId, $title, $author_id, $category_id, $description, $publication_date, $price, $original_price, $stock_quantity, $image)) {
                 $_SESSION['success'] = "Cập nhật sản phẩm thành công!";
                 header('Location: ?act=san-pham');
                 exit();

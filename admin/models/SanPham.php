@@ -11,7 +11,7 @@ class SanPham {
     public function getAllSanPham(){
         try {
             $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
-                           comics.publication_date, comics.price, comics.stock_quantity, comics.image, 
+                           comics.publication_date, comics.price,comics.original_price, comics.stock_quantity, comics.image, 
                            authors.name AS author_name, categories.name AS category_name
                     FROM comics
                     JOIN authors ON comics.author_id = authors.id
@@ -40,8 +40,8 @@ class SanPham {
 
     public function insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image) {
         try {
-            $sql = "INSERT INTO comics (title, author_id, category_id, description, publication_date, price, stock_quantity, image)
-                    VALUES (:title, :author_id, :category_id, :description, :publication_date, :price, :stock_quantity, :image)";
+            $sql = "INSERT INTO comics (title, author_id, category_id, description, publication_date, price, original_price, stock_quantity, image)
+                    VALUES (:title, :author_id, :category_id, :description, :publication_date, :price, :original_price, :stock_quantity, :image)";
             
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':title', $title);
@@ -50,6 +50,7 @@ class SanPham {
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':publication_date', $publication_date);
             $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':original_price', $original_price);
             $stmt->bindParam(':stock_quantity', $stock_quantity);
             $stmt->bindParam(':image', $image);
             
@@ -69,7 +70,7 @@ class SanPham {
     public function getSanPhamById($id) {
         try {
             $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
-                           comics.publication_date, comics.price, comics.stock_quantity, comics.image, 
+                           comics.publication_date, comics.price, comics.original_price, comics.stock_quantity, comics.image, 
                            authors.name AS author_name, categories.name AS category_name
                     FROM comics
                     JOIN authors ON comics.author_id = authors.id
@@ -85,7 +86,7 @@ class SanPham {
         }
     }
 
-    public function updateSanPham($id, $title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image) {
+    public function updateSanPham($id, $title, $author_id, $category_id, $description, $publication_date, $price, $original_price, $stock_quantity, $image) {
         try {
             $sql = "UPDATE comics SET 
                         title = :title, 
@@ -93,7 +94,8 @@ class SanPham {
                         category_id = :category_id, 
                         description = :description, 
                         publication_date = :publication_date, 
-                        price = :price, 
+                        price = :price,
+                        original_price = :original_price,
                         stock_quantity = :stock_quantity, 
                         image = :image 
                     WHERE id = :id";
@@ -105,6 +107,7 @@ class SanPham {
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':publication_date', $publication_date);
             $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':original_price', $original_price);
             $stmt->bindParam(':stock_quantity', $stock_quantity);
             $stmt->bindParam(':image', $image);
             $stmt->bindParam(':id', $id);

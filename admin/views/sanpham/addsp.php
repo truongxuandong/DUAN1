@@ -71,7 +71,7 @@
                 <?php endif; ?>
               </div>
 
-              <!-- Giá -->
+              <!-- Giá bán -->
               <div class="form-group col-6">
                 <label for="price">Giá</label>
                 <input type="number" class="form-control" id="price" name="price" placeholder="Nhập giá sản phẩm" value="<?= $_POST['price'] ?? ''; ?>">
@@ -79,7 +79,14 @@
                     <p class="text-danger"><?= $errors['price']; ?></p>
                 <?php endif; ?>
               </div>
-
+              <!-- Giá niệm yết -->
+              <div class="form-group col-6">
+                <label for="original_price">Giá Gốc</label>
+                <input type="number" class="form-control" id="original_price" name="original_price" placeholder="Nhập giá sản phẩm" value="<?= $_POST['original_price'] ?? ''; ?>">
+                <?php if (isset($errors['original_price'])): ?>
+                    <p class="text-danger"><?= $errors['original_price']; ?></p>
+                <?php endif; ?>
+              </div>
               <!-- Số lượng -->
               <div class="form-group col-6">
                 <label for="stock_quantity">Số lượng</label>

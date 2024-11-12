@@ -42,7 +42,8 @@
                   <th>Thể loại</th>
                   <th>Mô tả</th>
                   <th>Ngày phát hành</th>
-                  <th>Giá</th>
+                  <th>Giá bán</th>
+                  <th>Giá niêm yết</th>
                   <th>Số lượng</th>
                   <th>Hình ảnh</th>
                   <th>Thao tác</th>
@@ -58,6 +59,7 @@
                     <td><?= $sanPham['description'] ?></td>
                     <td><?= $sanPham['publication_date'] ?></td>
                     <td><?= number_format($sanPham['price'], 0, ',', '.') ?> VNĐ</td>
+                    <td><?= number_format($sanPham['original_price'], 0, ',', '.') ?> VNĐ</td>
                     <td>
                       <?= $sanPham['stock_quantity'] > 0 ? $sanPham['stock_quantity'] : 'Hết hàng' ?>
                     </td>
