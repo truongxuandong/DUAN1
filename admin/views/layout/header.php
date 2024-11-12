@@ -1,9 +1,9 @@
-
-
 <?php
-ob_start();
-?>
+ob_start(); // Start output buffering
 
+// Your PHP and HTML content here
+
+?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -106,6 +106,7 @@ ob_start();
                             </form>
                         </div>
 
+
                         <div class="dropdown for-notification">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-bell"></i>
@@ -183,10 +184,12 @@ ob_start();
 
                             <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
+                            <a class="nav-link" href="<?= BASE_URL_ADMIN . '?act=login-admin' ?>" onclick="return confirm(' Đăng xuất tài khoản?')"><i class="fa fa-power -off"></i>Logout</a>
+
                         </div>
                     </div>
 
                 </div>
             </div>
         </header>
+        

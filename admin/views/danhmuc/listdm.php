@@ -14,7 +14,7 @@
       <div class="col-12">
         <?php if (isset($_SESSION['error'])): ?>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa fa-exclamation-circle"></i> <?= $_SESSION['error'] ?>
+            <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error'], ENT_QUOTES, 'UTF-8') ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -24,17 +24,19 @@
 
         <?php if (isset($_SESSION['success'])): ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa fa-check-circle"></i> <?= $_SESSION['success'] ?>
+            <i class="fas fa-check-circle"></i> <?= htmlspecialchars($_SESSION['success'], ENT_QUOTES, 'UTF-8') ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <?php unset($_SESSION['success']); ?>
         <?php endif; ?>
+
         <div class="card">
           <div class="card-header">
             <a href="<?= BASE_URL_ADMIN . '?act=form-them-danh-muc' ?>">
               <button class="btn btn-success">Thêm Danh Mục</button>
+            </a>
           </div>
 
           <!-- Table content -->
@@ -43,18 +45,18 @@
               <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    <th>STT</th>
-                    <th>Tên danh mục</th>
-                    <th>Mô tả</th>
-                    <th>Thao tác</th>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên danh mục</th>
+                    <th scope="col">Mô tả</th>
+                    <th scope="col">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($listDanhMuc as $key => $danhMuc) : ?>
                     <tr>
                       <td><?= $key + 1 ?></td>
-                      <td><?= $danhMuc['name'] ?></td>
-                      <td><?= $danhMuc['description'] ?></td>
+                      <td><?= htmlspecialchars($danhMuc['name'], ENT_QUOTES, 'UTF-8') ?></td>
+                      <td><?= htmlspecialchars($danhMuc['description'], ENT_QUOTES, 'UTF-8') ?></td>
                       <td>
                         <a href="<?= BASE_URL_ADMIN . '?act=form-sua-danh-muc&id=' . $danhMuc['id'] ?>">
                           <button class="btn btn-warning">Sửa</button>
@@ -67,7 +69,6 @@
                     </tr>
                   <?php endforeach ?>
                 </tbody>
-
               </table>
             </div>
           </div>

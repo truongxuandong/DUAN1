@@ -36,6 +36,13 @@ require_once './models/SanPham.php';
 // Route
 $act = $_GET['act'] ?? '/';
 
+// function checkLoginAdmin()
+// {
+//     if (!isset($_SESSION['admin_logged_in'])) {
+//         header('Location: login.php'); // Redirect to login page
+//         exit();
+//     }
+// }
 
 
 // kiểm tra act và điều hướng tới các controller phù hợp
@@ -54,18 +61,28 @@ match ($act) {
     'form-sua-danh-muc' => (new DanhMucController())->formEditDanhMuc(),
     'sua-danh-muc' => (new DanhMucController())->postEditDanhMuc(),
     'xoa-danh-muc' => (new DanhMucController())->deleteDanhMuc(),
-    // rou sản phẩm
-    'san-pham'=>(new SanPhamController())->danhSachSanPham(),
-    'form-them-san-pham'=>(new SanPhamController())->formAddSanPham(),
-    'them-san-pham'=>(new SanPhamController())->postAddSanPham(),
-    'form-sua-san-pham'=>(new SanPhamController())->formEditSanPham(),
-    'sua-san-pham'=>(new SanPhamController())->postEditSanPham(),
-    'xoa-san-pham'=>(new SanPhamController())->postDeleteSanPham(),
+    //route san pham
+    'san-pham' => (new SanPhamController())->danhSachSanPham(),
+    'form-them-san-pham' => (new SanPhamController())->formAddSanPham(),
+    'them-san-pham' => (new SanPhamController())->postAddSanPham(),
+    'form-sua-san-pham' => (new SanPhamController())->formEditSanPham(),
+    'sua-san-pham' => (new SanPhamController())->postEditSanPham(),
+    'xoa-san-pham' => (new SanPhamController())->postDeleteSanPham(),
 
+
+    // route user
+    'user' => (new UserController())->views_user(),
+    'add-user' => (new UserController())->views_add_user(),
+    'post-add-user' => (new UserController())->views_post_add_user(),
+    'edit-user' => (new UserController())->views_edit_user(),
+    'post-edit-user' => (new UserController())->views_post_edit_user(),
+    'delete-user' => (new UserController())->delete_user(),
+
+    //route login
+    // 'login-admin' => (new UserController())->formlogin(),
+    // 'check-login-admin' => (new UserController())->login(),
+    // 'logout-admin' => (new UserController())->logout(),
+    // 'register' => (new UserController())->formdangky(),
+    // 'post-register' => (new UserController())->views_post_register(),
 };
-
-
-
-
-
 require_once './views/layout/footer.php';
