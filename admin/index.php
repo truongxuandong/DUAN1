@@ -33,14 +33,6 @@ require_once './models/SanPham.php';
 
 
 
-$home = new HomeController();
-//  $user = new userController();
-
-
-
-
-
-
 // Route
 $act = $_GET['act'] ?? '/';
 
