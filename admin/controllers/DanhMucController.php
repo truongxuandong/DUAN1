@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 require_once '../commons/core.php';
 
 class DanhMucController
@@ -91,3 +91,4 @@ class DanhMucController
         exit();
     }
 }
+ob_end_flush();
