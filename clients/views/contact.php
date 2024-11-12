@@ -1,5 +1,4 @@
 <?php require_once 'layout/header.php';?>
-<?php require_once 'layout/navbar.php';?>
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">

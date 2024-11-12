@@ -1,20 +1,33 @@
 <?php
 session_start();
-// Other code, includes, etc.
-
-
 require_once '../commons/env.php';
 require_once '../commons/core.php';
 require_once './views/layout/footer.php';
 require_once './views/layout/header.php';
+require_once './views/layout/sidebar.php';
+
 #require Controller
 
 require_once './controllers/DanhMucController.php';
 #require Model
 require_once './models/DanhMuc.php';
 
-// Route
-$act = $_GET['act'] ?? '/';
+
+
+ #require Model
+require_once './models/User.php';
+
+
+ $home = new HomeController();
+ $user = new userController();
+
+
+
+
+
+
+ // Route
+ $act = $_GET['act'] ?? '/';
 
 
 
