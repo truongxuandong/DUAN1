@@ -9,13 +9,13 @@
                 </li>
                 
                 <li class="menu-item-has-children dropdown">
-                    <a href="<?= BASE_URL_ADMIN . '?act=listdm'?>" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <a href="?act=listdm" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-th-large" style="font-size: 18px; margin-right: 10px;"></i>Danh mục sản phẩm
                     </a>
                 </li>
                 
                 <li class="menu-item-has-children dropdown">
-                    <a href="<?= BASE_URL_ADMIN ?>" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <a href="?act=san-pham" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-book" style="font-size: 18px; margin-right: 10px;"></i>Sản phẩm
                     </a>
                 </li>

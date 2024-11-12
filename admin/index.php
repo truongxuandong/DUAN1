@@ -8,16 +8,30 @@ require_once './views/layout/header.php';
 require_once './views/layout/sidebar.php';
 
 #require Controller
-
-require_once './controllers/DanhMucController.php';
 require_once './controllers/HomeController.php';
+require_once './controllers/GiaodienController.php';
+require_once './controllers/SanPhamController.php';
+require_once './controllers/DanhMucController.php';
 require_once './controllers/UserController.php';
 
 
 
-#require Model
+
+
+ #require Model
 require_once './models/User.php';
 require_once './models/DanhMuc.php';
+require_once './models/SanPham.php';
+
+
+ $home = new HomeController();
+ $user = new userController();
+ 
+
+
+
+
+
 
 $home = new HomeController();
 //  $user = new userController();
@@ -46,7 +60,9 @@ match ($act) {
     //home
     '/' => $home->views_home(),
 
-    // route danh mục
+    //banner-noi dung
+    'giao-dien'=>(new AdminGiaodienController())->listBanner(),
+    // rou danh mục
     'listdm' => (new DanhMucController())->danhsachDanhMuc(),
     'form-them-danh-muc' => (new DanhMucController())->formAddDanhMuc(),
     'post-danh-muc' => (new DanhMucController())->postAddDanhMuc(),
@@ -71,10 +87,10 @@ match ($act) {
     'delete-user' => (new UserController())->delete_user(),
 
     //route login
-    'login-admin' => (new UserController())->formlogin(),
-    'check-login-admin' => (new UserController())->login(),
-    'logout-admin' => (new UserController())->logout(),
-    'register' => (new UserController())->formdangky(),
-    'post-register' => (new UserController())->views_post_register(),
+    // 'login-admin' => (new UserController())->formlogin(),
+    // 'check-login-admin' => (new UserController())->login(),
+    // 'logout-admin' => (new UserController())->logout(),
+    // 'register' => (new UserController())->formdangky(),
+    // 'post-register' => (new UserController())->views_post_register(),
 };
 require_once './views/layout/footer.php';
