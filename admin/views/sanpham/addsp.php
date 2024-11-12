@@ -18,79 +18,97 @@
             <h3 class="card-title">Thêm sản phẩm</h3>
           </div>
 
+          <form action="?act=them-san-pham" method="POST" enctype="multipart/form-data">
+            <div class="row card-body">
 
-          <form action="<?= BASE_URL_ADMIN . 'act=them-san-pham' ?>" method="POST" enctype="multipart/form-data">
-            <div class="row card-body ">
+              <!-- Tên sản phẩm -->
               <div class="form-group col-12">
-                <label>Tên sản phẩm</label>
-                <input type="text" class="form-control" name="title" placeholder="Nhập tên sản phẩm">
-                <?php if (isset($errors['title'])) { ?>
-                  <p class="text-danger"><?= $errors['title'] ?></p>
-                <?php } ?>
+                <label for="title">Tên sản phẩm</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Nhập tên sản phẩm" value="<?= $_POST['title'] ?? ''; ?>">
+                <?php if (isset($errors['title'])): ?>
+                    <p class="text-danger"><?= $errors['title']; ?></p>
+                <?php endif; ?>
               </div>
 
+              <!-- Tên tác giả -->
               <div class="form-group col-6">
-                <label>Tên tác giả</label>
-                <input type="text" class="form-control" name="author_id" placeholder="Nhập tên tác giả">
-                <?php if (isset($errors['author_id'])) { ?>
-                  <p class="text-danger"><?= $errors['author_id'] ?></p>
-                <?php } ?>
+                <label for="author_id">Tên tác giả</label>
+                <select class="form-control" name="author_id" id="author_id">
+                  <option selected disabled>Chọn tác giả sản phẩm</option>
+                  <?php foreach ($listTacGia as $tacGia): ?>
+                    <option value="<?= $tacGia['id']; ?>" <?= (isset($_POST['author_id']) && $_POST['author_id'] == $tacGia['id']) ? 'selected' : ''; ?>>
+                      <?= $tacGia['name']; ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+                <?php if (isset($errors['author_id'])): ?>
+                    <p class="text-danger"><?= $errors['author_id']; ?></p>
+                <?php endif; ?>
               </div>
 
+              <!-- Thể loại -->
               <div class="form-group col-6">
-                <label>Mã thể loại</label>
-                <input type="text" class="form-control" name="category_id" placeholder="Nhập tên sản phẩm">
-                <?php if (isset($errors['category_id'])) { ?>
-                  <p class="text-danger"><?= $errors['category_id'] ?></p>
-                <?php } ?>
+                <label for="category_id">Thể loại</label>
+                <select class="form-control" name="category_id" id="category_id">
+                  <option selected disabled>Chọn danh mục sản phẩm</option>
+                  <?php foreach ($listDanhMuc as $danhMuc): ?>
+                    <option value="<?= $danhMuc['id']; ?>" <?= (isset($_POST['category_id']) && $_POST['category_id'] == $danhMuc['id']) ? 'selected' : ''; ?>>
+                      <?= $danhMuc['name']; ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+                <?php if (isset($errors['category_id'])): ?>
+                    <p class="text-danger"><?= $errors['category_id']; ?></p>
+                <?php endif; ?>
               </div>
 
+              <!-- Ngày phát hành -->
               <div class="form-group col-6">
-                <label>Ngày phát hành</label>
-                <input type="date" class="form-control" name="publication_date" placeholder="Nhập ngày phát hành">
-                <?php if (isset($errors['publication_date'])) { ?>
-                  <p class="text-danger"><?= $errors['publication_date'] ?></p>
-                <?php } ?>
+                <label for="publication_date">Ngày phát hành</label>
+                <input type="date" class="form-control" id="publication_date" name="publication_date" placeholder="Nhập ngày phát hành" value="<?= $_POST['publication_date'] ?? ''; ?>">
+                <?php if (isset($errors['publication_date'])): ?>
+                    <p class="text-danger"><?= $errors['publication_date']; ?></p>
+                <?php endif; ?>
               </div>
 
+              <!-- Giá -->
               <div class="form-group col-6">
-                <label>Giá</label>
-                <input type="number" class="form-control" name="price" placeholder="Nhập giá sản phẩm">
-                <?php if (isset($errors['price'])) { ?>
-                  <p class="text-danger"><?= $errors['price'] ?></p>
-                <?php } ?>
+                <label for="price">Giá</label>
+                <input type="number" class="form-control" id="price" name="price" placeholder="Nhập giá sản phẩm" value="<?= $_POST['price'] ?? ''; ?>">
+                <?php if (isset($errors['price'])): ?>
+                    <p class="text-danger"><?= $errors['price']; ?></p>
+                <?php endif; ?>
               </div>
 
+              <!-- Số lượng -->
               <div class="form-group col-6">
-                <label>Số lượng</label>
-                <input type="number" class="form-control" name="stock_quantity" placeholder="Nhập số lượng sản phẩm">
-                <?php if (isset($errors['stock_quantity'])) { ?>
-                  <p class="text-danger"><?= $errors['stock_quantity'] ?></p>
-                <?php } ?>
+                <label for="stock_quantity">Số lượng</label>
+                <input type="number" class="form-control" id="stock_quantity" name="stock_quantity" placeholder="Nhập số lượng sản phẩm" value="<?= $_POST['stock_quantity'] ?? ''; ?>">
+                <?php if (isset($errors['stock_quantity'])): ?>
+                    <p class="text-danger"><?= $errors['stock_quantity']; ?></p>
+                <?php endif; ?>
               </div>
 
+              <!-- Hình ảnh -->
               <div class="form-group col-6">
-                <label>Hình ảnh</label>
-                <input type="file" class="form-control" name="image">
-                <?php if (isset($errors['image'])) { ?>
-                  <p class="text-danger"><?= $errors['image'] ?></p>
-                <?php } ?>
+                <label for="image">Hình ảnh</label>
+                <input type="file" class="form-control" id="image" name="image">
+                <?php if (isset($errors['image'])): ?>
+                    <p class="text-danger"><?= $errors['image']; ?></p>
+                <?php endif; ?>
               </div>
 
-              <div class="form-group col-6">
-                <label>Album ảnh</label>
-                <input type="file" class="form-control" name="img_array[]" multiple>
-
-              </div>
-
+              <!-- Mô tả -->
               <div class="form-group col-12">
-                <label>Mô tả</label>
-                <textarea name="description" id="" class="form-control" placeholder="Nhập mô tả"></textarea>
+                <label for="description">Mô tả</label>
+                <textarea name="description" id="description" class="form-control" placeholder="Nhập mô tả"><?= $_POST['description'] ?? ''; ?></textarea>
               </div>
 
               <button type="submit" class="btn btn-primary" style="margin: 0 40px 40px;">Thêm</button>
 
+            </div>
           </form>
+
         </div>
       </div>
       <!-- /.col -->

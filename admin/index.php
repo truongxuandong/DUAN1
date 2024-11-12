@@ -8,10 +8,11 @@ require_once './views/layout/header.php';
 require_once './views/layout/sidebar.php';
 
 #require Controller
-require_once '../admin/controllers/HomeController.php';
-require_once '../admin/controllers/GiaodienController.php';
-require_once '../admin/controllers/SanPhamController.php';
-require_once '../admin/controllers/DanhMucController.php;';
+require_once './controllers/HomeController.php';
+require_once './controllers/GiaodienController.php';
+require_once './controllers/SanPhamController.php';
+require_once './controllers/DanhMucController.php';
+require_once './controllers/UserController.php';
 
 
 
@@ -25,6 +26,7 @@ require_once './models/SanPham.php';
 
  $home = new HomeController();
  $user = new userController();
+ 
 
 
 
@@ -56,9 +58,9 @@ match ($act) {
     'san-pham'=>(new SanPhamController())->danhSachSanPham(),
     'form-them-san-pham'=>(new SanPhamController())->formAddSanPham(),
     'them-san-pham'=>(new SanPhamController())->postAddSanPham(),
-    // 'form-sua-san-pham'=>(new SanPhamController())->formEditSanPham(),
-    // 'sua-san-pham'=>(new SanPhamController())->postEditSanPham(),
-    // 'xoa-san-pham'=>(new SanPhamController())->deleteSanPham(),
+    'form-sua-san-pham'=>(new SanPhamController())->formEditSanPham(),
+    'sua-san-pham'=>(new SanPhamController())->postEditSanPham(),
+    'xoa-san-pham'=>(new SanPhamController())->postDeleteSanPham(),
 
 };
 

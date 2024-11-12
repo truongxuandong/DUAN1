@@ -12,13 +12,24 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
+      <!-- Notification messages -->
+      <?php if (isset($_SESSION['message'])): ?>
+        <div class="alert alert-<?= $_SESSION['message']['type'] ?> alert-dismissible fade show" role="alert">
+          <i class="fas fa-<?= $_SESSION['message']['type'] === 'success' ? 'check-circle' : 'exclamation-circle' ?>"></i> 
+          <?= $_SESSION['message']['text'] ?>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <?php unset($_SESSION['message']); ?>
+      <?php endif; ?>
+
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <a href="<?= BASE_URL_ADMIN . '?act=form-them-san-pham'?>">
+            <a href="?act=form-them-san-pham">
               <button class="btn btn-success">Thêm sách mới</button>
             </a>
-            <button class="btn btn-success">Thêm sản phẩm</button>
           </div><!-- /.card-header -->
 
           <div class="card-body">
@@ -28,7 +39,7 @@
                   <th>STT</th>
                   <th>Tên sản phẩm</th>
                   <th>Tên tác giả</th>
-                  <th>Mã thể loại</th>
+                  <th>Thể loại</th>
                   <th>Mô tả</th>
                   <th>Ngày phát hành</th>
                   <th>Giá</th>
@@ -38,31 +49,35 @@
                 </tr>
               </thead>
               <tbody>
-                <?php foreach ($listsp as $key => $sanPham) : ?>
+                <?php foreach ($listsp as $sanPham) { ?>
                   <tr>
-                    <td><?= $key + 1 ?></td>
+                    <td><?= $sanPham['id'] ?></td>
                     <td><?= $sanPham['title'] ?></td>
-                    <td><?= $sanPham['author_id'] ?></td>
-                    <td><?= $sanPham['category_id'] ?></td>
+                    <td><?= $sanPham['author_name'] ?? 'Không có tác giả' ?></td>
+                    <td><?= $sanPham['category_name'] ?? 'Không có thể loại' ?></td>
                     <td><?= $sanPham['description'] ?></td>
                     <td><?= $sanPham['publication_date'] ?></td>
                     <td><?= number_format($sanPham['price'], 0, ',', '.') ?> VNĐ</td>
                     <td>
-                      <?= $sanPham['stock_quantity'] > 0 ? 'Còn hàng' : 'Hết hàng'; ?>
+                      <?= $sanPham['stock_quantity'] > 0 ? $sanPham['stock_quantity'] : 'Hết hàng' ?>
                     </td>
                     <td>
-                      <img src="<?= BASE_URL . $sanPham['image'] ?>" style="width: 100px; height: auto;" alt="Hình ảnh sản phẩm" onerror="this.onerror=null; this.src='path_to_default_image.jpg'">
+                      <?php if (!empty($sanPham['image']) && file_exists($sanPham['image'])): ?>
+                        <img src="<?= $sanPham['image'] ?>" style="width: 100px; height: auto;" alt="Hình ảnh sản phẩm">
+                      <?php else: ?>
+                        <img src="path/to/default-image.jpg" style="width: 100px; height: auto;" alt="Hình ảnh sản phẩm">
+                      <?php endif; ?>
                     </td>
                     <td>
-                      <a href="<?= BASE_URL_ADMIN . 'act=form-sua-san-pham&id_san_pham=' . $sanPham['id'] ?>">
+                      <a href="?act=form-sua-san-pham&id=<?= $sanPham['id'] ?>">
                         <button class="btn btn-warning">Sửa</button>
                       </a>
-                      <a href="<?= BASE_URL_ADMIN . 'act=xoa-san-pham&id_san_pham=' . $sanPham['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                      <a href="?act=xoa-san-pham&id=<?= $sanPham['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
                         <button class="btn btn-danger">Xóa</button>
                       </a>
                     </td>
                   </tr>
-                <?php endforeach; ?>
+                <?php } ?>
               </tbody>
             </table>
           </div><!-- /.card-body -->

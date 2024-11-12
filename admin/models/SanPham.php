@@ -9,40 +9,129 @@ class SanPham {
     }
 
     public function getAllSanPham(){
-        try{
-            $sql = 'SELECT san_phams.*, danh_mucs.ten_danh_muc
-            FROM san_phams
-            INNER JOIN danh_mucs ON san-phams.danh_muc_id = danh_mucs.id
-
-            ';
+        try {
+            $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
+                           comics.publication_date, comics.price, comics.stock_quantity, comics.image, 
+                           authors.name AS author_name, categories.name AS category_name
+                    FROM comics
+                    JOIN authors ON comics.author_id = authors.id
+                    JOIN categories ON comics.category_id = categories.id";
+            
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
-
             return $stmt->fetchAll();
-        }catch (Exception $e){
-
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
         }
     }
-    public function insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image, $hinh_anh){
-        try{
-            $sql = 'INSERT INTO san_phams (title,author_id,category_id,description,publication_date,price,stock_quantity,image,hinh_anh)
-                    VALUES (:title,:author_id,:category_id,:description,:publication_date,:price,:stock_quantity,:image,:hinh_anh)';
 
+    public function getAllTacGia(){
+        try {
+            $sql = 'SELECT * FROM authors';
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([
-                ':title' => $title,
-                'author_id' => $author_id,
-                'category_id' => $category_id,
-                'description' => $description,
-                'publication_date' => $publication_date,
-                'price' => $price,
-                'stock_quantity' => $stock_quantity,
-                'image' => $image,
-                'hinh_anh' => $hinh_anh
-            ]);
-            return true;
-        }catch(Exception $e){
-            echo "lỗi" . $e->getMessage();
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image) {
+        try {
+            $sql = "INSERT INTO comics (title, author_id, category_id, description, publication_date, price, stock_quantity, image)
+                    VALUES (:title, :author_id, :category_id, :description, :publication_date, :price, :stock_quantity, :image)";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':author_id', $author_id);
+            $stmt->bindParam(':category_id', $category_id);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':publication_date', $publication_date);
+            $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':stock_quantity', $stock_quantity);
+            $stmt->bindParam(':image', $image);
+            
+            if ($stmt->execute()) {
+                echo "Sản phẩm đã được thêm thành công!";
+                return true;
+            } else {
+                echo "Lỗi khi thêm sản phẩm!";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "Lỗi: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function getSanPhamById($id) {
+        try {
+            $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
+                           comics.publication_date, comics.price, comics.stock_quantity, comics.image, 
+                           authors.name AS author_name, categories.name AS category_name
+                    FROM comics
+                    JOIN authors ON comics.author_id = authors.id
+                    JOIN categories ON comics.category_id = categories.id
+                    WHERE comics.id = :id";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetch();
+        } catch (Exception $e) {
+            echo "Lỗi: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function updateSanPham($id, $title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image) {
+        try {
+            $sql = "UPDATE comics SET 
+                        title = :title, 
+                        author_id = :author_id, 
+                        category_id = :category_id, 
+                        description = :description, 
+                        publication_date = :publication_date, 
+                        price = :price, 
+                        stock_quantity = :stock_quantity, 
+                        image = :image 
+                    WHERE id = :id";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':author_id', $author_id);
+            $stmt->bindParam(':category_id', $category_id);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':publication_date', $publication_date);
+            $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':stock_quantity', $stock_quantity);
+            $stmt->bindParam(':image', $image);
+            $stmt->bindParam(':id', $id);
+    
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                echo "Lỗi khi thực thi truy vấn SQL.";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "Lỗi truy vấn: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function deleteSanPham($id) {
+        try {
+            $sql = "DELETE FROM comics WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (Exception $e) {
+            echo "Lỗi: " . $e->getMessage();
+            return false;
         }
     }
 }
+
+?>
