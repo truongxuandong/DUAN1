@@ -21,7 +21,7 @@
                 </li>
                 
                 <li class="menu-item-has-children dropdown">
-                    <a href="<?= BASE_URL_ADMIN ?>" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <a href="?act=order" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-list-alt" style="font-size: 18px; margin-right: 10px;"></i>Danh sách đơn hàng
                     </a>
                 </li>
