@@ -8,6 +8,7 @@ require_once './views/layout/sidebar.php';
 
 #require Controller
 require_once './controllers/HomeController.php';
+require_once './controllers/OrderController.php';
 require_once './controllers/UserController.php';
 require_once './controllers/GiaodienController.php';
 
@@ -17,10 +18,13 @@ require_once './controllers/GiaodienController.php';
 
  #require Model
 require_once './models/User.php';
+require_once './models/Order.php';
+
 
 
  $home = new HomeController();
  $user = new userController();
+ $order = new OrderController();
 
 
 
@@ -59,9 +63,11 @@ match ($act) {
     'post-edit-user' => $user ->views_post_edit_user(),
     'delete-user' => $user ->delete_user(),
     //order
-    'order' => $user ->views_order(),
-
-
+    'order' => $order ->views_order(),
+    'delete-order' => $order ->deleteorder(),
+    'edit-order' => $order ->views_edit_order(),
+    'post-edit-order' => $order ->views_post_edit_order(),
+    'order-detail' => $order ->views_order_detail(),
 
      //banner-noi dung
      'giao-dien'=>(new AdminGiaodienController())->listBanner(),
