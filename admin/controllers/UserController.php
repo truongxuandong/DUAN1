@@ -51,7 +51,7 @@ class UserController
     }
 
     public function views_edit_user() {
-        $id=$_GET['id'];
+        $id = $_GET['id'];
         $taikhoan=$this->modelUser->getTaiKhoan($id);
         require_once './views/user/edituser.php';
     }
