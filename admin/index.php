@@ -24,7 +24,7 @@ require_once './controllers/DanhMucController.php';
  #require Model
 require_once './models/User.php';
 require_once './models/Order.php';
-
+require_once './models/VariantSanPham.php';
 require_once './models/DanhMuc.php';
 require_once './models/SanPham.php';
 
@@ -32,6 +32,8 @@ require_once './models/SanPham.php';
  $home = new HomeController();
  $user = new userController();
  $order = new OrderController();
+ 
+ 
 
 
 
@@ -91,7 +93,14 @@ match ($act) {
     'form-sua-san-pham' => (new SanPhamController())->formEditSanPham(),
     'sua-san-pham' => (new SanPhamController())->postEditSanPham(),
     'xoa-san-pham' => (new SanPhamController())->postDeleteSanPham(),
-
+    //
+    'chi-tiet-bien-the-sp' => (new SanPhamController())->danhSachVariants(),
+    'form-them-bien-the' => (new SanPhamController())->formAddVariant(),
+    'them-bien-the' => (new SanPhamController())->postAddVariant(),
+    'form-sua-bien-the' => (new SanPhamController())->formEditVariant(),
+    'sua-bien-the' => (new SanPhamController())->postEditVariant(),
+    'xoa-bien-the' => (new SanPhamController())->postDeleteVariant(),
+    
 
 
 
