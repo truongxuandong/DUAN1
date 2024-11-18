@@ -1,11 +1,17 @@
 <?php
+
 ob_start();
+
+
 ?>
 <!doctype html>
 <!-- [if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif] -->
+
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,47 +38,53 @@ ob_start();
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
 
-    
 
    <style>
     #weatherWidget .currentDesc {
         color: #ffffff!important;
     }
+
         .traffic-chart {
             min-height: 335px;
         }
-        #flotPie1  {
+
+        #flotPie1 {
             height: 150px;
         }
+
         #flotPie1 td {
-            padding:3px;
+            padding: 3px;
         }
+
         #flotPie1 table {
-            top: 20px!important;
-            right: -10px!important;
+            top: 20px !important;
+            right: -10px !important;
         }
+
         .chart-container {
             display: table;
-            min-width: 270px ;
+            min-width: 270px;
             text-align: left;
             padding-top: 10px;
             padding-bottom: 10px;
         }
-        #flotLine5  {
-             height: 105px;
+
+        #flotLine5 {
+            height: 105px;
         }
 
         #flotBarChart {
             height: 150px;
         }
-        #cellPaiChart{
+
+        #cellPaiChart {
             height: 160px;
         }
-
     </style>
 </head>
 
 <body>
+
     <!-- Left Panel -->
     <aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
@@ -144,15 +156,16 @@ ob_start();
         </nav>
     </aside>
     <!-- /#left-panel -->
+
     <!-- Right Panel -->
     <div id="right-panel" class="right-panel">
         <!-- Header-->
         <header id="header" class="header">
             <div class="top-left">
-                
+
                 <div class="navbar-header" style="height:50px ;">
                     <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:300px; height:60px; margin-top:-6px ;"></a>
-                    
+ 
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>
             </div>
@@ -166,6 +179,7 @@ ob_start();
                                 <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
                             </form>
                         </div>
+
 
                         <div class="dropdown for-notification">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -244,10 +258,12 @@ ob_start();
 
                             <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
+                            <a class="nav-link" href="<?= BASE_URL_ADMIN . '?act=login-admin' ?>" onclick="return confirm(' Đăng xuất tài khoản?')"><i class="fa fa-power -off"></i>Logout</a>
+
                         </div>
                     </div>
 
                 </div>
             </div>
         </header>
+        

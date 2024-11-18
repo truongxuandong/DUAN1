@@ -1,3 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+</head>
+<body>
+    <h2>Danh sách sản phẩm</h2>
+    <ul>
+        <?php foreach ($products as $product): ?>
+            <li>
+                <?php echo htmlspecialchars($product['name']); ?> - 
+                <?php echo number_format($product['price']); ?> VND
+                <form action="index.php?action=add_to_cart" method="POST" style="display:inline;">
+                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                    <input type="number" name="quantity" value="1" min="1">
+                    <button type="submit">Thêm vào giỏ hàng</button>
 <?php require_once 'layout/header.php';?>
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
@@ -145,30 +162,9 @@
                         </div>
                     </div>
                 </form>
-                <div class="card border-secondary mb-5">
-                    <div class="card-header bg-secondary border-0">
-                        <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3 pt-1">
-                            <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">$150</h6>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
-                        </div>
-                    </div>
-                    <div class="card-footer border-secondary bg-transparent">
-                        <div class="d-flex justify-content-between mt-2">
-                            <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">$160</h5>
-                        </div>
-                        <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Cart End -->
-<?php require_once 'layout/footer.php';?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+    <a href="index.php?action=cart">Xem giỏ hàng</a>
+</body>
+</html>
