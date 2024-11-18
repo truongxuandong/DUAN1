@@ -1,13 +1,14 @@
 <?php
-ob_start(); // Start output buffering
 
-// Your PHP and HTML content here
+ob_start();
+
 
 ?>
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!-- [if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang=""> <!--<![endif]-->
 
@@ -36,10 +37,12 @@ ob_start(); // Start output buffering
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
-    <style>
-        #weatherWidget .currentDesc {
-            color: #ffffff !important;
-        }
+
+
+   <style>
+    #weatherWidget .currentDesc {
+        color: #ffffff!important;
+    }
 
         .traffic-chart {
             min-height: 335px;
@@ -82,7 +85,78 @@ ob_start(); // Start output buffering
 
 <body>
 
-    
+    <!-- Left Panel -->
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
+            <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    
+                    <li class="menu-item-has-children dropdown" style="margin-top: 40px;">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-home" style="font-size: 20px;"></i>Trang Chủ </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th-large" style="font-size: 18px;"></i>Danh mục sản phẩm </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"style="font-size: 18px;"></i>Sản phẩm </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-list-alt" style="font-size: 18px;"></i>Danh sách đơn hàng </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>" class="dropdown-toggle"  > <i class="menu-icon fa fa-comments" style="font-size: 20px;"></i>Quản lí giao diện </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="menu-icon fa fa-comments" style="font-size: 20px;"></i>Bình luận & đánh giá
+    </a>
+    <ul class="sub-menu children dropdown-menu">
+        <li>
+            <a href="<?= BASE_URL_ADMIN."?act=binh-luan"?>">
+                <i class="menu-icon fa fa-comments" style="font-size: 18px;"></i>Quản lý bình luận
+            </a>
+        </li>
+        <li>
+            <a href="<?= BASE_URL_ADMIN."?act=danh-gia"?>">
+                <i class="menu-icon fa fa-star" style="font-size: 18px;"></i>Quản lý đánh giá
+            </a>
+        </li>
+    </ul>
+</li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users" style="font-size: 18px"></i>Quản lí tài khoản </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-line-chart" style="font-size: 15px;;"></i>Thống kê </a>
+                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
+                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
+                        </ul> -->
+                    </li>
+                    
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+    </aside>
+    <!-- /#left-panel -->
+
     <!-- Right Panel -->
     <div id="right-panel" class="right-panel">
         <!-- Header-->
