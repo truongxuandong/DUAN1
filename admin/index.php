@@ -33,10 +33,8 @@ require_once './models/Order.php';
 require_once './models/VariantSanPham.php';
 require_once './models/DanhMuc.php';
 require_once './models/SanPham.php';
-
- require_once './models/AdminBinhluan.php';
- require_once './models/AdminBanner.php';
-
+require_once './models/AdminBinhluan.php';
+require_once './models/AdminBanner.php';
 
 
  $home = new HomeController();
@@ -66,6 +64,7 @@ $act = $_GET['act'] ?? '/';
 match ($act) {
 
 
+
     //home
     '/' => $home->views_home(),
 
@@ -78,6 +77,7 @@ match ($act) {
     'edit-user' => $user ->views_edit_user(),
     'post-edit-user' => $user ->views_post_edit_user(),
     'delete-user' => $user ->delete_user(),
+  
     //order
     'order' => $order ->views_order(),
     'delete-order' => $order ->deleteorder(),
