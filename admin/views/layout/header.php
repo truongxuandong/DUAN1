@@ -1,8 +1,11 @@
+<?php
+ob_start();
+?>
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!-- [if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif] -->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,6 +30,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+
+    
 
    <style>
     #weatherWidget .currentDesc {
@@ -98,17 +104,28 @@
                         </ul> -->
                     </li>
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-comments" style="font-size: 20px;"></i>Quản lí giao diện </a>
+                        <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>" class="dropdown-toggle"  > <i class="menu-icon fa fa-comments" style="font-size: 20px;"></i>Quản lí giao diện </a>
                         <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
                             <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
                         </ul> -->
                     </li>
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-comments" style="font-size: 20px;"></i>Quản lí bình luận </a>
-                        <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
-                            <li><i class="fa fa-id-badge"></i><a href="ui-badges.html">Badges</a></li>
-                        </ul> -->
-                    </li>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="menu-icon fa fa-comments" style="font-size: 20px;"></i>Bình luận & đánh giá
+    </a>
+    <ul class="sub-menu children dropdown-menu">
+        <li>
+            <a href="<?= BASE_URL_ADMIN."?act=binh-luan"?>">
+                <i class="menu-icon fa fa-comments" style="font-size: 18px;"></i>Quản lý bình luận
+            </a>
+        </li>
+        <li>
+            <a href="<?= BASE_URL_ADMIN."?act=danh-gia"?>">
+                <i class="menu-icon fa fa-star" style="font-size: 18px;"></i>Quản lý đánh giá
+            </a>
+        </li>
+    </ul>
+</li>
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users" style="font-size: 18px"></i>Quản lí tài khoản </a>
                         <!-- <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="ui-buttons.html">Buttons</a></li>
