@@ -3,6 +3,8 @@
 ob_start();
 
 
+
+
 ?>
 <!doctype html>
 <!-- [if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -36,11 +38,12 @@ ob_start();
 
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
-    
+
     <style>
         #weatherWidget .currentDesc {
             color: #ffffff !important;
         }
+
 
         .traffic-chart {
             min-height: 335px;
@@ -83,7 +86,7 @@ ob_start();
 
 <body>
 
-  
+
     <!-- Right Panel -->
     <div id="right-panel" class="right-panel">
         <!-- Header-->
