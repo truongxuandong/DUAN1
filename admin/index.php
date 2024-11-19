@@ -8,9 +8,11 @@ require_once './views/layout/header.php';
 require_once './views/layout/sidebar.php';
 
 #require Controller
-require_once '../admin/controllers/HomeController.php';
-require_once '../admin/controllers/GiaodienController.php';
-require_once '../admin/controllers/BinhluanController.php';
+
+
+
+require_once './controllers/BinhluanController.php';
+
 require_once './controllers/HomeController.php';
 
 require_once './controllers/OrderController.php';
@@ -18,7 +20,7 @@ require_once './controllers/UserController.php';
 require_once './controllers/GiaodienController.php';
 require_once './controllers/SanPhamController.php';
 require_once './controllers/DanhMucController.php';
-
+require_once './controllers/KhuyenMaiController.php';
 
 
 
@@ -31,6 +33,7 @@ require_once './models/Order.php';
 require_once './models/VariantSanPham.php';
 require_once './models/DanhMuc.php';
 require_once './models/SanPham.php';
+require_once './models/KhuyenMai.php';
 require_once './models/AdminBinhluan.php';
 require_once './models/AdminBanner.php';
 
@@ -38,9 +41,7 @@ require_once './models/AdminBanner.php';
  $home = new HomeController();
  $user = new userController();
  $order = new OrderController();
- 
- 
-
+ $khuyenmai = new KhuyenMaiController();
 
 
 
@@ -83,7 +84,12 @@ match ($act) {
     'post-edit-order' => $order ->views_post_edit_order(),
     'order-detail' => $order ->views_order_detail(),
 
-     //banner
+
+     
+    
+
+
+    //banner
     'giao-dien'=>(new AdminGiaodienController())->listBanner(),
     'form-add-banner'=>(new AdminGiaodienController())->formaddBanner(),
     'add-banner'=>(new AdminGiaodienController())->postaddBanner(),
@@ -91,7 +97,23 @@ match ($act) {
     'delete-banner'=>(new AdminGiaodienController())->deleteBanner(),
     'form-edit-banner'=>(new AdminGiaodienController())->formEditBanner(),
     'edit-banner'=>(new AdminGiaodienController())->postEditBanner(),
+
+   
+    //binh luan
+    'binh-luan'=>(new AdminBinhluanController())->listBinhluan(),
+    'update-trang-thai-binh-luan'=>(new AdminBinhluanController())->updateTrangThaiBinhLuan(),
+
+    'danh-gia'=>(new AdminBinhluanController())->listDanhgia(),
+    'delete-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
+
+
+
+
+
     
+
     // rou danh mục
     'listdm' => (new DanhMucController())->danhsachDanhMuc(),
     'form-them-danh-muc' => (new DanhMucController())->formAddDanhMuc(),
@@ -99,7 +121,6 @@ match ($act) {
     'form-sua-danh-muc' => (new DanhMucController())->formEditDanhMuc(),
     'sua-danh-muc' => (new DanhMucController())->postEditDanhMuc(),
     'xoa-danh-muc' => (new DanhMucController())->deleteDanhMuc(),
-  
     //route san pham
     'san-pham' => (new SanPhamController())->danhSachSanPham(),
     'form-them-san-pham' => (new SanPhamController())->formAddSanPham(),
@@ -107,14 +128,33 @@ match ($act) {
     'form-sua-san-pham' => (new SanPhamController())->formEditSanPham(),
     'sua-san-pham' => (new SanPhamController())->postEditSanPham(),
     'xoa-san-pham' => (new SanPhamController())->postDeleteSanPham(),
+
+
+
+
+    //khuyen mai
+    'khuyen-mai' => $khuyenmai->View_KhuyenMai(),
+    'form-add-khuyen-mai' => $khuyenmai->formAddKhuyenMai(),
+    'post-add-khuyen-mai' => $khuyenmai->postAddKhuyenMai(),
+    'form-edit-khuyen-mai' => $khuyenmai->formEditKhuyenMai(),
+    'post-edit-khuyen-mai' => $khuyenmai->postEditKhuyenMai(),
+    'delete-khuyen-mai' => $khuyenmai->deleteKhuyenMai(),
+
+
+
+
+
+
   
     //rou bien the sp
+
     'chi-tiet-bien-the-sp' => (new SanPhamController())->danhSachVariants(),
     'form-them-bien-the' => (new SanPhamController())->formAddVariant(),
     'them-bien-the' => (new SanPhamController())->postAddVariant(),
     'form-sua-bien-the' => (new SanPhamController())->formEditVariant(),
     'sua-bien-the' => (new SanPhamController())->postEditVariant(),
     'xoa-bien-the' => (new SanPhamController())->postDeleteVariant(),
+
   
     //binh luan
     'binh-luan'=>(new AdminBinhluanController())->listBinhluan(),
@@ -123,7 +163,8 @@ match ($act) {
     'delete-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
     'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
     'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
-  
+
+
     //route login
     // 'login-admin' => (new UserController())->formlogin(),
     // 'check-login-admin' => (new UserController())->login(),
@@ -133,3 +174,5 @@ match ($act) {
 
 };
 require_once './views/layout/footer.php';
+
+?>
