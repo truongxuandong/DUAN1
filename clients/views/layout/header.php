@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="https://imgur.com/ZOy8S6I.png">
     <link rel="shortcut icon" href="https://imgur.com/ZOy8S6I.png">
     <!-- Favicon -->
-    <link href="https://deviet.vn/wp-content/uploads/2019/04/vuong-quoc-anh.jpg" rel="icon" >
+    <link rel="shortcut icon" href="https://imgur.com/ZOy8S6I.png">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">

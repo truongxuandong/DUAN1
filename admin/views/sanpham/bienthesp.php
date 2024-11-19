@@ -12,6 +12,7 @@
               
               <button class="btn btn-success">Thêm biến thể mới</button>
             </a>
+            
           </div>
 
           <div class="card-body"></div>
@@ -66,6 +67,9 @@
                 <?php endforeach; ?>
               </tbody>
             </table>
+            <div class="form-group col-12">
+                <a href="?act=san-pham" class="btn btn-primary" style="margin: 0 5px 40px;">Quay lại</a>
+              </div>
           </div>
         </div>
       </div>
