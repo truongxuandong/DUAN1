@@ -22,7 +22,7 @@
             <div class="row card-body">
 
               <!-- Tên sản phẩm -->
-              <div class="form-group col-12">
+              <div class="form-group col-6">
                 <label for="title">Tên sản phẩm</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Nhập tên sản phẩm" value="<?= $_POST['title'] ?? ''; ?>">
                 <?php if (isset($errors['title'])): ?>
@@ -73,7 +73,7 @@
 
               <!-- Giá bán -->
               <div class="form-group col-6">
-                <label for="price">Giá</label>
+                <label for="price">Giá bán</label>
                 <input type="number" class="form-control" id="price" name="price" placeholder="Nhập giá sản phẩm" value="<?= $_POST['price'] ?? ''; ?>">
                 <?php if (isset($errors['price'])): ?>
                     <p class="text-danger"><?= $errors['price']; ?></p>
@@ -81,8 +81,8 @@
               </div>
               <!-- Giá niệm yết -->
               <div class="form-group col-6">
-                <label for="original_price">Giá Gốc</label>
-                <input type="number" class="form-control" id="original_price" name="original_price" placeholder="Nhập giá sản phẩm" value="<?= $_POST['original_price'] ?? ''; ?>">
+                <label for="original_price">Giá niệm yết</label>
+                <input type="number" class="form-control" id="original_price" name="original_price" placeholder="Nhập giá niệm yết sản phẩm" value="<?= $_POST['original_price'] ?? ''; ?>">
                 <?php if (isset($errors['original_price'])): ?>
                     <p class="text-danger"><?= $errors['original_price']; ?></p>
                 <?php endif; ?>
@@ -111,7 +111,8 @@
                 <textarea name="description" id="description" class="form-control" placeholder="Nhập mô tả"><?= $_POST['description'] ?? ''; ?></textarea>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="margin: 0 40px 40px;">Thêm</button>
+              <button type="submit" class="btn btn-primary" style="margin: 0 5px 40px;">Thêm</button>
+              <a href="?act=san-pham" class="btn btn-primary" style="margin: 0 5px 40px;">Quay lại</a>
 
             </div>
           </form>
