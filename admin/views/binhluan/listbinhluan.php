@@ -26,7 +26,7 @@
                     </td>
                     <td><?= $binhLuan['Content'] ?></td>
                     <td><?= $binhLuan['title'] ?></td>
-                    <td><?= $binhLuan['Creat_at'] ?></td>
+                    <td><?= $binhLuan['Create_at'] ?></td>
                     <td><?= $binhLuan['status'] == 1 ? 'Hiển thị' : 'Ẩn' ?></td>
 
                     <td>

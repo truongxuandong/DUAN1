@@ -34,6 +34,7 @@
                 
 
                 <li class="menu-item-has-children dropdown">
+
                     <a href="?act=binh-luan">
                         <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Bình luận
                     </a>
@@ -47,6 +48,7 @@
                 <li class="menu-item-has-children dropdown">
                     <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
+
                     </a>
                 </li>
                 

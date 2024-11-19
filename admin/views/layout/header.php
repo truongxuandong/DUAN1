@@ -94,7 +94,7 @@ ob_start();
             <div class="top-left">
 
                 <div class="navbar-header" style="height:50px ;">
-                    <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:300px; height:60px; margin-top:-6px ;"></a>
+                    <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:60px; height:60px; margin-top:-6px ;"></a>
  
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>
