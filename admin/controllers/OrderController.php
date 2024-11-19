@@ -83,7 +83,7 @@ class OrderController{
                 $data[':payment_status'] = 'processing';
             }
             
-            // Định nghĩa luồng chuyển đổi trạng thái hợp lệ
+            
             $validTransitions = [
                 'unpaid' => ['processing', 'cancelled'],  
                 'processing' => ['paid', 'failed', 'cancelled'],
