@@ -17,7 +17,16 @@
         <!-- /.site-footer -->
     </div>
     <!-- /#right-panel -->
-
+    <script>
+    // Đặt thời gian 3 giây để thông báo tự động tắt
+    setTimeout(function() {
+        let alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+        });
+    }, 3000); // 3000 ms = 3 giây
+</script>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>

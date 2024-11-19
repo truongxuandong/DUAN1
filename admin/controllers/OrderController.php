@@ -15,11 +15,23 @@ class OrderController{
     }
 
     public function deleteorder() {
-        if ($this->modelOrder->deleteorder($_GET['id'])) {
-            $_SESSION['success'] = "Xóa đơn hàng thành công";
+        // Get current order status
+        $currentOrder = $this->modelOrder->getById($_GET['id']);
+        
+        // Check if order can be deleted based on shipping status
+        if ($currentOrder['shipping_status'] === 'delivered' || 
+            $currentOrder['shipping_status'] === 'returned' || 
+            $currentOrder['shipping_status'] === 'cancelled') {
+            
+            if ($this->modelOrder->deleteorder($_GET['id'])) {
+                $_SESSION['success'] = "Xóa đơn hàng thành công";
+            } else {
+                $_SESSION['error'] = "Xóa đơn hàng thất bại";
+            }
         } else {
-            $_SESSION['error'] = "Xóa đơn hàng thất bại";
+            $_SESSION['error'] = "Chỉ có thể xóa đơn hàng đã giao thành công, đã trả hàng hoặc đã hủy";
         }
+        
         header('Location: ?act=order');
         exit;
     }
@@ -35,13 +47,13 @@ class OrderController{
                 ':total_amount' => $_POST['total_amount'],
                 ':payment_status' => $_POST['payment_status'],
                 ':shipping_status' => $_POST['shipping_status'],
-                ':payment_method' => $_POST['payment_method'],
-                ':shipping_address' => $_POST['shipping_address']
+                ':payment_method' => $_POST['payment_method']
+                
             ];
 
             try {
                 
-                $this->validateOrderUpdate($data);
+                 $this->validateOrderUpdate($data);
                 
                 if ($this->modelOrder->updateOrder($data)) {
                     $_SESSION['success'] = "Cập nhật đơn hàng thành công";
@@ -52,40 +64,70 @@ class OrderController{
                 $_SESSION['error'] = $e->getMessage();
             }
         }
-        header('Location: ?act=order');
+         header('Location: ?act=order');
         exit;
     }
 
     private function validateOrderUpdate($data) {
         $currentOrder = $this->modelOrder->getById($data[':id']);
 
-        if($currentOrder['payment_method'] === 'Credit Card' || $currentOrder['payment_method'] === 'Internet Banking' || $currentOrder['payment_method'] === 'E-Wallet'){
-            if($currentOrder['payment_status'] === 'failed'){
-                if (!in_array($data[':payment_status'], ['processing', 'cancelled'])) {
-                    throw new Exception("Đơn hàng đã thất bại thanh toán chỉ có thể được xử lý lại hoặc hủy bỏ");
-                }
-            }
-           
-            
-            
-            $allowedStatuses = ['processing', 'paid', 'refunded', 'failed'];
-            if (!in_array($data[':payment_status'], $allowedStatuses)) {
-                throw new Exception("Trạng thái thanh toán không hợp lệ cho phương thức thanh toán điện tử");
-            }
-            
-           
-            if (empty($data[':payment_status'])) {
-                $data[':payment_status'] = 'processing';
-            }
-        }
-        
-        if ($currentOrder['shipping_status'] !== 'pending' && 
-            $currentOrder['payment_status'] !== 'processing') {
-            if ($data[':shipping_address'] !== $currentOrder['shipping_address']) {
-                throw new Exception("Không thể thay đổi địa chỉ giao hàng sau khi đơn hàng đã được xử lý");
+        if ($data[':payment_method'] !== $currentOrder['payment_method']) {
+            if ($currentOrder['shipping_status'] !== 'returned') {
+                throw new Exception("Không thể thay đổi phương thức thanh toán sau khi đã đặt hàng");
             }
         }
 
+        if($currentOrder['payment_method'] === 'Credit Card' || $currentOrder['payment_method'] === 'Internet Banking' || $currentOrder['payment_method'] === 'E-Wallet'){
+            // Kiểm tra và cập nhật trạng thái thanh toán
+            if ($currentOrder['payment_status'] === 'unpaid') {
+                $data[':payment_status'] = 'processing';
+            }
+            
+            // Định nghĩa luồng chuyển đổi trạng thái hợp lệ
+            $validTransitions = [
+                'unpaid' => ['processing', 'cancelled'],  
+                'processing' => ['paid', 'failed', 'cancelled'],
+                'failed' => ['processing'],
+                'paid' => ['refunded'],
+                'refunded' => [],
+                'cancelled' => []
+            ];
+           
+            // Nếu đang cập nhật trạng thái thanh toán
+            if ($data[':payment_status'] !== $currentOrder['payment_status']) {
+                // Nếu trạng thái hiện tại không tồn tại trong validTransitions
+                if (!isset($validTransitions[$currentOrder['payment_status']])) {
+                    throw new Exception("Trạng thái hiện tại không hợp lệ: {$currentOrder['payment_status']}");
+                }
+
+                $allowedNextStatuses = $validTransitions[$currentOrder['payment_status']];
+                if (!in_array($data[':payment_status'], $allowedNextStatuses)) {
+                    throw new Exception("Không thể chuyển từ trạng thái {$currentOrder['payment_status']} sang {$data[':payment_status']}");
+                }
+
+               
+            }
+             // Kiểm tra trạng thái thanh toán và đơn hàng
+            if ($data[':shipping_status'] !== $currentOrder['shipping_status']) {
+                
+
+                // Chỉ cho phép thay đổi sang trạng thái "cancelled" khi thanh toán thất bại
+                if ($currentOrder['payment_status'] === 'failed' || $currentOrder['payment_status'] === 'unpaid') {
+                    if ($data[':shipping_status'] !== 'cancelled') {
+                        throw new Exception("Không thể thay đổi trạng thái đơn hàng khi thanh toán chưa thành công");
+                    }
+                }
+                
+                // Chỉ cho phép thay đổi trạng thái đơn hàng khi đã thanh toán thành công
+                if ($currentOrder['payment_method'] !== 'Cash on Delivery' && 
+                    $currentOrder['payment_status'] !== 'paid' && 
+                    $data[':shipping_status'] !== 'cancelled') {
+                    throw new Exception("Trạng thái đơn hàng chỉ có thể thay đổi sau khi đã thanh toán thành công");
+                }
+            }
+        }
+        
+       
         
         if ($currentOrder['shipping_status'] === 'delivering') {
             if ($data[':shipping_status'] === 'cancelled') {
@@ -98,26 +140,63 @@ class OrderController{
                 throw new Exception("Không thể thay đổi thông tin đơn hàng khi đang trong quá trình giao");
             }
         }
+        
 
         
         if ($data[':payment_method'] === 'Cash on Delivery') {
-            if ($data[':payment_status'] === 'paid' && 
-                $data[':shipping_status'] !== 'delivered') {
-                throw new Exception("COD chỉ có thể được đánh dấu thanh toán khi đã giao hàng");
+            // Kiểm tra nếu đơn hàng mới được chuyển sang COD
+            if ($currentOrder['payment_method'] !== 'Cash on Delivery') {
+                throw new Exception("Không thể chuyển đổi sang phương thức thanh toán COD sau khi đã đặt hàng");
             }
+            
+            // Chỉ cho phép 2 trạng thái thanh toán với COD: unpaid và paid
+            if (!in_array($data[':payment_status'], ['unpaid','paid'])) {
+                throw new Exception("COD chỉ có thể có trạng thái chưa thanh toán hoặc thanh toán");
+            }
+
+            // Chỉ cho phép đánh dấu đã thanh toán khi đã giao hàng thành công
+            if ($data[':payment_status'] === 'paid' ) {
+                if ($data[':shipping_status'] !== 'returned') {
+                    throw new Exception("không thể thay đổi trạng thái đơn hàng khi thành công trừ trả hàng");
+                }
+            }
+            if ($data[':payment_status'] === 'paid') {
+                if ($currentOrder['shipping_status'] !== 'delivered') {
+                    throw new Exception("COD chỉ có thể đánh dấu đã thanh toán khi đã giao hàng thành công");
+                }
+            }
+           
+            
+            
         }
 
-        
-        if ($data[':payment_status'] === 'refunded' && 
-            $data[':shipping_status'] !== 'returned') {
-            throw new Exception("Chỉ có thể hoàn tiền khi đơn hàng đã được trả lại");
+        if ($currentOrder['shipping_status'] === 'returned' || $currentOrder['shipping_status'] === 'cancelled') {
+            if ($data[':shipping_status'] !== $currentOrder['shipping_status']) {
+                throw new Exception("Không thể thay đổi trạng thái của đơn hàng ");
+            }
         }
+        
+        
 
          
         if ($data[':shipping_status'] === 'cancelled' && 
             $currentOrder['shipping_status'] === 'delivered') {
             throw new Exception("Không thể hủy đơn hàng đã giao thành công");
         }
+
+        if ($currentOrder['shipping_status'] === 'delivered') {
+            if ($data[':shipping_status'] !== 'delivered' && $data[':shipping_status'] !== 'returned') {
+                throw new Exception("Đơn hàng đã giao thành công chỉ có thể chuyển sang trạng thái trả hàng");
+            }
+        }
+        if ($data[':shipping_status'] === 'returned') {
+            if ($currentOrder['shipping_status'] !== 'delivered') {
+                throw new Exception("Không thể trả hàng khi đơn hàng chưa giao thành công");
+            }
+        }
+
+       
+
     }
 
     public function views_order_detail() {

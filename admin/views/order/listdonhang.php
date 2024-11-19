@@ -5,7 +5,7 @@
               <div class="container-fluid">
                 <div class="row mb-2">
                   <div class="col-sm-6">
-                    <h1>Quản lí đơn hàng</h1>
+                    <h3>Quản lí đơn hàng</h3>
                   </div>
                 </div>
               </div><!-- /.container-fluid -->
@@ -45,12 +45,12 @@
         <tr>
             <th>id đơn hàng</th>
             <th>tên khách hàng</th>
-            <th>ngày đặt hàng</th>
+            <th>số điện thoại</th>
             <th>tổng giá trị đơn hàng</th>
             <th>phương thức thanh toán</th>
             <th>trạng thái thanh toán</th>
             <th>trạng thái đơn hàng</th>
-            <th>địa chỉ giao hàng</th>
+            
             <th>thao tác</th>
         </tr>
     </thead>
@@ -60,7 +60,7 @@
                 <td><?= $donhang['id'] ?></td>
                 <!-- Hiển thị tên khách hàng, nếu không có thì hiển thị user_id -->
                 <td><?= $donhang['name'] ?? $donhang['user_id'] ?></td>
-                <td><?= $donhang['order_date'] ?></td>
+                <td><?= $donhang['phone'] ?></td>
                 <td><?= number_format($donhang['total_products_amount'] ?? 0, 0, ',', '.') ?> đ</td>
                 <td><?php
                 
@@ -128,17 +128,14 @@
                         break;
                 } ?>
                 </td>
-                <td><?= $donhang['shipping_address'] ?></td>
+                
                 <td>
                     <a href="?act=order-detail&id=<?= $donhang['id'] ?>" class="btn btn-info btn-sm">
                         <i class="fas fa fa-eye"></i> Chi tiết
                     </a>
 
                     
-                        <!-- Nút in hóa đơn khi đã giao hàng thành công -->
-                        <button onclick="printOrder(<?= $donhang['id'] ?>)" class="btn btn-success btn-sm">
-                            <i class="fas fa fa-print"></i> In 
-                        </button>
+                      
                     
                         <!-- Các nút thao tác khi chưa giao hàng thành công -->
                         <a href="?act=edit-order&id=<?= $donhang['id'] ?>">
@@ -146,6 +143,7 @@
                                 <i class="fas fa fa-edit"></i> Cập nhật
                             </button>
                         </a>
+                        
                         <a href="?act=delete-order&id=<?= $donhang['id'] ?>" 
                            onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này không?')">
                             <button class="btn btn-danger btn-sm">
@@ -173,27 +171,9 @@
             <!-- /.content -->
           </div>
           <!-- /.content-wrapper -->
-<script>
-    // Đặt thời gian 3 giây để thông báo tự động tắt
-    setTimeout(function() {
-        let alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            alert.classList.remove('show');
-            alert.classList.add('fade');
-        });
-    }, 3000); // 3000 ms = 3 giây
-</script>
 
-<!-- Thêm script in hóa đơn -->
-<script>
-function printOrder(orderId) {
-    // Mở trang chi tiết đơn hàng trong cửa sổ in
-    let printWindow = window.open(`?act=order-detail&id=${orderId}&print=true`, '_blank');
-    printWindow.onload = function() {
-        printWindow.print();
-    };
-}
-</script>
+
+
           
           
        
