@@ -18,7 +18,7 @@ require_once './controllers/UserController.php';
 require_once './controllers/GiaodienController.php';
 require_once './controllers/SanPhamController.php';
 require_once './controllers/DanhMucController.php';
-
+require_once './controllers/KhuyenMaiController.php';
 
 
 
@@ -31,6 +31,7 @@ require_once './models/Order.php';
 require_once './models/VariantSanPham.php';
 require_once './models/DanhMuc.php';
 require_once './models/SanPham.php';
+require_once './models/KhuyenMai.php';
 require_once './models/AdminBinhluan.php';
 require_once './models/AdminBanner.php';
 
@@ -38,9 +39,7 @@ require_once './models/AdminBanner.php';
  $home = new HomeController();
  $user = new userController();
  $order = new OrderController();
- 
- 
-
+ $khuyenmai = new KhuyenMaiController();
 
 
 
@@ -107,6 +106,22 @@ match ($act) {
     'form-sua-san-pham' => (new SanPhamController())->formEditSanPham(),
     'sua-san-pham' => (new SanPhamController())->postEditSanPham(),
     'xoa-san-pham' => (new SanPhamController())->postDeleteSanPham(),
+
+
+
+    //khuyen mai
+    'khuyen-mai' => $khuyenmai->View_KhuyenMai(),
+    'form-add-khuyen-mai' => $khuyenmai->formAddKhuyenMai(),
+    'post-add-khuyen-mai' => $khuyenmai->postAddKhuyenMai(),
+    'form-edit-khuyen-mai' => $khuyenmai->formEditKhuyenMai(),
+    'post-edit-khuyen-mai' => $khuyenmai->postEditKhuyenMai(),
+    'delete-khuyen-mai' => $khuyenmai->deleteKhuyenMai(),
+
+
+
+
+
+
   
     //rou bien the sp
     'chi-tiet-bien-the-sp' => (new SanPhamController())->danhSachVariants(),
@@ -124,6 +139,7 @@ match ($act) {
     'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
     'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
   
+
     //route login
     // 'login-admin' => (new UserController())->formlogin(),
     // 'check-login-admin' => (new UserController())->login(),
@@ -133,3 +149,4 @@ match ($act) {
 
 };
 require_once './views/layout/footer.php';
+?>

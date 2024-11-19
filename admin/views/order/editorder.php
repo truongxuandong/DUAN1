@@ -21,11 +21,11 @@
                                        value="<?php echo htmlspecialchars($order['name'] ?? ''); ?>" readonly>
                             </div>
                             
-                            <!-- Ngày đặt hàng (order_date) -->
+                            
                             <div class="form-group">
-                                <label>Ngày đặt hàng</label>
-                                <input type="text" class="form-control" name="order_date" 
-                                       value="<?php echo htmlspecialchars($order['order_date']); ?>" readonly>
+                                <label>phone</label>
+                                <input type="text" class="form-control" name="phone" 
+                                       value="<?php echo htmlspecialchars($order['phone']); ?>" readonly>
                             </div>
 
                             <!-- Tổng tiền (total_amount) -->
@@ -68,15 +68,13 @@
                                 </select>
                             </div>
 
-                            <!-- Địa chỉ giao hàng (shipping_address) -->
-                            <div class="form-group">
-                                <label>Địa chỉ giao hàng</label>
-                                <textarea class="form-control" name="shipping_address"><?php echo htmlspecialchars($order['shipping_address']); ?></textarea>
-                            </div>
+                           
                         </div>
 
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <a href="?act=order" class="btn btn-secondary">Quay lai</a>
+
                         </div>
                     </form>
                 </div>

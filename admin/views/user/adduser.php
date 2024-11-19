@@ -4,7 +4,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col">
-          <h2>Quản lí tài khoản khách hàng</h2>
+          <h3>Quản lí tài khoản User</h3>
         </div>
       </div>
     </div><!-- /.container-fluid -->
@@ -76,7 +76,7 @@
 
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Thêm mới</button>
-                  <!-- <button type="submit" class="btn btn-secondary">Hủy</button> -->
+                  <a href="?act=user" class="btn btn-secondary">Quay lai</a>
 
                 </div>
               </form>

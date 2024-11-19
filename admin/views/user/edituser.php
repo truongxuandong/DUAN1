@@ -67,6 +67,7 @@
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Cập nhật</button>
                   <!-- <button type="submit" class="btn btn-secondary">Hủy</button> -->
+                  <a href="?act=user" class="btn btn-secondary">Quay lai</a>
 
                 </div>
               </form>

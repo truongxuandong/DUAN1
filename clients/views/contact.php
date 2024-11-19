@@ -1,4 +1,4 @@
-<?php require_once 'layout/header.php';?>
+
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
@@ -70,4 +70,4 @@
         </div>
     </div>
     <!-- Contact End -->
-<?php require_once 'layout/footer.php';?>
+
