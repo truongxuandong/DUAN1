@@ -135,7 +135,7 @@ match ($act) {
     'binh-luan'=>(new AdminBinhluanController())->listBinhluan(),
     'update-trang-thai-binh-luan'=>(new AdminBinhluanController())->updateTrangThaiBinhLuan(),
     'danh-gia'=>(new AdminBinhluanController())->listDanhgia(),
-    'delete-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'delete-danhgia'=>(new AdminBinhluanController())->deletedanhgia(),
     'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
     'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
   

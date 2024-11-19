@@ -32,8 +32,19 @@
                 </li>
                 
                 <li class="menu-item-has-children dropdown">
-                    <a href="<?= BASE_URL_ADMIN ?>" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí bình luận
+                    <a href="?act=binh-luan">
+                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Bình luận
+                    </a>
+                </li>
+                <li class="menu-item-has-children dropdown">
+                    <a href="?act=danh-gia">
+                        <i class="menu-icon fa fa-star" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Đánh giá
+                    </a>
+                </li>
+
+                <li class="menu-item-has-children dropdown">
+                    <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>"  aria-expanded="false">
+                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
                     </a>
                 </li>
                 
@@ -52,3 +63,4 @@
         </div><!-- /.navbar-collapse -->
     </nav>
 </aside>
+

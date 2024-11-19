@@ -12,10 +12,11 @@ class SanPham {
         try {
             $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
                            comics.publication_date, comics.price, comics.original_price, comics.stock_quantity, comics.image, 
-                           authors.name AS author_name, categories.name AS category_name
+                           authors.name AS author_name, categories.name AS category_name, comic_sales.sale_value AS sale
                     FROM comics
                     JOIN authors ON comics.author_id = authors.id
-                    JOIN categories ON comics.category_id = categories.id";
+                    JOIN categories ON comics.category_id = categories.id
+                    LEFT JOIN comic_sales ON comics.id = comic_sales.comic_id";
             
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
