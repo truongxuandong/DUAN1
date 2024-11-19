@@ -11,7 +11,7 @@ require_once './views/layout/sidebar.php';
 
 
 
-require_once '../admin/controllers/BinhluanController.php';
+require_once './controllers/BinhluanController.php';
 
 require_once './controllers/HomeController.php';
 
