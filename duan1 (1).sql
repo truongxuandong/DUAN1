@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 19, 2024 at 02:25 PM
+-- Generation Time: Nov 20, 2024 at 06:04 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -73,7 +73,7 @@ CREATE TABLE `banners` (
 --
 
 INSERT INTO `banners` (`ID`, `Title`, `Description`, `Img`, `Status`, `Position`, `CreatedAt`, `UpdatedAt`) VALUES
-(1, 'vvfdsvdv', 'sdsfdsf', '../uploads/banner/1732018701_466964285_549571631227324_6373781640164775592_n.jpg', 1, 0, '2024-11-19 12:18:21', '2024-11-19 12:18:21');
+(1, 'Tuần lộc', 'hihihi', '../uploads/banner/1732041742_dong1213.jpg', 1, 1, '2024-11-19 12:18:21', '2024-11-19 18:42:22');
 
 -- --------------------------------------------------------
 
@@ -137,8 +137,7 @@ INSERT INTO `categories` (`id`, `name`, `description`, `created_at`, `updated_at
 (7, 'Kinh dị', 'Thể loại manga kinh dị, rùng rợn', '2024-11-15 17:43:38', '2024-11-15 17:43:38'),
 (8, 'Hành động', 'Thể loại manga với những pha hành động gay cấn', '2024-11-15 17:43:38', '2024-11-15 17:43:38'),
 (9, 'Phiêu lưu', 'Những cuộc phiêu lưu kỳ thú và hấp dẫn', '2024-11-15 17:43:38', '2024-11-15 17:43:38'),
-(10, 'Hài hước', 'Manga mang tính giải trí và hài hước', '2024-11-15 17:43:38', '2024-11-15 17:43:38'),
-(11, 'Kinh dị', 'Thể loại manga kinh dị, rùng rợn', '2024-11-15 17:43:38', '2024-11-15 17:43:38');
+(10, 'Hài hước', 'Manga mang tính giải trí và hài hước', '2024-11-15 17:43:38', '2024-11-15 17:43:38');
 
 -- --------------------------------------------------------
 
@@ -166,13 +165,18 @@ CREATE TABLE `comics` (
 --
 
 INSERT INTO `comics` (`id`, `title`, `author_id`, `category_id`, `description`, `publication_date`, `price`, `original_price`, `stock_quantity`, `image`, `created_at`, `updated_at`) VALUES
-(68, 'One Piece - Tập 100', 5, 10, 'Cuộc chiến ở Wano quốc đạt đến đỉnh điểm', '2024-01-15', '25000.00', '30000.00', 100, '../uploads/product/1731693203_vivoy100.jpg', '2024-11-15 17:52:47', '2024-11-15 17:53:23'),
-(70, 'Dragon Ball Super - Vol.20', 3, 8, 'Goku và những trận chiến mới', '2024-01-17', '26000.00', '31000.00', 90, '../uploads/product/1731693220_ip14plus.jpg', '2024-11-15 17:52:47', '2024-11-15 17:53:40'),
-(71, 'Hunter x Hunter - Tập 37', 7, 11, 'Cuộc phiêu lưu trong thế giới Dark Continent', '2024-01-18', '28000.00', '33000.00', 75, '../uploads/product/1731693241_ip12.jpg', '2024-11-15 17:52:47', '2024-11-15 17:54:01'),
-(72, 'Attack on Titan - Tập Cuối', 6, 5, 'Kết thúc của cuộc chiến người và titan', '2024-01-19', '30000.00', '35000.00', 95, '../uploads/product/1731693251_ip1.jpg', '2024-11-15 17:52:47', '2024-11-15 17:54:11'),
-(74, 'Fullmetal Alchemist - Perfect', 4, 8, 'Phiên bản đặc biệt với nội dung mở rộng', '2024-01-21', '35000.00', '40000.00', 70, '../uploads/product/1731693271_ip15promax.jpg', '2024-11-15 17:52:47', '2024-11-15 17:54:31'),
-(75, 'Bleach - TYBW Arc', 5, 11, 'Arc cuối cùng của series Bleach', '2024-01-22', '29000.00', '34000.00', 82, '../uploads/product/1731693279_ip15.jpg', '2024-11-15 17:52:47', '2024-11-15 17:54:39'),
-(76, 'Berserk - Deluxe Edition', 9, 5, 'Phiên bản deluxe với chất lượng cao', '2024-01-23', '40000.00', '45000.00', 60, '../uploads/product/1731693289_ip14.jpg', '2024-11-15 17:52:47', '2024-11-15 17:54:49');
+(68, 'THÁNH HIỆP SĨ NƠI TẬN CÙNG THẾ GIỚI', 5, 9, 'Đây là sự trừng phạt, hay …\r\n\r\nThiếu niên William chán nản và buông bỏ “cuộc sống”, được ban cho cuộc sống mới với một gia đình kì quái và bất thường. Cậu sống dưới sự che chở của 3 undead trong thành phố người chết đã bị diệt vong. Đó là kiếm sĩ xương phóng khoáng Blood, giáo sĩ xác ướp quý phái Mary và hồn ma pháp sư lập dị Gus.\r\n\r\nWilliam cảm thấy hối hận về kiếp trước của mình và quyết tâm sẽ “sống một lần nữa” ở thế giới mới, nơi cậu được tái sinh…\r\n\r\nĐược biết đến từ trang web “Hãy trở thành tiểu thuyết gia”, tác phẩm high fantasy theo phong cách kinh điển, bắt đầu!', '2024-01-15', '38800.00', '50000.00', 50, '../uploads/product/1732037929_anh3.jpg', '2024-11-15 17:52:47', '2024-11-19 17:57:09'),
+(70, 'LÀM VIỆC TỪ XA, YÊU NHÀ HÀNG XÓM', 2, 10, 'Mitsuhashi Nokoru là một kĩ sư hệ thống đang sống cuộc đời của một nô lệ tư bản. Từ khi chuyển sang làm việc từ xa, chất lượng cuộc sống của anh được cải thiện ngoài sức tưởng tượng…! Một ngày nọ, trong lúc đang bố trí lại nội thất căn hộ và tỉa tót ban công, anh vô tình chạm mặt cô hàng xóm Izumi Natsu, một sinh viên cao học chuyên ngành khảo cổ.\r\n\r\nĐây là câu chuyện về một anh chàng nhờ làm việc tại nhà mà gặp được vợ tương lai, bị sức hút tự nhiên của cô làm cho điêu đứng, cho đến ngày hai người chính thức kết hôn.\r\n\r\nXin hân hạnh gửi đến các bạn độc giả tác phẩm truyện tranh one-shot Làm Việc Từ Xa, Yêu Nhà Hàng Xóm đến từ Kintetsu Yamada - tác giả của series Ase to Sekken.', '2024-06-07', '43000.00', '60000.00', 90, '../uploads/product/1732037853_anh2.jpg', '2024-11-15 17:52:47', '2024-11-19 17:38:12'),
+(71, 'BÀI HỌC CUỘC SỐNG TỪ ', 8, 10, 'Anh chàng Uramichi - một MC chương trình thiếu nhi - luôn nở nụ cười tươi rói nhưng vẫn không che giấu nổi sự mệt mỏi của một người lớn sầu đời. Hằng ngày, Uramichi luôn vui vẻ cùng các bé hát múa, nhưng sau khi \"xả vai\", trong đầu anh chỉ có sự chán đời ủ ê. Những đồng nghiệp của Uramichi cũng chẳng khá hơn, mỗi người lại có nỗi niềm riêng. Nếu bạn cần tiếng cười và thêm sầu đời, thì đây là bộ truyện không thể bỏ qua!!', '2024-01-18', '32000.00', '48000.00', 66, '../uploads/product/1732037785_anh1.jpg', '2024-11-15 17:52:47', '2024-11-19 17:36:25'),
+(72, 'DRAGON QUEST DẤU ẤN ROTO ', 6, 9, 'Trận quyết chiến cuối cùng với Đại Ma vương Zoma! Trước sức mạnh áp đảo của hắn, các Dũng sĩ và chiến binh thần thánh lần lượt gục ngã… Trong khi đó, tinh linh Rubiss đã đưa ra một quyết định để chuộc tội. Nhân cơ hội ấy, Đại Ma vương Zoma đã bao phủ thế giới trong bóng tối. Trong bóng tối hư vô, nhân loại không còn cách nào khác ngoài tin vào “hi vọng” và cầu nguyện…\r\n\r\nTin tưởng ánh sáng, tin tưởng con người, tin tưởng chính mình…\r\n\r\nKết thúc cuộc chiến, điều gì đang chờ đợi các thiếu niên!?\r\n\r\nTất cả sẽ được giải đáp trong tập cuối cùng của câu chuyện về những con người được đưa đường chỉ lối.', '2024-01-19', '50000.00', '64999.00', 34, '../uploads/product/1732037981_anh4.jpg', '2024-11-15 17:52:47', '2024-11-19 17:57:51'),
+(74, 'Doraemon Movie Story Màu - Tân Nobita Và Nước Nhật Thời Nguyên Thủy', 10, 10, 'Nobita học hành bết bát nên luôn bị mẹ mắng. Vì kết quả kiểm tra quá tệ, cậu bị cấm đọc truyện, xem phim và không được đi đâu chơi! Trùng hợp thay, cả nhóm đồng lòng bỏ nhà đến Nhật Bản 70.000 năm trước đi bụi! Chuyến phiêu lưu li kì nào đang chờ họ ở đó…!?', '2024-01-21', '35000.00', '40000.00', 70, '../uploads/product/1732038208_anh6.jpg', '2024-11-15 17:52:47', '2024-11-19 18:00:09'),
+(75, 'Đạo Làm Chồng Đảm - Tập 13', 4, 10, 'Tatsu cùng bố vợ tổ chức một chuyến cắm trại trên xe nhằm thắt chặt tình cảm giữa hai bố con. Chuyến đi này cũng là niềm mơ ước của ông cụ bấy lâu nay, tuy nhiên MỘT ÔNG CHÚ THÂN THIỆN LẠ HOẮC BỖNG GÕ CỬA ĐÒI CHEN NGANG!? Chuyện gì xảy ra sau đó, mời các bạn đón xem tập 13 sẽ rõ!', '2024-01-22', '29000.00', '39000.00', 77, '../uploads/product/1732037452_anh9.jpg', '2024-11-15 17:52:47', '2024-11-19 17:32:32'),
+(76, 'Ông Bà Hồi Xuân - Tập 3', 8, 5, 'Bằng sức mạnh kì lạ của quả táo vàng, cặp vợ chồng Shozo - Ine đã hồi xuân.\r\n\r\nCả hai vẫn tiếp tục tận hưởng những ngày tháng đầm ấm, êm ả không chút xáo trộn. Nhưng bỗng một hôm, chỉ có mình Shozo là trở lại ngoại hình ông già như lúc trước!?\r\n\r\nNgoại hình thay đổi nhưng lối sống không đổi thay, cụ già nhưng xương gà cụ vẫn nhai như máy! Hãy đón đọc tập 3 của câu chuyện hài hước về cặp ông bà hồi xuân nhé!!', '2024-01-23', '80000.00', '100000.00', 60, '../uploads/product/1732037643_anh11.jpg', '2024-11-15 17:52:47', '2024-11-19 17:35:03'),
+(79, 'Bạch Tuyết Tóc Đỏ - Tập 24', 8, 8, 'Buổi dạ hội bọn Obi thâm nhập bỗng xảy ra bất thường!? Trong khi mọi người dần mất đi tỉnh táo, lại có một vị phu nhân vẫn vững vàng từng bước rời khỏi hội trường. Eisetsu đã đơn độc đuổi theo người phụ nữ đó…!? Không chỉ vậy, trong căn phòng người đó vừa bước ra tràn ngập một mùi hương kì lạ… Tập 24 hé lộ những hồi ức cay đắng lay động cả tâm can!!', '2024-11-13', '30000.00', '44000.00', 43, '../uploads/product/1732038103_anh5.jpg', '2024-11-19 17:41:43', '2024-11-19 17:41:43'),
+(80, 'Khi ', 2, 4, 'Liên tục bị số mệnh trêu chọc, cặp đôi luôn có chút khác biệt cuối cùng cũng bắt đầu tìm thấy điểm kết nối và dần tiến xa hơn trước. Dù chậm chạp vô cùng, nhưng chắc chắn mối quan hệ của họ đang có tiến triển… Trong khi đó, một cặp đôi khác đã có buổi “hẹn hò” đầu tiên!?\r\n\r\nĐây là câu chuyện tình yêu mới lạ đầy hài hước giữa 3 anh chàng (vô cùng tồ tẹt) và 3 cô nàng (hay thích giả trai)!', '2024-11-16', '48000.00', '60000.00', 40, '../uploads/product/1732039378_anh7.jpg', '2024-11-19 18:02:58', '2024-11-19 18:03:22'),
+(81, 'Nàng Juliet Ở Trường Nội Trú', 6, 4, 'Inuzuka Romio và Juliet Persia đang hẹn hò nhưng không thể công khai. Hai người vốn hẹn nhau đi chơi vào ngày cuối cùng của lễ hội, song đã có sự cố vô cùng nghiêm trọng xảy ra: Mẹ của Persia đến thăm học viện! “Điều cấm kị nhất ở học viện” mà cô ấy nhắc đến đã mở ra một cục diện mới…\r\n\r\nTÌNH YÊU BỊ CẤM ĐOÁN NÀY SẼ ĐẢO LỘN THẾ GIỚI!', '2024-05-29', '35000.00', '50000.00', 67, '../uploads/product/1732039494_anh8.jpg', '2024-11-19 18:04:54', '2024-11-19 18:04:54'),
+(82, 'Wind Breaker', 7, 3, 'Với mục đích trở thành kẻ đứng đầu của trường Fuurin, Sakura Haruka đã chuyển đến khu phố Tonpuu. Sau đó, cậu biết được về băng nhóm \"Boufuurin\" của trường. Dù họ là học sinh “đầu gấu” đến từ trường có điểm chuẩn lẹt đẹt, nhưng họ lại là những người hùng dùng sức mạnh nấm đấm để bảo vệ khu phố. Chính “Boufuurin” đã cho Sakura biết được ý nghĩa thực sực của sức mạnh và tình bạn, kéo cậu ra khỏi cái bóng của sự cô độc, từ đó Sakura quyết định sẽ bắt đầu chiến đấu để bảo vệ nơi ấy như một thành viên của Fuurin.', '2024-06-18', '49000.00', '65000.00', 78, '../uploads/product/1732039706_anh9.jpg', '2024-11-19 18:08:26', '2024-11-19 18:08:26'),
+(83, 'Dragon Ball Super', 9, 8, 'Trunks bắt tay vào tìm hiểu nội dung chiếc đĩa CD lấy về từ vụ biệt thự bỏ hoang trên núi Butterfly. Tuy nhiên, một gã tiến sĩ bí ẩn đã cử tay sai của hắn là Betah thâm nhập vào trường cậu dưới dạng học sinh mới hòng, cướp lại chiếc đĩa. Phải chăng, quân đoàn Red Ribbon sắp hồi sinh!?', '2024-08-09', '25000.00', '34000.00', 45, '../uploads/product/1732039811_anh10.jpg', '2024-11-19 18:10:11', '2024-11-19 18:10:11');
 
 -- --------------------------------------------------------
 
@@ -197,10 +201,10 @@ CREATE TABLE `comic_sales` (
 --
 
 INSERT INTO `comic_sales` (`id`, `comic_id`, `sale_type`, `sale_value`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(23, 75, 'percent', '4.00', '2024-11-18 00:00:00', '2024-11-21 00:00:00', 'pending', '2024-11-18 16:33:28', '2024-11-18 19:20:58'),
-(28, 71, 'percent', '1.00', '2024-11-19 00:00:00', '2024-11-22 00:00:00', 'active', '2024-11-18 19:50:05', '2024-11-18 19:50:05'),
-(33, 70, 'percent', '11.00', '2024-11-19 00:00:00', '2024-11-21 00:00:00', 'pending', '2024-11-18 20:30:39', '2024-11-18 20:30:39'),
-(35, 71, 'percent', '11.00', '2024-11-19 00:00:00', '2024-11-22 00:00:00', 'pending', '2024-11-18 20:42:10', '2024-11-18 20:42:10');
+(23, 68, 'percent', '4.00', '2024-11-20 00:00:00', '2024-11-21 00:00:00', 'pending', '2024-11-18 16:33:28', '2024-11-19 17:49:56'),
+(28, 74, 'percent', '30.00', '2024-11-20 00:00:00', '2024-11-23 00:00:00', 'pending', '2024-11-18 19:50:05', '2024-11-19 17:50:52'),
+(33, 76, 'percent', '19.00', '2024-11-20 00:00:00', '2024-11-28 00:00:00', 'pending', '2024-11-18 20:30:39', '2024-11-19 17:51:18'),
+(35, 79, 'percent', '11.00', '2024-11-20 00:00:00', '2024-11-27 00:00:00', 'pending', '2024-11-18 20:42:10', '2024-11-19 17:52:09');
 
 -- --------------------------------------------------------
 
@@ -228,7 +232,7 @@ CREATE TABLE `comic_variants` (
 --
 
 INSERT INTO `comic_variants` (`id`, `comic_id`, `format`, `language`, `price`, `original_price`, `stock_quantity`, `publication_date`, `isbn`, `image`, `created_at`, `updated_at`) VALUES
-(2, 68, 'Bìa cứng', 'tiếng anh pháp', '400000.00', '122313.00', 11, '2024-11-14', '43535665666488', '../uploads/variants/1732016673_466964285_549571631227324_6373781640164775592_n.jpg', '2024-11-19 11:44:33', '2024-11-19 11:44:33'),
+(2, 68, 'Bìa cứng', 'Tiếng Việt', '38800.00', '50000.00', 10, '2024-11-14', '43535665666488', '../uploads/variants/1732038343_anh3.jpg', '2024-11-19 11:44:33', '2024-11-19 17:45:43'),
 (3, 70, 'Bìa cứng', 'tiếng anh pháp', '400000.00', '232133.00', 11, '2024-11-21', '4446433', '../uploads/variants/1732017155_466964285_549571631227324_6373781640164775592_n.jpg', '2024-11-19 11:52:35', '2024-11-19 11:52:35');
 
 -- --------------------------------------------------------
@@ -254,7 +258,7 @@ CREATE TABLE `comment` (
 --
 
 INSERT INTO `comment` (`ID`, `user_id`, `comics_id`, `Content`, `Like`, `Dislike`, `Create_at`, `Update_at`, `status`) VALUES
-(1, 65, 68, 'dfgfdgdg', 0, 0, '2024-11-19 19:20:05', '2024-11-19 19:21:32', 2);
+(1, 65, 68, 'dfgfdgdg', 0, 0, '2024-11-19 19:20:05', '2024-11-19 21:29:36', 2);
 
 -- --------------------------------------------------------
 
@@ -303,49 +307,6 @@ CREATE TABLE `order_items` (
 INSERT INTO `order_items` (`id`, `order_id`, `comic_id`, `quantity`, `unit_price`) VALUES
 (21, 33, 72, 2, '300000.00'),
 (26, 38, 68, 2, '300000.00');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `promotions`
---
-
-CREATE TABLE `promotions` (
-  `id` int NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text,
-  `discount_type` enum('percentage','fixed') NOT NULL,
-  `discount_value` decimal(10,2) NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  `status` enum('active','inactive') NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `promotion_comic`
---
-
-CREATE TABLE `promotion_comic` (
-  `id` int NOT NULL,
-  `promotion_id` int DEFAULT NULL,
-  `comic_variant_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `promotion_order`
---
-
-CREATE TABLE `promotion_order` (
-  `id` int NOT NULL,
-  `promotion_id` int DEFAULT NULL,
-  `order_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -461,7 +422,9 @@ ALTER TABLE `comic_variants`
 -- Indexes for table `comment`
 --
 ALTER TABLE `comment`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `fk_comment` (`user_id`),
+  ADD KEY `fk_comics_commemt` (`comics_id`);
 
 --
 -- Indexes for table `orders`
@@ -479,32 +442,12 @@ ALTER TABLE `order_items`
   ADD KEY `comic_id` (`comic_id`);
 
 --
--- Indexes for table `promotions`
---
-ALTER TABLE `promotions`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `promotion_comic`
---
-ALTER TABLE `promotion_comic`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `promotion_id` (`promotion_id`),
-  ADD KEY `comic_variant_id` (`comic_variant_id`);
-
---
--- Indexes for table `promotion_order`
---
-ALTER TABLE `promotion_order`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `promotion_id` (`promotion_id`),
-  ADD KEY `order_id` (`order_id`);
-
---
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_user_rating` (`user_id`),
+  ADD KEY `fk_comics_rating` (`comic_id`);
 
 --
 -- Indexes for table `users`
@@ -550,7 +493,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `comics`
 --
 ALTER TABLE `comics`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT for table `comic_sales`
@@ -581,24 +524,6 @@ ALTER TABLE `orders`
 --
 ALTER TABLE `order_items`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
-
---
--- AUTO_INCREMENT for table `promotions`
---
-ALTER TABLE `promotions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `promotion_comic`
---
-ALTER TABLE `promotion_comic`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `promotion_order`
---
-ALTER TABLE `promotion_order`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -649,6 +574,13 @@ ALTER TABLE `comic_variants`
   ADD CONSTRAINT `comic_variants_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`);
 
 --
+-- Constraints for table `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `fk_comics_commemt` FOREIGN KEY (`comics_id`) REFERENCES `comics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_comment` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
@@ -662,18 +594,11 @@ ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `promotion_comic`
+-- Constraints for table `reviews`
 --
-ALTER TABLE `promotion_comic`
-  ADD CONSTRAINT `promotion_comic_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `promotion_comic_ibfk_2` FOREIGN KEY (`comic_variant_id`) REFERENCES `comic_variants` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `promotion_order`
---
-ALTER TABLE `promotion_order`
-  ADD CONSTRAINT `promotion_order_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `promotion_order_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `fk_comics_rating` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_user_rating` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

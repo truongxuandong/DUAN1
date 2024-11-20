@@ -38,9 +38,9 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
-                        <a href="./views/home.php" class="nav-item nav-link active">Trang chủ</a>
-                        <a href="./views/sanpham.php" class="nav-item nav-link">Sản phẩm</a>
-                        <a href="contact.html" class="nav-item nav-link">Liên hệ</a>
+                        <a href="./" class="nav-item nav-link active">Trang chủ</a>
+                        <a href="?act=sanpham" class="nav-item nav-link">Sản phẩm</a>
+                        <a href="?act=lienhe" class="nav-item nav-link">Liên hệ</a>
                     </div>
                     <div class="navbar-nav ml-auto py-0">
                         <a href="" class="nav-item nav-link">Đăng nhập</a>

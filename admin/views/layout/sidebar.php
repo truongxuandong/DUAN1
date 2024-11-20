@@ -28,7 +28,7 @@
 
                 <li class="menu-item-has-children dropdown">
                     <a href="?act=khuyen-mai" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-list-alt" style="font-size: 18px; margin-right: 10px;"></i>Quản lí khuyến mãi
+                        <i class="menu-icon fa fa-calendar" style="font-size: 18px; margin-right: 10px;"></i>Quản lí khuyến mãi
                     </a>
                 </li>
                 
@@ -46,7 +46,7 @@
 
                 <li class="menu-item-has-children dropdown">
                     <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>"  aria-expanded="false">
-                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
+                        <i class="menu-icon fa fa-picture-o" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
                     </a>
                 </li>
                 
@@ -56,11 +56,7 @@
                     </a>
                 </li>
                 
-                <li class="menu-item-has-children dropdown">
-                    <a href="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-line-chart" style="font-size: 15px; margin-right: 10px;"></i>Thống kê
-                    </a>
-                </li>
+               
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>

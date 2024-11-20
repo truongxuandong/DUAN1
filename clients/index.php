@@ -33,6 +33,12 @@ match ($act) {
 
     //chitietsp
     'chitietsp' => $home ->views_chitietsp(),
+
+    //sanpham
+    'sanpham' => $home ->views_sanpham(),
+
+    //lienhe
+    'lienhe' => $home ->views_lienhe(),
     
 
     
