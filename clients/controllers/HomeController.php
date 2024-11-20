@@ -23,5 +23,12 @@ class HomeController
         $sanphamct = $this->modelSanPham->getSanPhamById($_GET['id']);
         require_once './views/chitietsp.php';
     }
-    
+    public function views_sanpham() {
+        $listsp= $this->modelSanPham->getAllSanPham();
+        require_once './views/sanpham.php';
+    }
+
+    public function views_lienhe() {
+        require_once './views/contact.php';
+    }
 } 

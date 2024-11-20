@@ -8,7 +8,10 @@ class SanPham
     public function getAllSanPham()
     {
         try {
-            $sql = "SELECT * FROM comics ORDER BY id ASC";
+            $sql = "SELECT comics. *, comic_sales.sale_value
+            FROM comics 
+            LEFT JOIN comic_sales ON comics.id = comic_sales.comic_id
+            ORDER BY id ASC";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll();
