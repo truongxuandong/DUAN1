@@ -1,16 +1,18 @@
 <?php
-
+session_start();
 require_once '../commons/env.php';
 require_once '../commons/core.php';
-
+require_once './views/layout/header.php';
+require_once './views/layout/navbar.php';
 #require Controller
-require_once '../clients/controllers/HomeController.php';
+require_once './controllers/HomeController.php';
 
 
 
 
  #require Model
-
+require_once './models/danhmuc.php';
+require_once './models/sanpham.php';
 
 
  $home = new HomeController();
@@ -28,14 +30,22 @@ require_once '../clients/controllers/HomeController.php';
 match ($act) {
     
     '/' => $home ->views_home(),
-    'san-pham' =>(new HomeController())->listsanpham(),
-    'gio-hang' =>(new HomeController())->giohang(),
-    'lien-he' =>(new HomeController())->lienhe(),
+
+    //chitietsp
+    'chitietsp' => $home ->views_chitietsp(),
+
+    //sanpham
+    'sanpham' => $home ->views_sanpham(),
+
+    //lienhe
+    'lienhe' => $home ->views_lienhe(),
+    
 
     
 };
 
 
 
+require_once './views/layout/footer.php';
 
 

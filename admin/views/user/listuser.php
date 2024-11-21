@@ -103,17 +103,7 @@
           </section>
 </div>
 
-<!-- Thêm script để thông báo tự động tắt sau 3 giây -->
-<script>
-    // Đặt thời gian 3 giây để thông báo tự động tắt
-    setTimeout(function() {
-        let alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            alert.classList.remove('show');
-            alert.classList.add('fade');
-        });
-    }, 3000); // 3000 ms = 3 giây
-</script>
+
 
 
         

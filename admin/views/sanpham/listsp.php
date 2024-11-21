@@ -2,17 +2,15 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Quản lý Sản Phẩm</h1>
+        <h2>Quản lý Sản Phẩm và biến thể</h2>
       </div>
     </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 
-<!-- Main content -->
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <!-- Notification messages -->
       <?php if (isset($_SESSION['message'])): ?>
         <div class="alert alert-<?= $_SESSION['message']['type'] ?> alert-dismissible fade show" role="alert">
           <i class="fas fa-<?= $_SESSION['message']['type'] === 'success' ? 'check-circle' : 'exclamation-circle' ?>"></i> 
@@ -30,7 +28,8 @@
             <a href="?act=form-them-san-pham">
               <button class="btn btn-success">Thêm sách mới</button>
             </a>
-          </div><!-- /.card-header -->
+            
+          </div>
 
           <div class="card-body">
             <table id="example1" class="table table-bordered table-striped">
@@ -42,6 +41,7 @@
                   <th>Thể loại</th>
                   <th>Mô tả</th>
                   <th>Ngày phát hành</th>
+                  <th>Sale</th>
                   <th>Giá bán</th>
                   <th>Giá niêm yết</th>
                   <th>Số lượng</th>
@@ -58,6 +58,11 @@
                     <td><?= $sanPham['category_name'] ?? 'Không có thể loại' ?></td>
                     <td><?= $sanPham['description'] ?></td>
                     <td><?= $sanPham['publication_date'] ?></td>
+                    <td><?= (is_numeric($sanPham['sale']) && (!isset($sanPham['sale_start']) || strtotime($sanPham['sale_start']) <= time())) ? 
+                        ($sanPham['sale'] <= 100 ? 
+                            number_format($sanPham['sale'], 0) . '%' : 
+                            number_format($sanPham['sale'], 0, ',', '.') . ' đ') 
+                        : '0' ?></td>
                     <td><?= number_format($sanPham['price'], 0, ',', '.') ?> VNĐ</td>
                     <td><?= number_format($sanPham['original_price'], 0, ',', '.') ?> VNĐ</td>
                     <td>
@@ -77,14 +82,23 @@
                       <a href="?act=xoa-san-pham&id=<?= $sanPham['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
                         <button class="btn btn-danger">Xóa</button>
                       </a>
+                      <a href="?act=chi-tiet-bien-the-sp&id=<?= $sanPham['id'] ?>">
+                        <button class="btn btn-info">Chi tiết</button>
+                      </a>
+                      <!-- Manage Variants Button -->
+                     
                     </td>
                   </tr>
                 <?php } ?>
               </tbody>
             </table>
-          </div><!-- /.card-body -->
-        </div><!-- /.card -->
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
-</section><!-- /.content -->
+
+          </div>
+          <div class="card-footer">
+           
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+

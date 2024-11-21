@@ -3,7 +3,7 @@
   <section class="content-header">
     <div class="row mb-4">
       <div class="col-md-6">
-        <h1>Danh Mục Sản Phẩm</h1>
+        <h3>Danh Mục Sản Phẩm</h3>
       </div>
     </div>
   </section>

@@ -8,11 +8,20 @@ require_once './views/layout/header.php';
 require_once './views/layout/sidebar.php';
 
 #require Controller
+
+
+
+require_once './controllers/BinhluanController.php';
+
 require_once './controllers/HomeController.php';
+
+require_once './controllers/OrderController.php';
+require_once './controllers/UserController.php';
 require_once './controllers/GiaodienController.php';
 require_once './controllers/SanPhamController.php';
 require_once './controllers/DanhMucController.php';
-require_once './controllers/UserController.php';
+require_once './controllers/KhuyenMaiController.php';
+
 
 
 
@@ -20,14 +29,19 @@ require_once './controllers/UserController.php';
 
  #require Model
 require_once './models/User.php';
+require_once './models/Order.php';
+require_once './models/VariantSanPham.php';
 require_once './models/DanhMuc.php';
 require_once './models/SanPham.php';
+require_once './models/KhuyenMai.php';
+require_once './models/AdminBinhluan.php';
+require_once './models/AdminBanner.php';
 
 
  $home = new HomeController();
  $user = new userController();
- 
-
+ $order = new OrderController();
+ $khuyenmai = new KhuyenMaiController();
 
 
 
@@ -49,11 +63,57 @@ $act = $_GET['act'] ?? '/';
 match ($act) {
 
 
+
     //home
     '/' => $home->views_home(),
 
-    //banner-noi dung
+
+
+    //user
+    'user' => $user ->views_user(),
+    'add-user' => $user ->views_add_user(),
+    'post-add-user' => $user ->views_post_add_user(),
+    'edit-user' => $user ->views_edit_user(),
+    'post-edit-user' => $user ->views_post_edit_user(),
+    'delete-user' => $user ->delete_user(),
+  
+    //order
+    'order' => $order ->views_order(),
+    'delete-order' => $order ->deleteorder(),
+    'edit-order' => $order ->views_edit_order(),
+    'post-edit-order' => $order ->views_post_edit_order(),
+    'order-detail' => $order ->views_order_detail(),
+
+
+     
+    
+
+
+    //banner
     'giao-dien'=>(new AdminGiaodienController())->listBanner(),
+    'form-add-banner'=>(new AdminGiaodienController())->formaddBanner(),
+    'add-banner'=>(new AdminGiaodienController())->postaddBanner(),
+    'toggle-banner-status'=>(new AdminGiaodienController())->UpdataBannerStatus(),
+    'delete-banner'=>(new AdminGiaodienController())->deleteBanner(),
+    'form-edit-banner'=>(new AdminGiaodienController())->formEditBanner(),
+    'edit-banner'=>(new AdminGiaodienController())->postEditBanner(),
+
+   
+    //binh luan
+    'binh-luan'=>(new AdminBinhluanController())->listBinhluan(),
+    'update-trang-thai-binh-luan'=>(new AdminBinhluanController())->updateTrangThaiBinhLuan(),
+
+    'danh-gia'=>(new AdminBinhluanController())->listDanhgia(),
+    'delete-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
+
+
+
+
+
+    
+
     // rou danh mục
     'listdm' => (new DanhMucController())->danhsachDanhMuc(),
     'form-them-danh-muc' => (new DanhMucController())->formAddDanhMuc(),
@@ -70,13 +130,40 @@ match ($act) {
     'xoa-san-pham' => (new SanPhamController())->postDeleteSanPham(),
 
 
-    // route user
-    'user' => (new UserController())->views_user(),
-    'add-user' => (new UserController())->views_add_user(),
-    'post-add-user' => (new UserController())->views_post_add_user(),
-    'edit-user' => (new UserController())->views_edit_user(),
-    'post-edit-user' => (new UserController())->views_post_edit_user(),
-    'delete-user' => (new UserController())->delete_user(),
+
+
+    //khuyen mai
+    'khuyen-mai' => $khuyenmai->View_KhuyenMai(),
+    'form-add-khuyen-mai' => $khuyenmai->formAddKhuyenMai(),
+    'post-add-khuyen-mai' => $khuyenmai->postAddKhuyenMai(),
+    'form-edit-khuyen-mai' => $khuyenmai->formEditKhuyenMai(),
+    'post-edit-khuyen-mai' => $khuyenmai->postEditKhuyenMai(),
+    'delete-khuyen-mai' => $khuyenmai->deleteKhuyenMai(),
+
+
+
+
+
+
+  
+    //rou bien the sp
+
+    'chi-tiet-bien-the-sp' => (new SanPhamController())->danhSachVariants(),
+    'form-them-bien-the' => (new SanPhamController())->formAddVariant(),
+    'them-bien-the' => (new SanPhamController())->postAddVariant(),
+    'form-sua-bien-the' => (new SanPhamController())->formEditVariant(),
+    'sua-bien-the' => (new SanPhamController())->postEditVariant(),
+    'xoa-bien-the' => (new SanPhamController())->postDeleteVariant(),
+
+  
+    //binh luan
+    'binh-luan'=>(new AdminBinhluanController())->listBinhluan(),
+    'update-trang-thai-binh-luan'=>(new AdminBinhluanController())->updateTrangThaiBinhLuan(),
+    'danh-gia'=>(new AdminBinhluanController())->listDanhgia(),
+    'delete-danhgia'=>(new AdminBinhluanController())->deletedanhgia(),
+    'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
+
 
     //route login
     // 'login-admin' => (new UserController())->formlogin(),
@@ -84,5 +171,8 @@ match ($act) {
     // 'logout-admin' => (new UserController())->logout(),
     // 'register' => (new UserController())->formdangky(),
     // 'post-register' => (new UserController())->views_post_register(),
+
 };
 require_once './views/layout/footer.php';
+
+?>

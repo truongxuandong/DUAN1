@@ -80,10 +80,7 @@ class UserController
         }
         
     }
-    public function views_order() {
-        
-        require_once './views/order/listdonhang.php';
-    }
+   
      
     public function delete_user(){
         $id=$_GET['id'];
