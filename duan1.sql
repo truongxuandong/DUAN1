@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 08, 2024 at 05:08 PM
+-- Generation Time: Nov 12, 2024 at 04:46 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -35,6 +35,13 @@ CREATE TABLE `authors` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `authors`
+--
+
+INSERT INTO `authors` (`id`, `name`, `bio`, `created_at`, `updated_at`) VALUES
+(1, 'Oda Eiichiro', 'gfsgsgs', '2024-11-10 12:15:32', '2024-11-11 15:53:51');
+
 -- --------------------------------------------------------
 
 --
@@ -42,7 +49,7 @@ CREATE TABLE `authors` (
 --
 
 CREATE TABLE `banners` (
-  `id` int NOT NULL,
+  `ID` int NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT 'active'
@@ -89,6 +96,14 @@ CREATE TABLE `categories` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'Truyện Tranh', '', '2024-11-10 10:26:37', '2024-11-12 01:49:44'),
+(3, 'Truyện Kinh dị', '', '2024-11-11 16:17:13', '2024-11-11 16:17:13');
+
 -- --------------------------------------------------------
 
 --
@@ -103,11 +118,24 @@ CREATE TABLE `comics` (
   `description` text,
   `publication_date` date DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
+  `original_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `stock_quantity` int DEFAULT NULL,
   `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `comics`
+--
+
+INSERT INTO `comics` (`id`, `title`, `author_id`, `category_id`, `description`, `publication_date`, `price`, `original_price`, `stock_quantity`, `image`, `created_at`, `updated_at`) VALUES
+(24, 'thanhrr9999', NULL, NULL, 'gg', NULL, '138600.00', '0.00', NULL, NULL, '2024-11-11 06:27:07', '2024-11-11 06:27:07'),
+(25, 'dvvv', NULL, NULL, 'fd', NULL, '84150.00', '0.00', NULL, NULL, '2024-11-11 06:48:36', '2024-11-11 06:48:36'),
+(26, 'dvvv', NULL, NULL, 'fd', NULL, '84150.00', '0.00', NULL, NULL, '2024-11-11 06:48:47', '2024-11-11 06:48:47'),
+(27, 'dong ', NULL, NULL, 'hihihihii', NULL, '92000.00', '0.00', NULL, NULL, '2024-11-11 15:38:41', '2024-11-11 15:38:41'),
+(33, 'helo', 1, 1, 'lalalalalla', '2024-11-22', '120000.00', '120000.00', 3, '../uploads/product/1731377220_bay cuu.webp', '2024-11-12 02:07:00', '2024-11-12 12:24:45'),
+(36, 'tffffff', 1, 3, '66666666', '2024-11-15', '186150.00', '0.00', -1, '../uploads/product/1731412444_doraemon.jpg', '2024-11-12 11:54:04', '2024-11-12 11:54:04');
 
 -- --------------------------------------------------------
 
@@ -132,6 +160,23 @@ CREATE TABLE `comic_variants` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `comment`
+--
+
+CREATE TABLE `comment` (
+  `ID` int NOT NULL,
+  `user_id` int NOT NULL,
+  `comics_id` int NOT NULL,
+  `Content` text NOT NULL,
+  `Like` int DEFAULT '0',
+  `Dislike` int DEFAULT '0',
+  `Creat_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `Update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `orders`
 --
 
@@ -145,6 +190,13 @@ CREATE TABLE `orders` (
   `payment_method` enum('Credit Card','Cash on Delivery','Internet Banking') NOT NULL,
   `shipping_address` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `order_date`, `total_amount`, `payment_status`, `shipping_status`, `payment_method`, `shipping_address`) VALUES
+(1, 53, '2024-11-09 06:03:34', '1000.00', 'unpaid', 'pending', 'Cash on Delivery', 'nghe an');
 
 -- --------------------------------------------------------
 
@@ -242,7 +294,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `avatar`, `role`, `created_at`, `updated_at`) VALUES
-(53, 'duong', 'thanhhbph50161@gmail.com', 'g', '06995848445', '../uploads/user/default.jpg', 'user', '2024-11-07 16:52:34', '2024-11-07 16:52:34');
+(53, 'duong', 'thanhhbph50161@gmail.com', 'g', '06995848445', '../uploads/user/default.jpg', 'user', '2024-11-07 16:52:34', '2024-11-07 16:52:34'),
+(63, 'Duy Tiến', 'leduyvi123@gmail.com', '$2y$10$dfo9g3cimTt0LKOB1zWD.ejNhE0HCm3/YW5H8cRz0EGcEYc2W/SCC', '0932331573', '../uploads/user/17314228321234.webp', 'user', '2024-11-12 14:47:12', '2024-11-12 14:47:12');
 
 -- --------------------------------------------------------
 
@@ -272,7 +325,7 @@ ALTER TABLE `authors`
 -- Indexes for table `banners`
 --
 ALTER TABLE `banners`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `cart`
@@ -309,6 +362,14 @@ ALTER TABLE `comics`
 ALTER TABLE `comic_variants`
   ADD PRIMARY KEY (`id`),
   ADD KEY `comic_id` (`comic_id`);
+
+--
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `comics_id` (`comics_id`);
 
 --
 -- Indexes for table `orders`
@@ -376,13 +437,13 @@ ALTER TABLE `variant_options`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `banners`
 --
 ALTER TABLE `banners`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cart`
@@ -400,13 +461,13 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `comics`
 --
 ALTER TABLE `comics`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `comic_variants`
@@ -415,10 +476,16 @@ ALTER TABLE `comic_variants`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_items`
@@ -454,7 +521,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `variant_options`

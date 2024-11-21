@@ -56,6 +56,13 @@
                   </div>
 
                   
+                  <div class="form-group col-12">
+    <label for="role">Role</label>
+    <select name="role" class="form-control" required>
+        <option value="user" <?= ($taikhoan['role'] === 'user') ? 'selected' : '' ?>>User</option>
+        <option value="admin" <?= ($taikhoan['role'] === 'admin') ? 'selected' : '' ?>>Admin</option>
+    </select>
+</div>
 
                   
 
@@ -67,6 +74,7 @@
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Cập nhật</button>
                   <!-- <button type="submit" class="btn btn-secondary">Hủy</button> -->
+                  <a href="?act=user" class="btn btn-secondary">Quay lai</a>
 
                 </div>
               </form>

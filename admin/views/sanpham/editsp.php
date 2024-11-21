@@ -26,7 +26,7 @@
               <input type="hidden" name="id" value="<?= $comic['id'] ?>">
 
               <!-- Tên sản phẩm -->
-              <div class="form-group col-12">
+              <div class="form-group col-6">
                 <label for="title">Tên sản phẩm</label>
                 <input type="text" class="form-control" name="title" value="<?= $comic['title'] ?>" placeholder="Nhập tên sản phẩm">
                 <?php if (isset($errors['title'])): ?>
@@ -72,15 +72,6 @@
                 <input type="date" class="form-control" name="publication_date" value="<?= $comic['publication_date'] ?>" placeholder="Nhập ngày phát hành">
                 <?php if (isset($errors['publication_date'])): ?>
                     <p class="text-danger"><?= $errors['publication_date']; ?></p>
-                <?php endif; ?>
-              </div>
-
-              <!-- Giá -->
-              <div class="form-group col-6">
-                <label for="price">Giá</label>
-                <input type="number" class="form-control" name="price" value="<?= $comic['price'] ?>" placeholder="Nhập giá sản phẩm">
-                <?php if (isset($errors['price'])): ?>
-                    <p class="text-danger"><?= $errors['price']; ?></p>
                 <?php endif; ?>
               </div>
               <!-- Giá bán -->
@@ -136,7 +127,8 @@
               </div>
 
               <!-- Nút sửa -->
-              <button type="submit" class="btn btn-primary" style="margin: 0 40px 40px;">Sửa</button>
+              <button type="submit" class="btn btn-primary" style="margin: 0 5px 40px;">Sửa</button>
+              <button href="?act=san-pham" class="btn btn-primary" style="margin: 0 5px 40px;">Quay lại</button>
 
             </div>
           </form>

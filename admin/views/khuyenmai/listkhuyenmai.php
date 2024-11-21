@@ -3,7 +3,7 @@
             <div class="container-fluid">
               <div class="row mb-2">
                 <div class="col-sm-6" style="padding:10px 5px;">
-                  <h2>Quản lí tài khoản</h2>
+                  <h3>Quản lí khuyến mãi</h3>
                 </div>
               </div>
             </div><!-- /.container-fluid -->
@@ -35,7 +35,7 @@
 
                   <div class="card">
                   <div class="card-header">
-                      <a href="<?= BASE_URL_ADMIN . '?act=add-user' ?>" class="btn btn-success">Thêm tài khoản</a>
+                      <a href="?act=form-add-khuyen-mai" class="btn btn-success">Thêm khuyến mãi</a>
                     </div>
                     
                     <!-- /.card-header -->
@@ -43,39 +43,40 @@
                       <table id="example1" class="table table-bordered table-striped">
                         <thead>
                           <tr>
-                            <th>Id</th>
-                            <th>họ tên</th>
-                            <th>email</th>
-                            <th>số điện thoại</th>
-                            <th>ảnh đại diện</th>
-                            <th>role</th>
-                            <th>ngày tạo </th>
-                            <th>ngày sửa</th>
-                            <th>thao tác</th>
+                              <th>ID</th>
+                              <th>Comic ID</th>
+                              <th>Sale Type</th>
+                              <th>Sale Value</th>
+                              <th>Start Date</th>
+                              <th>End Date</th>
+                              <th>Status</th>
+                              <th>Thao tác</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <?php foreach($users as $user){ ?>
+                          <?php 
+                         
+                         
+                            foreach ($khuyenmais as $khuyenmai) { 
+                              
+                          ?>
                             <tr>
                               
-                              <td><?= $user['id'] ?></td>
-                              <td><?= $user['name'] ?></td>
-                              <td><?= $user['email'] ?></td>
-                              <td><?= $user['phone'] ?></td>
+                              <td><?= $khuyenmai['id'] ?></td>
+                              <td><?= $khuyenmai['title'] ?></td>
+                              <td><?= $khuyenmai['sale_type'] ?></td>
+                              <td><?= number_format($khuyenmai['sale_value'], 0, '.', ',') ?></td>
+                              <td><?= date('Y-m-d H:i', strtotime($khuyenmai['start_date']))?></td>
+                              <td><?= date('Y-m-d H:i', strtotime($khuyenmai['end_date'] ))?></td>
+                              <td><?= $khuyenmai['status'] ?></td>
+                              
                               <td>
-                                <img src="<?= $user['avatar'] ?>" style="width:100px" alt="" >
-                              </td>
-                              <td><?= $user['role'] ?></td>
-                              <td><?= date('d/m/Y H:i', strtotime($user['created_at']))?></td>
-                              <td><?= date('d/m/Y H:i', strtotime($user['updated_at'] ))?></td>
-
-                              <td>
-                                <a href="<?= BASE_URL_ADMIN . '?act=edit-user&id=' . $user['id'] ?>">
+                                <a href="?act=form-edit-khuyen-mai&id=<?=$khuyenmai['id'] ?>">
 
                                   <button class="btn btn-warning">sửa</button>
                                 </a>
                                  
-                                <a href="<?= BASE_URL_ADMIN . '?act=delete-user&id=' . $user['id'] ?>">
+                                <a href="?act=delete-khuyen-mai&id=<?= $khuyenmai['id'] ?>">
 
                                   <button class="btn btn-danger" onclick="return confirm('bạn có muốn xóa không ?')"> xóa</button>
                                 </a>
@@ -102,6 +103,7 @@
             <!-- /.container-fluid -->
           </section>
 </div>
+
 
 
 
