@@ -7,10 +7,10 @@ class Order{
 
     public function getAll() {
         try {
-            $sql = "SELECT orders.id, orders.user_id, orders.order_date, 
+            $sql = "SELECT orders.id, orders.user_id, users.phone,
                        SUM(order_items.quantity * order_items.unit_price) as total_products_amount,
                        users.name, orders.payment_method, orders.payment_status, 
-                       orders.shipping_status, orders.shipping_address
+                       orders.shipping_status
                 FROM orders
                 LEFT JOIN users ON orders.user_id = users.id
                 LEFT JOIN order_items ON orders.id = order_items.order_id
@@ -41,7 +41,7 @@ class Order{
     }
     public function getById($id) {
         try {
-            $sql = "SELECT orders.id, orders.user_id, orders.order_date, orders.total_amount, 
+            $sql = "SELECT orders.id, orders.user_id, users.phone, orders.total_amount, 
                     users.name, orders.payment_method, orders.payment_status, 
                     orders.shipping_status, orders.shipping_address
                 FROM orders
@@ -57,7 +57,7 @@ class Order{
     }
     public function getOrderThongTinKhachHang($id) {
         try {
-            $sql = "SELECT users.name, users.email, users.phone, orders.shipping_address, orders.payment_method
+            $sql = "SELECT orders.id, users.name, users.email, users.phone, orders.shipping_address, orders.payment_method
             FROM orders
             JOIN users ON users.id = orders.user_id
             WHERE orders.id = :id";
@@ -76,8 +76,7 @@ class Order{
             $sql = "SELECT 
                 order_items.order_id,
                 order_items.quantity,
-                order_items.unit_price,
-                (order_items.quantity * order_items.unit_price) AS subtotal,
+                order_items.unit_price,/-strong/-heart:>:o:-((:-h (order_items.quantity * order_items.unit_price) AS subtotal,
                 comics.title,
                 orders.order_date,
                 users.name,
@@ -98,12 +97,32 @@ class Order{
 
     public function updateOrder($data) {
         try {
+            // Lấy thông tin đơn hàng hiện tại
+            $currentOrder = $this->getById($data[':id']);
+            
+            // Xử lý trạng thái thanh toán dựa trên trạng thái vận chuyển
+            switch ($data[':shipping_status']) {
+                case 'delivered':
+                    $data[':payment_status'] = 'paid';
+                    break;
+                case 'cancelled':
+                    if ($currentOrder['payment_status'] === 'paid') {
+                        $data[':payment_status'] = 'refunded';
+                    }
+                    break;
+                case 'returned':
+                    // Nếu đơn hàng đã thanh toán và bị trả lại, cập nhật trạng thái thành hoàn tiền
+                    if ($currentOrder['payment_status'] === 'paid') {
+                        $data[':payment_status'] = 'refunded';
+                    }
+                    break;
+            }
+            
             $sql = "UPDATE orders SET 
                     total_amount = :total_amount,
                     payment_status = :payment_status,
                     shipping_status = :shipping_status,
-                    payment_method = :payment_method,
-                    shipping_address = :shipping_address
+                    payment_method = :payment_method
                     WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
@@ -113,5 +132,8 @@ class Order{
             return false;
         }
     }
+
+    
+
 }
 ?>

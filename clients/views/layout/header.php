@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title> EShopper - Bootstrap Shop Template</title>
+    <title> BOOK-STORE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Free HTML Templates">
-    <meta name="description" content="Free HTML Templates">
-
+    <!-- <meta name="keywords" content="Free HTML Templates">
+    <meta name="description" content="Free HTML Templates"> -->
+    <link rel="apple-touch-icon" href="https://imgur.com/ZOy8S6I.png">
+    <link rel="shortcut icon" href="https://imgur.com/ZOy8S6I.png">
     <!-- Favicon -->
-    <link href="https://deviet.vn/wp-content/uploads/2019/04/vuong-quoc-anh.jpg" rel="icon" >
+    <link rel="shortcut icon" href="https://imgur.com/ZOy8S6I.png">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -81,8 +82,8 @@
             </div>
             <div class="col-lg-3 col-6 text-right">
                 <a href="" class="btn border">
-                    <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
+                    <i class="fas fa fa-bell"></i>
+                    <span class="badge">4</span>
                 </a>
                 <a href="?act=show-cart" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>

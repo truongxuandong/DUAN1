@@ -77,10 +77,34 @@
             <td><strong><?php echo number_format($total_amount, 0, ',', '.'); ?>₫</strong></td> 
     </tfoot>
 </table>
+ <!-- Nút in hóa đơn khi đã giao hàng thành công -->
 
-        </div>
-    </div>
 
+     <button onclick="printOrder(<?= $order['id'] ?>)" class="btn btn-success btn-sm">
+         <i class="fas fa fa-print"></i> In Hoá Đơn
+     </button>
+      
+     <a href="?act=order" class="btn btn-success btn-sm">Quay lại</a>
+
+ 
+
+<!-- Thêm script in hóa đơn -->
+<script>
+function printOrder(orderId) {
     
-   
-</div>
+    // Mở trang chi tiết đơn hàng trong cửa sổ in
+    let printWindow = window.open(`?act=order-detail&id=${orderId}&print=true`, '_blank');
+    
+    // Kiểm tra xem cửa sổ đã được mở hay chưa
+    if (printWindow) {
+        // Sử dụng onload để in khi trang đã tải xong
+        printWindow.addEventListener('load', function() {
+            printWindow.print();
+        }, true);
+    } else {
+        alert("Cửa sổ in bị chặn. Hãy kiểm tra cài đặt trình duyệt.");
+    }
+}
+</script>
+
+</script>

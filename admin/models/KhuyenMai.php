@@ -8,9 +8,25 @@ class KhuyenMaiModel {
     public function getAllKhuyenMai()
     {
         try {
-            $sql = "SELECT comic_sales.* ,comics.title
+            // Đầu tiên, cập nhật các khuyến mãi đã hết hạn
+            $updateSql = "UPDATE comic_sales 
+                SET status = 'inactive' 
+                WHERE end_date < NOW() 
+                AND status != 'inactive'";
+            $this->conn->prepare($updateSql)->execute();
+
+            // Sau đó lấy tất cả khuyến mãi với trạng thái hiện tại
+            $sql = "SELECT 
+                comic_sales.*, 
+                comics.title,
+                CASE
+                    WHEN NOW() < comic_sales.start_date THEN 'pending'
+                    WHEN NOW() BETWEEN comic_sales.start_date AND comic_sales.end_date THEN 'active'
+                    WHEN NOW() > comic_sales.end_date THEN 'inactive'
+                    ELSE comic_sales.status
+                END
             FROM comic_sales
-            Join comics on comics.id = comic_sales.comic_id";
+            JOIN comics on comics.id = comic_sales.comic_id";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll();
@@ -64,15 +80,22 @@ class KhuyenMaiModel {
     
     public function getKhuyenMaiById($id){
         try {
-            $sql = "SELECT comic_sales.* ,comics.title
+            $sql = "SELECT 
+                comic_sales.*, 
+                comics.title,
+                CASE/-strong/-heart:>:o:-((:-h WHEN NOW() < comic_sales.start_date THEN 'pending'
+                    WHEN NOW() BETWEEN comic_sales.start_date AND comic_sales.end_date THEN 'active'
+                    WHEN NOW() > comic_sales.end_date THEN 'expired'
+                    ELSE comic_sales.status
+                END as current_status
             FROM comic_sales
-            Join comics on comics.id = comic_sales.comic_id
-            Where comic_sales.id = :id";
+            JOIN comics on comics.id = comic_sales.comic_id
+            WHERE comic_sales.id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([
-            ':id' => $id
-        ]);
-        return $stmt->fetch();
+                ':id' => $id
+            ]);
+            return $stmt->fetch();
         } catch (Exception $e) {
             echo "lỗi" . $e->getMessage();
         }

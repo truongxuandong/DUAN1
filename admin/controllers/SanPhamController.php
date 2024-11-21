@@ -152,7 +152,7 @@ class SanPhamController {
         
         if (!$comic_id) {
             $_SESSION['error'] = "Không tìm thấy thông tin sản phẩm";
-            // header('Location: ?act=san-pham');
+            header('Location: ?act=san-pham');
             exit();
         }
         

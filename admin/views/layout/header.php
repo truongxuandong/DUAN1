@@ -1,13 +1,16 @@
 <?php
-ob_start(); // Start output buffering
 
-// Your PHP and HTML content here
+ob_start();
+
+
+
 
 ?>
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!-- [if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang=""> <!--<![endif]-->
 
@@ -40,6 +43,7 @@ ob_start(); // Start output buffering
         #weatherWidget .currentDesc {
             color: #ffffff !important;
         }
+
 
         .traffic-chart {
             min-height: 335px;
@@ -82,7 +86,7 @@ ob_start(); // Start output buffering
 
 <body>
 
-    
+
     <!-- Right Panel -->
     <div id="right-panel" class="right-panel">
         <!-- Header-->
@@ -90,7 +94,7 @@ ob_start(); // Start output buffering
             <div class="top-left">
 
                 <div class="navbar-header" style="height:50px ;">
-                    <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:300px; height:60px; margin-top:-6px ;"></a>
+                    <a class="navbar-brand" href="./"><img src="assets/images/bookstore.png" alt="Logo" style="width:100px; height:60px; margin-top:-6px ;"></a>
  
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>

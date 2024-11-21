@@ -19,6 +19,9 @@ require_once '../clients/controllers/LoginController.php';
 require_once '../clients/models/Cart.php';
 require_once '../clients/models/Login.php';
 
+ 
+require_once './models/danhmuc.php';
+require_once './models/sanpham.php';
 
 
 $home = new HomeController();
@@ -34,11 +37,22 @@ $act = $_GET['act'] ?? '/';
 
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
+    
+    '/' => $home ->views_home(),
 
-    '/' => $home->views_home(),
-    'san-pham' => (new HomeController())->listsanpham(),
-    'gio-hang' => (new HomeController())->giohang(),
-    'lien-he' => (new HomeController())->lienhe(),
+    //chitietsp
+    'chitietsp' => $home ->views_chitietsp(),
+
+    //sanpham
+    'sanpham' => $home ->views_sanpham(),
+
+    //lienhe
+    'lienhe' => $home ->views_lienhe(),
+    
+
+   
+    // 'gio-hang' => (new HomeController())->giohang(),
+    
     //router gio hang 
     'show-cart' => (new CartController())->showCart(),
     'add-to-cart' => (new CartController())->addToCart(),
@@ -49,3 +63,9 @@ match ($act) {
     'logout' => (new LoginController())->logout(),
     'register' => (new LoginController())->register(),
 };
+
+
+
+require_once './views/layout/footer.php';
+
+

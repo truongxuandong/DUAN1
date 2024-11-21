@@ -7,15 +7,16 @@ class SanPham {
     {
         $this->conn = connectDB();
     }
-
+    
     public function getAllSanPham(){
         try {
             $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
-                           comics.publication_date, comics.price,comics.original_price, comics.stock_quantity, comics.image, 
-                           authors.name AS author_name, categories.name AS category_name
+                           comics.publication_date, comics.price, comics.original_price, comics.stock_quantity, comics.image, 
+                           authors.name AS author_name, categories.name AS category_name, comic_sales.sale_value AS sale
                     FROM comics
                     JOIN authors ON comics.author_id = authors.id
-                    JOIN categories ON comics.category_id = categories.id";
+                    JOIN categories ON comics.category_id = categories.id
+                    LEFT JOIN comic_sales ON comics.id = comic_sales.comic_id";
             
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
@@ -38,7 +39,7 @@ class SanPham {
         }
     }
 
-    public function insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $stock_quantity, $image) {
+    public function insertSanPham($title, $author_id, $category_id, $description, $publication_date, $price, $original_price, $stock_quantity, $image) {
         try {
             $sql = "INSERT INTO comics (title, author_id, category_id, description, publication_date, price, original_price, stock_quantity, image)
                     VALUES (:title, :author_id, :category_id, :description, :publication_date, :price, :original_price, :stock_quantity, :image)";
@@ -69,19 +70,12 @@ class SanPham {
 
     public function getSanPhamById($id) {
         try {
-            $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
-                           comics.publication_date, comics.price, comics.original_price, comics.stock_quantity, comics.image, 
-                           authors.name AS author_name, categories.name AS category_name
-                    FROM comics
-                    JOIN authors ON comics.author_id = authors.id
-                    JOIN categories ON comics.category_id = categories.id
-                    WHERE comics.id = :id";
-            
+            $sql = "SELECT * FROM comics WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':id' => $id]);
-            return $stmt->fetch();
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error getting product by ID: " . $e->getMessage());
             return false;
         }
     }
