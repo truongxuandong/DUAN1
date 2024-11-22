@@ -22,7 +22,7 @@ class LoginController
             // Gọi phương thức checkLogin từ Model
             if ($this->loginModel->checkLogin($email, $password)) {
                 $_SESSION['success'] = "Đăng nhập thành công!";
-                header("Location: ?act=san-pham");  // Chuyển hướng sau khi đăng nhập thành công
+                header("Location: ?act=/");  // Chuyển hướng sau khi đăng nhập thành công
                 exit();
             } else {
                 $_SESSION['error'] = "Email hoặc mật khẩu không đúng.";
@@ -50,15 +50,12 @@ class LoginController
             }
 
             // Gọi phương thức createUser từ Model
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            if ($this->loginModel->createUser($name, $email, $hashedPassword, $phone)) {
+            if ($this->loginModel->createUser($name, $email, $password, $phone)) {
                 $_SESSION['success'] = "Đăng ký thành công!";
                 header("Location: ?act=login");
                 exit();
             } else {
-                // Lỗi do email trùng lặp hoặc vấn đề khác
-                header("Location:?act=register");
+                header("Location: ?act=register");
                 exit();
             }
         }
