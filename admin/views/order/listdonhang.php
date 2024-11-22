@@ -1,5 +1,5 @@
 
-        <div class="content-wrapper">
+<div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <section class="content-header">
               <div class="container-fluid">
@@ -40,123 +40,46 @@
 <?php endif; ?>
                       <!-- /.card-header -->
                       <div class="card-body">
-                      <table id="example1" class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>id đơn hàng</th>
-            <th>tên khách hàng</th>
-            <th>số điện thoại</th>
-            <th>tổng giá trị đơn hàng</th>
-            <th>phương thức thanh toán</th>
-            <th>trạng thái thanh toán</th>
-            <th>trạng thái đơn hàng</th>
-            
-            <th>thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($orders as $donhang) { ?>
-            <tr>
-                <td><?= $donhang['id'] ?></td>
-                <!-- Hiển thị tên khách hàng, nếu không có thì hiển thị user_id -->
-                <td><?= $donhang['name'] ?? $donhang['user_id'] ?></td>
-                <td><?= $donhang['phone'] ?></td>
-                <td><?= number_format($donhang['total_products_amount'] ?? 0, 0, ',', '.') ?> đ</td>
-                <td><?php
-                
-                        switch($donhang['payment_method']) {
-                          case 'Cash on Delivery': // Cash on Delivery
-                              echo '<span class="badge bg-primary" style="font-size: 15px;">thanh toán khi nhận hàng</span>';
-                              break;
-                          case 'E-Wallet': // E-Wallet
-                              echo '<span class="badge bg-danger" style="font-size: 15px;">ví điện tử</span>';
-                              break;
-                          case 'Internet Banking': // Internet Banking
-                              echo '<span class="badge bg-info" style="font-size: 15px;">chuyển khoản</span>';
-                              break;
-                          case 'Credit Card': // Credit Card
-                              echo '<span class="badge bg-warning" style="font-size: 15px;">thẻ tín dụng</span>';
-                              break;
-                          default:
-                              echo '<span class="badge bg-secondary" style="font-size: 15px;">Unknown</span>'; // Nếu không có giá trị khớp
-                              break;
-                      }
-                      
-                        ?> </td> 
-                <td><?php
-                        switch($donhang['payment_status']) {
+                        <table id="example1" class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th>STT</th>
+                              <th>mã đơn hàng</th>
+                              <th>tên người nhận</th>
+                              <th>số điện thoại</th>
+                              <th>ngày đặt</th>
+                              <th>tổng tiền</th>
+                              <th>trạng thái</th>
+                              <th>thao tác</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              <tr>
+                                <td>1</td>
+                                <td>443333fff</td>
+                                <td>thanh</td>
+                                <td>3444452344</td>
+                                <td>13/08/2004</td>
+                                <td>200000</td>
+                                <td>hoan thanh</td>
+                                
+                                <td>
+                                  
+                                  <button class="btn btn-primary"><i class="far fa fa-eye" style="margin-right: 5px;"></i>hien thi</button>
+                                  
+                                  
+                                  <button class="btn btn-warning"><i class="fas fa fa-wrench" style="margin-right: 5px;"></i>sua</button>
+                                  
+          
+                                                   
+                                </td>
+                              </tr>
+                            
+          
+                          </tbody>
                           
-                            case 'paid': // Đã thanh toán
-                                echo '<span class="badge bg-success" style="font-size: 15px;">Đã thanh toán</span>';
-                                break;  
-                            case 'unpaid': // Chưa thanh toán
-                                echo '<span class="badge bg-secondary" style="font-size: 15px;">Chưa thanh toán</span>';
-                                break;
-                            case 'refunded': // Đã hoàn tiền
-                                echo '<span class="badge bg-info" style="font-size: 15px;">Đã hoàn tiền</span>';
-                                break;
-                            case 'failed': // Thanh toán thất bại
-                                echo '<span class="badge bg-danger" style="font-size: 15px;">Thanh toán thất bại</span>';
-                                break;
-                            case 'processing': // Đang xử lý
-                                echo '<span class="badge bg-primary" style="font-size: 15px;">Đang xử lý</span>';
-                                break;
-                            default: // Trường hợp không xác định
-                                echo '<span class="badge bg-secondary" style="font-size: 15px;">Không xác định</span>';
-                                break;
-                        }
-                        ?></td>
-                <td><?php 
-                switch($donhang['shipping_status']) {
-                    case 'pending': // Đang chờ xử lý
-                        echo '<span class="badge bg-warning" style="font-size: 15px;">Chờ xử lý</span>';
-                        break;
-                    case 'delivering': // Đang giao hàng
-                        echo '<span class="badge bg-primary" style="font-size: 15px;">Đang giao hàng</span>';
-                        break;
-                    case 'delivered': // Đã giao hàng
-                        echo '<span class="badge bg-success" style="font-size: 15px;">Đã giao hàng</span>';
-                        break;
-                    case 'returned': // Đã trả lại
-                        echo '<span class="badge bg-info" style="font-size: 15px;">Đã trả lại</span>';
-                        break;
-                    case 'cancelled': // Đã hủy
-                        echo '<span class="badge bg-danger" style="font-size: 15px;">Đã hủy</span>';
-                        break;
-                    default: // Trường hợp không xác định
-                        echo '<span class="badge bg-secondary" style="font-size: 15px;">Không xác định</span>';
-                        break;
-                } ?>
-                </td>
-                
-                <td>
-                    <a href="?act=order-detail&id=<?= $donhang['id'] ?>" class="btn btn-info btn-sm">
-                        <i class="fas fa fa-eye"></i> Chi tiết
-                    </a>
-
-                    
-                      
-                    
-                        <!-- Các nút thao tác khi chưa giao hàng thành công -->
-                        <a href="?act=edit-order&id=<?= $donhang['id'] ?>">
-                            <button class="btn btn-warning btn-sm">
-                                <i class="fas fa fa-edit"></i> Cập nhật
-                            </button>
-                        </a>
-                        
-                        <a href="?act=delete-order&id=<?= $donhang['id'] ?>" 
-                           onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này không?')">
-                            <button class="btn btn-danger btn-sm">
-                                <i class="fas fa fa-trash"></i> Xóa
-                            </button>
-                        </a>
-                
-                </td>
-            </tr>
-        <?php } ?>
-    </tbody>
-</table>
-
+                        </table>
                       </div>
                       <!-- /.card-body -->
                     </div>
@@ -171,9 +94,6 @@
             <!-- /.content -->
           </div>
           <!-- /.content-wrapper -->
-
-
-
           
           
        

@@ -5,6 +5,23 @@ $modelDanhMuc = new DanhMuc();
 $listdm = $modelDanhMuc->getAllDanhMuc();
 ?>
 <!-- Navbar Start -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+
+</body>
+
+</html>
 <div class="container-fluid mb-5">
     <div class="row border-top px-xl-5">
         <div class="col-lg-3 d-none d-lg-block">
@@ -42,10 +59,41 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                         <a href="?act=sanpham" class="nav-item nav-link">Sản phẩm</a>
                         <a href="?act=lienhe" class="nav-item nav-link">Liên hệ</a>
                     </div>
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="" class="nav-item nav-link">Đăng nhập</a>
-                        <a href="" class="nav-item nav-link">Đăng ký</a>
-                    </div>
+                    <?php
+                    if (isset($_SESSION['user'])) {
+                        // Lấy thông tin email người dùng
+                        $email = isset($_SESSION['user']['email']) ? $_SESSION['user']['email'] : 'Người dùng';
+
+                        // Kiểm tra xem có phải admin hay không
+                        $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+                        // Hiển thị menu dropdown tài khoản
+                        echo '<div class="dropdown">';
+                        echo '<button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
+                        echo '<img src="./assets/img/avata.jpg" alt="Account" style="height: 30px; width: auto;" /> ' . htmlspecialchars($email);
+                        echo '</button>';
+                        echo '<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
+                        echo '<li><a class="dropdown-item" href="?act=orders">Đơn Mua</a></li>';
+
+                        // Kiểm tra và hiển thị mục "Quản lý Admin" nếu là admin
+                        if ($isAdmin) {
+                            echo '<li><a class="dropdown-item" href="?act=admin">Quản lý Admin</a></li>';
+                        }
+
+                        echo '<li><a class="dropdown-item" href="?act=logout">Đăng Xuất</a></li>';
+                        echo '</ul>';
+                        echo '</div>';
+                    } else {
+                        // Nếu người dùng chưa đăng nhập
+                        echo '<a href="?act=login" class="nav-item nav-link">Đăng nhập</a>';
+                    }
+
+                    ?>
+
+
+
+
+
                 </div>
             </nav>
             <div id="header-carousel" class="carousel slide" data-ride="carousel">

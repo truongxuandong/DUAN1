@@ -83,8 +83,7 @@ class KhuyenMaiModel {
             $sql = "SELECT 
                 comic_sales.*, 
                 comics.title,
-                CASE
-                    WHEN NOW() < comic_sales.start_date THEN 'pending'
+                CASE/-strong/-heart:>:o:-((:-h WHEN NOW() < comic_sales.start_date THEN 'pending'
                     WHEN NOW() BETWEEN comic_sales.start_date AND comic_sales.end_date THEN 'active'
                     WHEN NOW() > comic_sales.end_date THEN 'expired'
                     ELSE comic_sales.status
