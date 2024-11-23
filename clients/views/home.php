@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
         -khtml-user-drag: none; /* Ngăn kéo hình ảnh trên các trình duyệt khác */
         -moz-user-drag: none;
         -o-user-drag: none;
-        user-drag: none;
+        -user-drag: none;
     }
 
 </style>
