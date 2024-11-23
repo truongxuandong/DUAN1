@@ -51,8 +51,5 @@ class HomeController
     public function views_lienhe() {
         require_once './views/contact.php';
     }
-    public function views_myaccount() {
-        
-        require_once './views/myaccount.php';
-    }
+    
 } 
