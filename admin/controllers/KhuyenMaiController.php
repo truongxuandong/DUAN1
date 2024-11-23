@@ -91,6 +91,13 @@ class KhuyenMaiController
             
         }
 
+        // Thêm kiểm tra trùng lặp
+        if ($this->modelKhuyenMai->checkExistingPromotion($comic_id, $start_date, $end_date)) {
+            $_SESSION['error'] = 'Đã tồn tại khuyến mãi cho truyện này trong khoảng thời gian đã chọn';
+            header('location: ?act=form-add-khuyen-mai');
+            exit();
+        }
+
         
         if ($this->modelKhuyenMai->addKhuyenMai($comic_id, $sale_type, $sale_value, $start_date, $end_date, $status)) {
             $_SESSION['success'] = 'Thêm khuyến mãi thành công';
@@ -183,6 +190,13 @@ class KhuyenMaiController
                 header('location: ?act=form-edit-khuyen-mai&id='.$id);
                 exit();
             }
+        }
+
+        // Thêm kiểm tra trùng lặp, loại trừ khuyến mãi hiện tại
+        if ($this->modelKhuyenMai->checkExistingPromotion($comic_id, $start_date, $end_date, $id)) {
+            $_SESSION['error'] = 'Đã tồn tại khuyến mãi cho truyện này trong khoảng thời gian đã chọn';
+            header('location: ?act=form-edit-khuyen-mai&id='.$id);
+            exit();
         }
 
        

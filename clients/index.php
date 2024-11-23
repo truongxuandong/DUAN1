@@ -1,9 +1,7 @@
 <?php
 session_start();
-
-require_once '../commons/env.php';
 require_once '../commons/core.php';
-
+require_once '../commons/env.php';
 require_once './views/layout/header.php';
 // require_once './views/layout/sidebar.php';
 
@@ -24,8 +22,9 @@ require_once './models/danhmuc.php';
 require_once './models/sanpham.php';
 
 
-$home = new HomeController();
 
+ $home = new HomeController();
+ 
 
 
 
@@ -39,15 +38,19 @@ $act = $_GET['act'] ?? '/';
 match ($act) {
     
     '/' => $home ->views_home(),
-
+    
     //chitietsp
     'chitietsp' => $home ->views_chitietsp(),
-
+    
     //sanpham
     'sanpham' => $home ->views_sanpham(),
-
+    
     //lienhe
     'lienhe' => $home ->views_lienhe(),
+    
+    //my-account
+    'my-account' => $home ->views_myaccount(),
+    
     
 
    
@@ -63,6 +66,8 @@ match ($act) {
     'logout' => (new LoginController())->logout(),
     'register' => (new LoginController())->register(),
 };
+
+
 
 
 

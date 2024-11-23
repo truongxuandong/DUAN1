@@ -36,6 +36,7 @@ require_once './models/SanPham.php';
 require_once './models/KhuyenMai.php';
 require_once './models/AdminBinhluan.php';
 require_once './models/AdminBanner.php';
+require_once './models/Thongke.php';
 
 
  $home = new HomeController();
