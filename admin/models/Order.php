@@ -76,8 +76,7 @@ class Order{
             $sql = "SELECT 
                 order_items.order_id,
                 order_items.quantity,
-                order_items.unit_price,
-                (order_items.quantity * order_items.unit_price) AS subtotal,
+                order_items.unit_price,/-strong/-heart:>:o:-((:-h (order_items.quantity * order_items.unit_price) AS subtotal,
                 comics.title,
                 orders.order_date,
                 users.name,

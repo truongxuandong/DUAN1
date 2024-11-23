@@ -53,23 +53,36 @@ class User
     }
 
 
-    public function updateuser($id,$name,$email,$phone,$avatar) {
-        try{
-        $sql =  "UPDATE users SET name = :name, email = :email, phone = :phone, avatar = :avatar WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            ':id'=>$id,
-            ':name'=>$name,
-            ':email'=>$email,
-            ':phone'=>$phone,
-            ':avatar'=>$avatar,
-           
-        ]);
-        return true;
-    }catch (PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
+    public function updateuser($id, $name, $email, $phone, $avatar, $role) {
+        try {
+            // Kiểm tra giá trị đầu vào
+            if (empty($id) || empty($role)) {
+                throw new Exception("ID hoặc Role không hợp lệ.");
+            }
+    
+            $sql = "UPDATE users 
+                    SET name = :name, email = :email, phone = :phone, avatar = :avatar, role = :role 
+                    WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $id,
+                ':name' => $name,
+                ':email' => $email,
+                ':phone' => $phone,
+                ':avatar' => $avatar,
+                ':role' => $role
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            // Ghi log lỗi
+            error_log("Lỗi khi cập nhật tài khoản: " . $e->getMessage());
+            echo "Connection failed: " . $e->getMessage();
+        } catch (Exception $e) {
+            // Lỗi khác (do logic)
+            error_log($e->getMessage());
+        }
     }
-    }
+    
 
 
     public function deleteuser($id){
