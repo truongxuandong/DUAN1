@@ -48,8 +48,7 @@ match ($act) {
     //lienhe
     'lienhe' => $home ->views_lienhe(),
     
-    //my-account
-    'my-account' => $home ->views_myaccount(),
+   
     
     
 
