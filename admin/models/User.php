@@ -53,7 +53,7 @@ class User
     }
 
 
-    public function updateuser($id, $name, $email, $phone, $avatar, $role) {
+    public function updateuser($id, $name, $email, $phone, $avatar) {
         try {
             // Kiểm tra giá trị đầu vào
             if (empty($id) || empty($role)) {
@@ -61,7 +61,7 @@ class User
             }
     
             $sql = "UPDATE users 
-                    SET name = :name, email = :email, phone = :phone, avatar = :avatar, role = :role 
+                    SET name = :name, email = :email, phone = :phone, avatar = :avatar
                     WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([
@@ -69,8 +69,8 @@ class User
                 ':name' => $name,
                 ':email' => $email,
                 ':phone' => $phone,
-                ':avatar' => $avatar,
-                ':role' => $role
+                ':avatar' => $avatar
+                
             ]);
             return true;
         } catch (PDOException $e) {

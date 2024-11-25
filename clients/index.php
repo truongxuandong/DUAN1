@@ -1,13 +1,12 @@
 <?php
 session_start();
-
-require_once '../commons/env.php';
 require_once '../commons/core.php';
 
 // Tạo đối tượng PDO
 $pdo = new PDO('mysql:host=localhost;dbname=duan1', 'root', '');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+require_once '../commons/env.php';
 require_once './views/layout/header.php';
 // require_once './views/layout/sidebar.php';
 
@@ -25,8 +24,9 @@ require_once '../clients/models/Account.php';
 require_once './models/danhmuc.php';
 require_once './models/sanpham.php';
 
-$home = new HomeController();
 
+ $home = new HomeController();
+ 
 
 // Route
 $act = $_GET['act'] ?? '/';

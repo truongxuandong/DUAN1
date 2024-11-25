@@ -61,7 +61,7 @@ class UserController
         $name = $_POST['name'];
         $email = $_POST['email']; 
         $phone = $_POST['phone'];
-        $role = $_POST['role']; // Lấy giá trị role từ form
+        
         $avatar = '../uploads/user/default.jpg';
 
         if(isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
@@ -73,7 +73,7 @@ class UserController
                 $avatar = $uploadFile;
             } 
         }
-        if($this->modelUser->updateuser($id,$name,$email,$phone,$avatar,$role)) {
+        if($this->modelUser->updateuser($id,$name,$email,$phone,$avatar)) {
             $_SESSION['success'] = "Sửa người dùng thành công!";
             header('Location:?act=user');
         } else {

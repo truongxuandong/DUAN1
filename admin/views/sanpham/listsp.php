@@ -39,7 +39,7 @@
                   <th>Tên sản phẩm</th>
                   <th>Tên tác giả</th>
                   <th>Thể loại</th>
-                  <th>Mô tả</th>
+                  
                   <th>Ngày phát hành</th>
                   <th>Sale</th>
                   <th>Giá bán</th>
@@ -56,7 +56,7 @@
                     <td><?= $sanPham['title'] ?></td>
                     <td><?= $sanPham['author_name'] ?? 'Không có tác giả' ?></td>
                     <td><?= $sanPham['category_name'] ?? 'Không có thể loại' ?></td>
-                    <td><?= $sanPham['description'] ?></td>
+                    
                     <td><?= $sanPham['publication_date'] ?></td>
                     <td><?= (is_numeric($sanPham['sale']) && (!isset($sanPham['sale_start']) || strtotime($sanPham['sale_start']) <= time())) ? 
                         ($sanPham['sale'] <= 100 ? 

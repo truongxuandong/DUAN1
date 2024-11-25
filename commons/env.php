@@ -1,7 +1,6 @@
 <?php
 
-
-define('BASE_URL' , 'http://localhost/duan1/clients/');
+define('BASE_URL' , 'http://localhost/duan1/');
 define('BASE_URL_ADMIN' , 'http://localhost/duan1/admin/');
 
 
