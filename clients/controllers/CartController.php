@@ -1,134 +1,151 @@
 <?php
-ob_start();
-require_once '../commons/core.php';
-
-class CartController
+class ShoppingCartController
 {
-    private $modelCart;
+    // Thuộc tính đại diện cho đối tượng ShoppingCart, chịu trách nhiệm thao tác với cơ sở dữ liệu.
+    public $ShoppingCart;
 
+    // Hàm khởi tạo: Tự động gọi khi tạo đối tượng của lớp này.
     public function __construct()
     {
-        $this->modelCart = new Cart(); // Khởi tạo model Cart
+        // Tạo một thể hiện của lớp ShoppingCart để sử dụng trong các phương thức khác.
+        $this->ShoppingCart = new ShoppingCart();
     }
 
-    // Hiển thị giỏ hàng của người dùng
-    public function showCart()
+    /**
+     * Hiển thị giỏ hàng bằng cách tải file giao diện (view).
+     * Tệp `listCart.php` sẽ sử dụng các dữ liệu từ phương thức khác (như getCartItems) để hiển thị thông tin.
+     */
+    public function view_shoppingCart()
     {
-        session_start(); // Bắt đầu phiên làm việc
-
-        // Kiểm tra nếu user chưa đăng nhập (chưa có session 'user_id')
-        if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = "Bạn cần đăng nhập để xem giỏ hàng!";
-            header("Location: login.php");  // Chuyển hướng đến trang đăng nhập
-            exit(); // Dừng chương trình sau khi chuyển hướng
-        }
-
-        $userId = $_SESSION['user_id'];  // Lấy user_id từ session
-
-        // Gọi model để lấy giỏ hàng của người dùng
-        $listCart = $this->modelCart->getCart($userId);
-
-        // Kiểm tra xem giỏ hàng có tồn tại không
-        if (!$listCart) {
-            $_SESSION['error'] = "Giỏ hàng của bạn hiện tại trống.";
-        }
-
-        // Load view giỏ hàng
-        require_once './clients/views/giohang/listCart.php';
+        require_once './views/giohang/listCart.php';
     }
 
-    // Thêm sản phẩm vào giỏ hàng
-    public function addToCart()
+    /**
+     * Lấy danh sách các sản phẩm trong giỏ hàng từ cơ sở dữ liệu.
+     * @param int $userId ID của người dùng (nếu có).
+     * @return array Mảng chứa thông tin sản phẩm trong giỏ hàng.
+     */
+    public function getCartItems($userId)
     {
-        session_start(); // Đảm bảo session được bắt đầu
+        // Gọi phương thức của lớp ShoppingCart để lấy dữ liệu giỏ hàng từ cơ sở dữ liệu.
+        $cartItems = $this->ShoppingCart->getCartItems($userId);
 
+        // Trả về danh sách sản phẩm trong giỏ hàng (một mảng các sản phẩm).
+        return $cartItems;
+    }
+
+    /**
+     * Cập nhật số lượng sản phẩm trong giỏ hàng (tăng hoặc giảm).
+     * Hành động được thực hiện dựa trên yêu cầu từ form gửi qua POST.
+     */
+    public function updateQuantity()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!isset($_SESSION['user_id'])) {
-                $_SESSION['error'] = "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng!";
-                header("Location: login.php");  // Chuyển hướng đến trang đăng nhập
-                exit(); // Dừng chương trình sau khi chuyển hướng
+            // Lấy ID của sản phẩm từ form.
+            $comicId = intval($_POST['comic_id']);
+            // Lấy hành động từ form (increase hoặc decrease).
+            $action = $_POST['action'];
+            // Lấy ID người dùng từ phiên (session), nếu có.
+            $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+            // Kiểm tra ID sản phẩm hợp lệ
+            if ($comicId > 0) {
+                // Lấy danh sách sản phẩm trong giỏ hàng của người dùng.
+                $cartItems = $this->ShoppingCart->getCartItems($userId);
+
+                // Duyệt qua từng sản phẩm để tìm sản phẩm cần cập nhật.
+                foreach ($cartItems as $item) {
+                    if ($item['comic_id'] == $comicId) {
+                        // Tính toán số lượng mới dựa trên hành động.
+                        $newQuantity = ($action === 'increase')
+                            ? $item['quantity'] + 1
+                            : max($item['quantity'] - 1, 1);
+
+                        // Lấy ID của sản phẩm trong giỏ hàng.
+                        $cartItemId = $item['cart_item_id'];
+
+                        // Cập nhật số lượng trong cơ sở dữ liệu.
+                        $this->ShoppingCart->updateCartItemQuantity($cartItemId, $comicId, $newQuantity);
+                        break;
+                    }
+                }
             }
 
-            $userId = $_SESSION['user_id']; // Giả sử user_id được lưu trong session
-            $comicId = $_POST['comic_id'];
-            $quantity = $_POST['quantity'];
-            $unitPrice = $_POST['unit_price'];
-
-            // Kiểm tra xem người dùng đã có giỏ hàng chưa
-            $cart = $this->modelCart->getCart($userId);
-            if (!$cart) {
-                // Nếu chưa có giỏ hàng, tạo mới
-                $cartId = $this->modelCart->createCart($userId);
-            } else {
-                $cartId = $cart['id'];
-            }
-
-            // Thêm sản phẩm vào giỏ hàng
-            if ($this->modelCart->addProductToCart($cartId, $comicId, $quantity, $unitPrice)) {
-                $_SESSION['success'] = "Thêm sản phẩm vào giỏ hàng thành công!";
-            } else {
-                $_SESSION['error'] = "Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!";
-            }
-
-            // Chuyển hướng về giỏ hàng
-            header("Location: " . BASE_URL . "?act=show-cart");
-            exit(); // Dừng chương trình sau khi redirect
+            // Sau khi cập nhật, chuyển hướng về trang giỏ hàng.
+            header('Location: ?act=view-shopping-cart');
         }
     }
 
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    public function updateCart()
+    /**
+     * Xóa một sản phẩm khỏi giỏ hàng.
+     * Thực hiện dựa trên `cart_item_id` được gửi qua GET.
+     */
+    public function deleteItem()
     {
-        session_start(); // Đảm bảo session được bắt đầu
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!isset($_SESSION['user_id'])) {
-                $_SESSION['error'] = "Bạn cần đăng nhập để cập nhật giỏ hàng!";
-                header("Location: login.php");  // Chuyển hướng đến trang đăng nhập
-                exit(); // Dừng chương trình sau khi chuyển hướng
-            }
-
-            $cartItemId = $_POST['cart_item_id'];
-            $quantity = $_POST['quantity'];
-
-            if ($this->modelCart->updateProductQuantity($cartItemId, $quantity)) {
-                $_SESSION['success'] = "Cập nhật số lượng sản phẩm thành công!";
-            } else {
-                $_SESSION['error'] = "Có lỗi xảy ra khi cập nhật số lượng sản phẩm!";
-            }
-
-            // Chuyển hướng về giỏ hàng sau khi cập nhật
-            header("Location: " . BASE_URL . "?act=show-cart");
-            exit(); // Dừng chương trình sau khi redirect
-        }
-    }
-
-    // Xóa sản phẩm khỏi giỏ hàng
-    public function removeFromCart()
-    {
-        session_start(); // Đảm bảo session được bắt đầu
-
+        // Kiểm tra nếu ID sản phẩm cần xóa được truyền qua URL.
         if (isset($_GET['cart_item_id'])) {
-            if (!isset($_SESSION['user_id'])) {
-                $_SESSION['error'] = "Bạn cần đăng nhập để xóa sản phẩm khỏi giỏ hàng!";
-                header("Location: login.php");  // Chuyển hướng đến trang đăng nhập
-                exit(); // Dừng chương trình sau khi chuyển hướng
-            }
+            // Chuyển đổi ID về kiểu số nguyên.
+            $cartItemId = intval($_GET['cart_item_id']);
 
-            $cartItemId = $_GET['cart_item_id'];
-
-            if ($this->modelCart->removeProductFromCart($cartItemId)) {
-                $_SESSION['success'] = "Xóa sản phẩm khỏi giỏ hàng thành công!";
+            // Gọi phương thức xóa sản phẩm từ lớp ShoppingCart.
+            if ($this->ShoppingCart->deleteCartItem($cartItemId)) {
+                echo "Item deleted successfully"; // Thông báo (dùng để debug).
             } else {
-                $_SESSION['error'] = "Có lỗi xảy ra khi xóa sản phẩm!";
+                echo "Failed to delete item"; // Thông báo lỗi (dùng để debug).
             }
+        } else {
+            echo "cart_item_id not set"; // Thông báo nếu ID không được cung cấp (dùng để debug).
+        }
 
-            // Chuyển hướng về giỏ hàng sau khi xóa
-            header("Location: " . BASE_URL . "show-cart");
-            exit(); // Dừng chương trình sau khi redirect
+        // Chuyển hướng về trang giỏ hàng sau khi xử lý.
+        header('Location: ?act=view-shopping-cart');
+        exit();
+    }
+    /**
+     * Thêm sản phẩm vào giỏ hàng.
+     */
+    public function addItemToCart()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Kiểm tra sự tồn tại của comic_id trong dữ liệu POST
+            if (!isset($_POST['comic_id']) || empty($_POST['comic_id'])) {
+                die('Error: Missing comic_id in the request.');
+            }
+    
+            // Lấy ID của sản phẩm và số lượng từ form
+            $comicId = intval($_POST['comic_id']);
+            $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
+    
+            // Lấy ID người dùng từ phiên (session), nếu có
+            $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+    
+            // Kiểm tra ID sản phẩm và số lượng hợp lệ
+            if ($comicId > 0 && $quantity > 0 && $userId !== null) {
+                // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
+                $cartItems = $this->ShoppingCart->getCartItems($userId);
+    
+                $itemExists = false;
+                foreach ($cartItems as $item) {
+                    if ($item['comic_id'] == $comicId) {
+                        $itemExists = true;
+                        $newQuantity = $item['quantity'] + $quantity;
+    
+                        // Cập nhật số lượng nếu sản phẩm đã tồn tại
+                        $this->ShoppingCart->updateCartItemQuantity($item['cart_item_id'], $comicId, $newQuantity);
+                        break;
+                    }
+                }
+    
+                // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới
+                if (!$itemExists) {
+                    $this->ShoppingCart->addNewItemToCart($userId, $comicId, $quantity);
+                }
+            }
+    
+            // Sau khi thêm sản phẩm, chuyển hướng về trang giỏ hàng
+            header('Location: ?act=view-shopping-cart');
+            exit(); // Đảm bảo dừng mã sau khi chuyển hướng
         }
     }
-}
-
-ob_end_flush(); // Kết thúc buffer output
-?>
+    
+    }

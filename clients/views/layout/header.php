@@ -85,7 +85,7 @@
                     <i class="fas fa fa-bell"></i>
                     <span class="badge">4</span>
                 </a>
-                <a href="?act=show-cart" class="btn border">
+                <a href="?act=view-shopping-cart" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
                     <span class="badge">0</span>
                 </a>

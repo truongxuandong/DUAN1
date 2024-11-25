@@ -56,7 +56,10 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between bg-light border">
                         <a href="?act=chitietsp&id=<?php echo $sanpham['id'] ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                        <a href="?act=add-item-to-cart&id=<?php echo $sanpham['id'] ?>" class="btn btn-sm text-dark p-0">
+                            <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                        </a>
+
                     </div>
                 </div>
             </div>
@@ -144,7 +147,7 @@
         <?php
         $count = 0;
         // Sắp xếp mảng $sanphams theo thời gian tạo giảm dần (mới nhất trước)
-        usort($sanphams, function($a, $b) {
+        usort($sanphams, function ($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
         foreach ($sanphams as $sanpham):

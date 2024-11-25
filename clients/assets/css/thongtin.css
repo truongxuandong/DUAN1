@@ -1,0 +1,140 @@
+ /* Toàn bộ trang */
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+
+  /* Sidebar */
+  .list-group {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .list-group-item {
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .list-group-item:hover {
+    background-color: #f0f0f0;
+    color: #007bff;
+  }
+
+  .profile-section {
+    background-color: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+  }
+
+  .profile-section h5 {
+    margin: 10px 0 5px;
+  }
+
+  .profile-section img {
+    border: 2px solid #007bff;
+    padding: 2px;
+    background-color: #fff;
+  }
+
+  /* Main Content */
+  .border-custom {
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  #change-password h2,
+  #orders h2 {
+    font-size: 20px;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+
+  /* Đổi mật khẩu */
+  form .form-label {
+    color: #555;
+  }
+
+  form .form-control {
+    border-radius: 8px;
+  }
+
+  form .btn {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+  }
+
+  form .btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Đơn hàng */
+  .nav-tabs {
+    border-bottom: 2px solid #ddd;
+  }
+
+  .nav-tabs .nav-link {
+    color: #555;
+    font-weight: 500;
+    border-radius: 0;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #007bff;
+    font-weight: bold;
+    border-color: #ddd #ddd #fff;
+  }
+
+  .tab-content {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .tab-pane {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .tab-pane h6 {
+    font-size: 16px;
+    color: #007bff;
+  }
+
+  .tab-pane p {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+    border-radius: 8px;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  /* Chỉnh sửa cho kích thước nhỏ */
+  @media (max-width: 768px) {
+    .list-group-item {
+      font-size: 14px;
+    }
+
+    #change-password h2,
+    #orders h2 {
+      font-size: 18px;
+    }
+
+    .tab-pane h6 {
+      font-size: 14px;
+    }
+  }

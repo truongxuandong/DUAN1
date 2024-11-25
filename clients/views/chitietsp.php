@@ -27,8 +27,10 @@ if (!empty($sanphamct)): ?>
             <h3 class="font-weight-semi-bold mb-4 d-inline"><?= number_format($sanphamct['price'] ?? 0, 0, ',', '.') ?> đ</h3>
             <h5 class="font-weight-semi-bold mb-4 d-inline text-muted" style="text-decoration: line-through;"><?= number_format($sanphamct['original_price'] ?? 0, 0, ',', '.') ?> đ</h5>
             <p class="mb-4"><?= $sanphamct['description'] ?? '' ?></p>
-            
-            <form action="" method="POST" class="d-flex align-items-center mb-4 pt-2">
+
+            <!-- views/productDetailView.php -->
+            <form action="index.php?controller=cart&action=addItemToCart" method="POST">
+                <input type="hidden" name="comic_id" value="<?= $sanphamct['id'] ?? '' ?>">
                 <div class="input-group quantity mr-3" style="width: 130px;">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
@@ -42,11 +44,13 @@ if (!empty($sanphamct)): ?>
                         </button>
                     </div>
                 </div>
-                <input type="hidden" name="product_id" value="<?= $sanphamct['id'] ?? '' ?>">
-                <button type="submit" name="add_to_cart" class="btn btn-primary px-3">
+                <button type="submit" class="btn btn-primary px-3">
                     <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                 </button>
             </form>
+
+
+
         </div>
     </div>
 <?php else: ?>
@@ -78,7 +82,7 @@ if (!empty($sanphamct)): ?>
             <a class="nav-item nav-link active" data-toggle="tab" href="#comments-tab"><strong>Comments</strong></a>
             <a class="nav-item nav-link" data-toggle="tab" href="#reviews-tab"><strong>Reviews</strong></a>
         </div>
-        
+
         <div class="tab-content">
             <!-- Comments Section -->
             <div class="tab-pane fade show active" id="comments-tab">
@@ -100,7 +104,7 @@ if (!empty($sanphamct)): ?>
                     </div>
                 </form>
             </div>
-            
+
             <!-- Reviews Section -->
             <div class="tab-pane fade" id="reviews-tab">
                 <h4 class="mb-4"><strong>Reviews</strong></h4>
@@ -164,7 +168,7 @@ if (!empty($sanphamct)): ?>
     function decreaseValue() {
         var value = parseInt(document.getElementById('quantity').value);
         value = isNaN(value) ? 0 : value;
-        if(value > 1) {
+        if (value > 1) {
             value--;
             document.getElementById('quantity').value = value;
         }
