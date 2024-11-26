@@ -28,69 +28,35 @@
 
                 <li class="menu-item-has-children dropdown">
                     <a href="?act=khuyen-mai" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-list-alt" style="font-size: 18px; margin-right: 10px;"></i>Quản lí khuyến mãi
+                        <i class="menu-icon fa fa-calendar" style="font-size: 18px; margin-right: 10px;"></i>Quản lí khuyến mãi
                     </a>
                 </li>
                 
 
                 <li class="menu-item-has-children dropdown">
-
                     <a href="?act=binh-luan">
-                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Bình luận
+                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Bình luận
                     </a>
                 </li>
                 <li class="menu-item-has-children dropdown">
                     <a href="?act=danh-gia">
-                        <i class="menu-icon fa fa-star" style="font-size: 20px; margin-right: 10px;"></i>Đánh giá
+                        <i class="menu-icon fa fa-star" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Đánh giá
                     </a>
                 </li>
 
                 <li class="menu-item-has-children dropdown">
-                    <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-comments" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
-
+                    <a href="<?= BASE_URL_ADMIN."?act=giao-dien"?>"  aria-expanded="false">
+                        <i class="menu-icon fa fa-picture-o" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
                     </a>
                 </li>
-                
                 <li class="menu-item-has-children dropdown">
                     <a href="?act=user" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-users" style="font-size: 18px; margin-right: 10px;"></i>Quản lí tài khoản
                     </a>
                 </li>
                 
-                <li class="menu-item-has-children dropdown">
-                    <a href="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-line-chart" style="font-size: 15px; margin-right: 10px;"></i>Thống kê
-                    </a>
-                </li>
+               
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
 </aside>
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const dropdownToggles = document.querySelectorAll('.menu-item-has-children .dropdown-toggle');
-    
-    dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function (e) {
-            e.preventDefault(); // Ngăn điều hướng mặc định
-            const parent = this.closest('.menu-item-has-children');
-            const isOpen = parent.classList.contains('open');
-            
-            // Đóng tất cả các menu khác
-            document.querySelectorAll('.menu-item-has-children.open').forEach(item => {
-                item.classList.remove('open');
-            });
-
-            // Toggle trạng thái menu hiện tại
-            if (!isOpen) {
-                parent.classList.add('open');
-            }
-        });
-    });
-});
-
-</script>

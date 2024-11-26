@@ -73,8 +73,6 @@
 
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Cập nhật</button>
-                            <a href="?act=order" class="btn btn-secondary">Quay lai</a>
-
                         </div>
                     </form>
                 </div>

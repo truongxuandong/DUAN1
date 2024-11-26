@@ -70,6 +70,23 @@ ORDER BY review_count DESC, purchase_count DESC
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
+            error_log("Error fetching all products: " . $e->getMessage());
+            return [];
+        }
+    }
+
+   
+
+    public function timKiem($query)
+    {
+        try {
+            $sql = "SELECT * FROM comics WHERE title LIKE :query OR description LIKE :query";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            error_log("Error searching products: " . $e->getMessage());
             error_log("Error in getAllSanPham: " . $e->getMessage());
             return [];
         }

@@ -11,15 +11,24 @@ class Variant {
     
     public function getVariantsByComicId($comicId) {
         try {
-            $sql = "SELECT * FROM comic_variants WHERE comic_id = :comic_id";
+            $sql = "SELECT comic_variants.*,
+            (SELECT sale_value 
+             FROM comic_sales 
+             WHERE comic_sales.comic_id = comic_variants.comic_id 
+             LIMIT 1) AS sale
+            FROM comic_variants
+            WHERE comic_variants.comic_id = :comic_id";
+    
+
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':comic_id' => $comicId]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
             echo "Error fetching variants: " . $e->getMessage();
             return false;
         }
     }
+    
 
     // Insert a new variant for a specific comic
     public function insertVariant($comic_id, $format, $language, $isbn, $original_price, $price, $stock_quantity, $publication_date, $image) {
@@ -126,7 +135,7 @@ class Variant {
         }
     }
 
-    
+    //
     public function getIdVariants() {
         try {
             $sql = "SELECT v.*, c.title as comic_title FROM comic_variants v

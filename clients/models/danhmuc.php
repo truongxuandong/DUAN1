@@ -17,5 +17,16 @@ class DanhMuc
             return [];
         }
     }
+    public function layTatCaDanhMuc() {
+        try {
+            $sql = "SELECT id, name FROM categories";
+            $stmt = $this->conn->query($sql); // Đổi từ $this->db thành $this->conn
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            echo "Lỗi: " . $e->getMessage();
+            return [];
+        }
+    }
+    
 }
 ?>

@@ -22,6 +22,7 @@
                   <th>ID</th>
                   <th>Định dạng</th>
                   <th>Ngôn ngữ</th>
+                  <th>Sale</th>
                   <th>Giá bán</th>
                   <th>Giá niêm yết</th>
                   <th>Số lượng</th>
@@ -37,6 +38,11 @@
                     <td><?= ($variant['id']) ?></td>
                     <td><?= ($variant['format']) ?></td>
                     <td><?= ($variant['language']) ?></td>
+                    <td><?= (is_numeric($variant['sale']) && (!isset($variant['sale_start']) || strtotime($variant['sale_start']) <= time())) ? 
+                        ($variant['sale'] <= 100 ? 
+                            number_format($variant['sale'], 0) . '%' : 
+                            number_format($variant['sale'], 0, ',', '.') . ' đ') 
+                        : '0' ?></td>
                     <td>
                         <?= number_format($variant['price'] ?? 0, 0, ',', '.') ?> VNĐ
                     </td>
@@ -70,3 +76,4 @@
     </div>
   </div>
 </section>
+

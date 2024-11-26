@@ -36,6 +36,7 @@ require_once './models/SanPham.php';
 require_once './models/KhuyenMai.php';
 require_once './models/AdminBinhluan.php';
 require_once './models/AdminBanner.php';
+require_once './models/Thongke.php';
 
 
  $home = new HomeController();
@@ -160,7 +161,7 @@ match ($act) {
     'binh-luan'=>(new AdminBinhluanController())->listBinhluan(),
     'update-trang-thai-binh-luan'=>(new AdminBinhluanController())->updateTrangThaiBinhLuan(),
     'danh-gia'=>(new AdminBinhluanController())->listDanhgia(),
-    'delete-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
+    'delete-danhgia'=>(new AdminBinhluanController())->deletedanhgia(),
     'approve-danhgia'=>(new AdminBinhluanController())->approveDanhGia(),
     'reject-danhgia'=>(new AdminBinhluanController())->rejectDanhGia(),
 

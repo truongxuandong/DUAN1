@@ -64,12 +64,13 @@ function formatDate($date){
 }
 function checkLoginAdmin(){
     if(!isset($_SESSION['user_admin'])){
-        // header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
+        header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
         exit();
     }
 }
 function formatPrice($price){
     return number_format($price, 0, ',', '.');
 }
+
 
 ?>

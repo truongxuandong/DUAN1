@@ -1,10 +1,10 @@
 <?php
-// Thêm ở đầu file navbar.php
+
 require_once './models/danhmuc.php';
 $modelDanhMuc = new DanhMuc();
 $listdm = $modelDanhMuc->getAllDanhMuc();
 ?>
-<!-- Navbar Start -->
+
 <div class="container-fluid mb-5">
     <div class="row border-top px-xl-5">
         <div class="col-lg-3 d-none d-lg-block">
@@ -38,14 +38,45 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
-                        <a href="./views/home.php" class="nav-item nav-link active">Trang chủ</a>
-                        <a href="./views/sanpham.php" class="nav-item nav-link">Sản phẩm</a>
-                        <a href="contact.html" class="nav-item nav-link">Liên hệ</a>
+                        <a href="./" class="nav-item nav-link active">Trang chủ</a>
+                        <a href="?act=sanpham" class="nav-item nav-link">Sản phẩm</a>
+                        <a href="?act=lienhe" class="nav-item nav-link">Liên hệ</a>
                     </div>
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="" class="nav-item nav-link">Đăng nhập</a>
-                        <a href="" class="nav-item nav-link">Đăng ký</a>
-                    </div>
+                    <?php
+                    if (isset($_SESSION['user'])) {
+                        // Lấy thông tin email người dùng
+                        $email = isset($_SESSION['user']['email']) ? $_SESSION['user']['email'] : 'Người dùng';
+
+                        // Kiểm tra xem có phải admin hay không
+                        $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+                        // Hiển thị menu dropdown tài khoản
+                        echo '<div class="dropdown">';
+                        echo '<button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
+                        echo '<img src="./assets/img/avata.jpg" alt="Account" style="height: 30px; width: auto;" /> ' . htmlspecialchars($email);
+                        echo '</button>';
+                        echo '<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
+                        echo '<li><a class="dropdown-item" href="?act=orders">Đơn Mua</a></li>';
+
+                        // Kiểm tra và hiển thị mục "Quản lý Admin" nếu là admin
+                        if ($isAdmin) {
+                            echo '<li><a class="dropdown-item" href="?act=admin">Quản lý Admin</a></li>';
+                        }
+
+                        echo '<li><a class="dropdown-item" href="?act=logout">Đăng Xuất</a></li>';
+                        echo '</ul>';
+                        echo '</div>';
+                    } else {
+                        // Nếu người dùng chưa đăng nhập
+                        echo '<a href="?act=login" class="nav-item nav-link">Đăng nhập</a>';
+                    }
+
+                    ?>
+
+
+
+
+
                 </div>
             </nav>
             <div id="header-carousel" class="carousel slide" data-ride="carousel">
@@ -89,12 +120,7 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
 
 <script>
 function toggleMenu() {
-    var menu = document.getElementById('category-menu');
-    if (menu.style.display === 'none') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
-    }
+    $('#category-menu').slideToggle();
 }
 
 // Đóng menu khi click ra ngoài
