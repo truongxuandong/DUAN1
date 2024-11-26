@@ -5,9 +5,9 @@ require_once 'models/Cart.php';
 class CartController {
     private $productModel;
 
-    public function __construct($pdo) {
-        $this->productModel = new Product($pdo);
-    }
+    // public function __construct($pdo) {
+    //     $this->productModel = new Product($pdo);
+    // }
 
     public function viewProducts() {
         $products = $this->productModel->getAllProducts();

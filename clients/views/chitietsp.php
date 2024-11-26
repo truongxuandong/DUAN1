@@ -35,7 +35,7 @@ if (!empty($sanphamct)): ?>
                             <i class="fa fa-minus"></i>
                         </button>
                     </div>
-                    <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center" value="1" min="1">
+                    <input type="text" name="quantity" id="quantity" class="form-control bg-secondary text-center" value="1" min="1">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
                             <i class="fa fa-plus"></i>
@@ -151,6 +151,15 @@ if (!empty($sanphamct)): ?>
         </div>
     </div>
 </div>
+<?php if ($product): ?>
+    <h2><?php echo htmlspecialchars($product['title']); ?></h2>
+    <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" style="width: 300px; height: auto;">
+    <p><strong>Mô tả:</strong> <?php echo htmlspecialchars($product['description']); ?></p>
+    <p><strong>Giá:</strong> <?php echo number_format($product['price'], 0, ',', '.'); ?> đ</p>
+<?php else: ?>
+    <p>Sản phẩm không tồn tại.</p>
+<?php endif; ?>
+
 
 
 <script>

@@ -1,51 +1,38 @@
 <?php
+// Start the session
 session_start();
+
+// Include necessary files
 require_once '../commons/env.php';
 require_once '../commons/core.php';
+
+// Include layout components
 require_once './views/layout/header.php';
 require_once './views/layout/navbar.php';
-#require Controller
+
+// Include Controllers
 require_once './controllers/HomeController.php';
 
-
-
-
- #require Model
+// Include Models
 require_once './models/danhmuc.php';
 require_once './models/sanpham.php';
 
+// Instantiate the HomeController
+$home = new HomeController();
 
- $home = new HomeController();
+// Get the requested action from the URL or default to '/'
+$act = $_GET['act'] ?? '/';
 
-
-
-
-
- // Route
- $act = $_GET['act'] ?? '/';
-
-
-
-// kiểm tra act và điều hướng tới các controller phù hợp
+// Handle routing using a match statement
 match ($act) {
-    
-    '/' => $home ->views_home(),
-
-    //chitietsp
-    'chitietsp' => $home ->views_chitietsp(),
-
-    //sanpham
-    'sanpham' => $home ->views_sanpham(),
-
-    //lienhe
-    'lienhe' => $home ->views_lienhe(),
-    
-
-    
+    '/' => $home->views_home(),          // Homepage
+    'chitietsp' => $home->views_chitietsp(), // Product details
+    'sanpham' => $home->views_sanpham(),     // Product list
+    'lienhe' => $home->views_lienhe(),       // Contact page
+    'timkiem' => $home->views_timkiem(),     // Search functionality
+    default => $home->views_home(),          // Default route (Homepage)
 };
 
-
-
-require_once './views/layout/footer.php';
-
-
+// Include footer layout
+include './views/layout/footer.php';
+?>
