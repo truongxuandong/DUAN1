@@ -1,27 +1,10 @@
 <?php
-// Thêm ở đầu file navbar.php
+
 require_once './models/danhmuc.php';
 $modelDanhMuc = new DanhMuc();
 $listdm = $modelDanhMuc->getAllDanhMuc();
 ?>
-<!-- Navbar Start -->
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-</head>
-
-<body>
-
-</body>
-
-</html>
 <div class="container-fluid mb-5">
     <div class="row border-top px-xl-5">
         <div class="col-lg-3 d-none d-lg-block">
@@ -137,12 +120,7 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
 
 <script>
 function toggleMenu() {
-    var menu = document.getElementById('category-menu');
-    if (menu.style.display === 'none') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
-    }
+    $('#category-menu').slideToggle();
 }
 
 // Đóng menu khi click ra ngoài

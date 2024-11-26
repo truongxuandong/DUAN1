@@ -21,10 +21,10 @@ class KhuyenMaiModel {
                 comics.title,
                 CASE
                     WHEN NOW() < STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') THEN 'pending'
-                    WHEN NOW() BETWEEN STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'active'
+                    WHEN NOW() >= STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') AND NOW() <= STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'active'
                     WHEN NOW() > STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'inactive'
                     ELSE comic_sales.status
-                END
+                END as current_status
             FROM comic_sales
             JOIN comics on comics.id = comic_sales.comic_id";
             $stmt = $this->conn->prepare($sql);
@@ -51,6 +51,8 @@ class KhuyenMaiModel {
             // Nếu cần chuyển đổi timestamp sang DATE
             $start_date = date('Y-m-d H:i', $start_date);
             $end_date = date('Y-m-d H:i', $end_date);
+    
+            $status = ($start_date <= time()) ? 'active' : $status; // Đặt trạng thái dựa trên ngày bắt đầu
     
             $sql = "INSERT INTO comic_sales (comic_id, sale_type, sale_value, start_date, end_date, status) 
             VALUES (:comic_id, :sale_type, :sale_value, :start_date, :end_date, :status)";
@@ -85,7 +87,7 @@ class KhuyenMaiModel {
                 comics.title,
                 CASE
                     WHEN NOW() < STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') THEN 'pending'
-                    WHEN NOW() BETWEEN STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'active'
+                    WHEN NOW() >= STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') AND NOW() <= STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'active'
                     WHEN NOW() > STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'expired'
                     ELSE comic_sales.status
                 END as current_status
