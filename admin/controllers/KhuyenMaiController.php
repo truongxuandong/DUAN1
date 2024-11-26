@@ -28,7 +28,6 @@ class KhuyenMaiController
         $end_date = strtotime($_POST['end_date']);
         $today = strtotime(date('Y-m-d'));
 
-        
         if ($start_date < $today) {
             $_SESSION['error'] = 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại';
             header('location: ?act=form-add-khuyen-mai');
@@ -83,12 +82,19 @@ class KhuyenMaiController
                 exit();
             }
         } elseif ($status == 'pending') {
-            if ($today >= $start_date) {
+            if ($today > $start_date) {
                 $_SESSION['error'] = 'Không thể đặt trạng thái chờ khi đã qua ngày bắt đầu';
                 header('location: ?act=form-add-khuyen-mai');
                 exit();
             }
             
+        }
+
+        // Thêm kiểm tra trùng lặp
+        if ($this->modelKhuyenMai->checkExistingPromotion($comic_id, $start_date, $end_date)) {
+            $_SESSION['error'] = 'Đã tồn tại khuyến mãi cho truyện này trong khoảng thời gian đã chọn';
+            header('location: ?act=form-add-khuyen-mai');
+            exit();
         }
 
         
@@ -185,6 +191,13 @@ class KhuyenMaiController
             }
         }
 
+        // Thêm kiểm tra trùng lặp, loại trừ khuyến mãi hiện tại
+        if ($this->modelKhuyenMai->checkExistingPromotion($comic_id, $start_date, $end_date, $id)) {
+            $_SESSION['error'] = 'Đã tồn tại khuyến mãi cho truyện này trong khoảng thời gian đã chọn';
+            header('location: ?act=form-edit-khuyen-mai&id='.$id);
+            exit();
+        }
+
        
         if ($this->modelKhuyenMai->updateKhuyenMai($id, $comic_id, $sale_type, $sale_value, $start_date, $end_date, $status)) {
             $_SESSION['success'] = 'Sửa khuyến mãi thành công';
@@ -203,3 +216,5 @@ class KhuyenMaiController
             header('location: ?act=khuyen-mai');
         }
 }
+
+

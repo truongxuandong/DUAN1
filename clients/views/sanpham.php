@@ -83,59 +83,85 @@
                 </div>
             </div>
 
-            <!-- Product Cards Start -->
-            <div class="container-fluid pt-5">
-                <div class="text-center mb-4">
-                    <h2 class="section-title px-5"><span class="px-2">Trending Products</span></h2>
-                </div>
-                <div class="row px-xl-5">
-                    <?php
-                    $count = 0;
-                    shuffle($listsp); // Shuffle products for randomness
-                    foreach ($listsp as $sp):
-                        if ($count >= 8) break; // Limit to 8 products
-                    ?>
-                        <div class="col-lg-3 col-md-6 col-sm-12 pb-4">
-                            <div class="card product-item border-0 mb-4 shadow-sm">
-                                <div class="card-header product-img position-relative overflow-hidden bg-transparent border-0 p-0">
-                                    <?php if (!empty($sp['sale_value'])): ?>
-                                        <div class="position-absolute bg-danger text-white p-1" style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
-                                            <?php
-                                            echo ($sp['sale_value'] < 100) 
-                                                ? '-' . number_format($sp['sale_value'], 0) . '%' 
-                                                : '-' . number_format($sp['sale_value'], 0, ',', '.') . ' đ';
-                                            ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    <img class="img-fluid w-100" src="<?php echo $sp['image'] ?>" alt="Product Image">
-                                </div>
-                                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                    <h6 class="text-truncate mb-3"><?php echo $sp['title'] ?></h6>
-                                    <div class="d-flex justify-content-center">
-                                        <h3>
-                                            <?php
-                                            $original_price = $sp['original_price'];
-                                            $final_price = $original_price;
+            
+                    </div>
+                   
+                    <div class="container-fluid pt-5">
+    <div class="text-center mb-4">
+        <h2 class="section-title px-5"><span class="px-2">Danh sách sản phẩm</span></h2>
+    </div>
+    <div class="row px-xl-5 pb-3">
+    <?php
+   
 
-                                            if (!empty($sp['sale_value']) && $sp['sale_value'] < 100) {
-                                                $final_price -= ($original_price * $sp['sale_value'] / 100);
-                                            } elseif (!empty($sp['sale_value'])) {
-                                                $final_price -= $sp['sale_value'];
-                                            }
+    // Loại bỏ các sản phẩm trùng lặp trước khi phân trang
+    $unique_products = array();
+    $displayed_ids = array();
+    
+    foreach ($listsp as $sp) {
+        if (!in_array($sp['id'], $displayed_ids)) {
+            $displayed_ids[] = $sp['id'];
+            $unique_products[] = $sp;
+        }
+    }
+    
+    // Thêm logic phân trang với mảng đã lọc trùng
+    $items_per_page = 6; // Đảm bảo hiển thị đúng 6 sản phẩm mỗi trang
+    $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $total_items = count($unique_products);
+    $total_pages = ceil($total_items / $items_per_page);
+    $offset = ($current_page - 1) * $items_per_page;
 
-                                            echo number_format(max($final_price, 0), 0, ',', '.'); // Ensure price isn't negative
-                                            ?> đ
-                                        </h3>
-                                        <h6 class="text-muted ml-2"><del><?php echo number_format($original_price, 0, ',', '.') ?> đ</del></h6>
-                                    </div>
-                                </div>
-                                <div class="card-footer d-flex justify-content-between bg-light border-0">
-                                    <a href="?act=chitietsp&id=<?php echo $sp['id'] ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                                    <a href="#" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                                </div>
-                            </div>
+    // Lấy chính xác 6 sản phẩm cho trang hiện tại
+    $current_products = array_slice($unique_products, $offset, $items_per_page);
+    
+    foreach ($current_products as $sp):
+    ?>
+        <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+            <div class="card product-item border-0 mb-4">
+                <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                    <?php if (!empty($sp['sale_value'])): ?>
+                        <div class="position-absolute bg-danger text-white p-1" style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
+                            <?php
+                            if ($sp['sale_value'] < 100) {
+                                echo '-' . number_format($sp['sale_value'], 0) . '%';
+                            } else {
+                                echo '-' . number_format($sp['sale_value'], 0, ',', '.') . ' đ';
+                            }
+                            ?>
                         </div>
-                    <?php $count++; endforeach; ?>
+                    <?php endif; ?>
+                    <img class="img-fluid w-100" src="<?php echo $sp['image'] ?>" alt="">
+                </div>
+
+                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                    <h6 class="text-truncate mb-3"><?php echo $sp['title'] ?></h6>
+                    <div class="d-flex justify-content-center">
+                        <h3 style="font-size: 20px;">
+                            <?php
+                            $original_price = $sp['original_price'];
+                            $final_price = $original_price;
+
+                            // Kiểm tra giảm giá theo phần trăm hoặc giảm giá cố định
+                            if (!empty($sp['sale_value']) && $sp['sale_value'] < 100) {
+                                // Giảm giá theo phần trăm
+                                $final_price -= ($original_price * $sp['sale_value'] / 100);
+                            } elseif (!empty($sp['sale_value'])) {
+                                // Giảm giá theo số tiền cố định
+                                $final_price -= $sp['sale_value'];
+                            }
+
+                            echo number_format(max($final_price, 0), 0, ',', '.'); // Đảm bảo giá không âm
+                            ?> đ
+                        </h3>
+                        <?php if (!empty($sp['sale_value'])): ?>
+                            <h6 class="text-muted ml-2"><del><?php echo number_format($original_price, 0, ',', '.') ?> đ </del></h6>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between bg-light border">
+                    <a href="?act=chitietsp&id=<?php echo $sp['id'] ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                    <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                 </div>
             </div>
             <!-- Product Cards End -->
@@ -159,6 +185,36 @@
                         </li>
                     </ul>
                 </nav>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+    <!-- Products End -->
+                    
+                    <div class="col-12 pb-1">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center mb-3">
+                                <li class="page-item <?php echo ($current_page <= 1) ? 'disabled' : ''; ?>">
+                                    <a class="page-link" href="?act=sanpham&page=<?php echo $current_page - 1; ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="page-item <?php echo ($current_page == $i) ? 'active' : ''; ?>">
+                                        <a class="page-link" href="?act=sanpham&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item <?php echo ($current_page >= $total_pages) ? 'disabled' : ''; ?>">
+                                    <a class="page-link" href="?act=sanpham&page=<?php echo $current_page + 1; ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
             <!-- Pagination End -->
         </div>

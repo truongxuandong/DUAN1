@@ -6,7 +6,7 @@ if (!empty($sanphamct)): ?>
             <div id="product-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner border">
                     <div class="carousel-item active">
-                        <img class="w-100 h-100" src="<?= $sanphamct['image'] ?? '' ?>" alt="Image">
+                        <img id="product-image" class="w-100 h-100" src="<?= $sanphamct['image'] ?? '' ?>" alt="Image">
                     </div>
                 </div>
             </div>
@@ -14,6 +14,7 @@ if (!empty($sanphamct)): ?>
 
         <div class="col-lg-7 pb-5">
             <h3 class="font-weight-semi-bold"><?= $sanphamct['title'] ?? '' ?></h3>
+
             <div class="d-flex mb-3">
                 <div class="text-primary mr-2">
                     <small class="fas fa-star"></small>
@@ -24,28 +25,106 @@ if (!empty($sanphamct)): ?>
                 </div>
                 <small class="pt-1">(50 Reviews)</small>
             </div>
-            <h3 class="font-weight-semi-bold mb-4 d-inline"><?= number_format($sanphamct['price'] ?? 0, 0, ',', '.') ?> đ</h3>
-            <h5 class="font-weight-semi-bold mb-4 d-inline text-muted" style="text-decoration: line-through;"><?= number_format($sanphamct['original_price'] ?? 0, 0, ',', '.') ?> đ</h5>
+            <div class="product-details mb-4">
+                <?php if (!empty($sanphamct['variants'])): ?>
+                    <div class="variants-container">
+                        <?php foreach ($sanphamct['variants'] as $variant): ?>
+                            <button type="button" class="btn btn-outline-danger variant-btn"
+                                data-price="<?= $variant['price'] ?>"
+                                data-stock="<?= $variant['stock_quantity'] ?>"
+                                data-image="<?= $variant['image'] ?>"
+                                data-format="<?= $variant['format'] ?>"
+                                data-language="<?= $variant['language'] ?>"
+                                data-sale-value="<?= $variant['sale_value'] ?>"
+                                onclick="updateVariantInfo(this)">
+                                <?= $variant['format'] ?> + <?= $variant['language'] ?>
+                            </button>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <div class="selected-variant-info mt-3" style="display: none;">
+                        <p class="mb-0">Còn: <span class="variant-stock"></span> sản phẩm</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-weight-semi-bold d-inline" id="product-price">
+                    <?php
+                    $original_price = $sanphamct['original_price'];
+                    if (!empty($sanphamct['sale_value'])) {
+                        $original_price =  $sanphamct['original_price'];
+                        $sale_value = $sanphamct['sale_value'];
+
+                        // Tính giá sau khuyến mãi
+                        if ($sale_value < 100) {
+                            // Giảm giá theo phần trăm
+                            $final_price = $original_price - ($original_price * $sale_value / 100);
+                        } else {
+                            // Giảm giá theo số tiền cố định
+                            $final_price = $original_price - $sale_value;
+                        }
+                        echo number_format(max($final_price, 0), 0, ',', '.') . ' đ';
+                    } else {
+                        // Không có khuyến mãi, hiển thị giá gốc
+                        echo number_format($original_price, 0, ',', '.') . ' đ';
+                    }
+                    ?>
+                </h3>
+                <?php if (!empty($sanphamct['sale_value'])): ?>
+                    <h5 class="font-weight-semi-bold d-inline text-muted ml-2" id="original-price" style="text-decoration: line-through;">
+                        <?= number_format($original_price, 0, ',', '.') ?> đ
+                    </h5>
+                <?php endif; ?>
+            </div>
             <p class="mb-4"><?= $sanphamct['description'] ?? '' ?></p>
-            
+
             <form action="" method="POST" class="d-flex align-items-center mb-4 pt-2">
-                <div class="input-group quantity mr-3" style="width: 130px;">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                    <input type="text" name="quantity" id="quantity" class="form-control bg-secondary text-center" value="1" min="1">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <input type="hidden" name="product_id" value="<?= $sanphamct['id'] ?? '' ?>">
-                <button type="submit" name="add_to_cart" class="btn btn-primary px-3">
-                    <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                <?php if (!empty($sanphamct['id'])): ?>
+                    <input type="hidden" name="variant_id" value="<?= $sanphamct['id'] ?>">
+                <?php endif; ?>
+                <input type="hidden" name="comic_id" value="<?= $sanphamct['comic_id'] ?? $sanphamct['id'] ?? '' ?>">
+
+                <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
+
+
+                    <div class="product-details">
+    <!-- Phần tăng giảm số lượng -->
+    <div class="quantity-box mb-4" style="width: 150px;">
+        <div class="input-group quantity">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
+                    <i class="fa fa-minus"></i>
                 </button>
+            </div>
+            <input type="number" name="quantity" id="quantity" class="form-control bg-light text-center" value="1" min="1">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút Add To Cart và Mua ngay nằm cùng 1 hàng -->
+    <div class="button-group d-flex justify-content-between" style="gap: 10px;margin-top: 40px;">
+    <button type="submit" name="add_to_cart" class="btn btn-outline-primary btn-sm" style="width: 150px; height: 40px;">
+        <i class="fa fa-shopping-cart mr-1"></i> Thêm vào giỏ
+    </button>
+    <button type="submit" name="buy_now" class="btn btn-danger btn-sm" style="width: 150px; height: 40px;">
+        <i class="fa fa-shopping-basket mr-1"></i> Mua ngay
+    </button>
+    </div>
+</div>
+
+</div>
+
+
+
+
+                <?php else: ?>
+                    <div class="alert alert-warning mb-0">Out of stock</div>
+                <?php endif; ?>
             </form>
         </div>
     </div>
@@ -78,7 +157,7 @@ if (!empty($sanphamct)): ?>
             <a class="nav-item nav-link active" data-toggle="tab" href="#comments-tab"><strong>Comments</strong></a>
             <a class="nav-item nav-link" data-toggle="tab" href="#reviews-tab"><strong>Reviews</strong></a>
         </div>
-        
+
         <div class="tab-content">
             <!-- Comments Section -->
             <div class="tab-pane fade show active" id="comments-tab">
@@ -100,7 +179,7 @@ if (!empty($sanphamct)): ?>
                     </div>
                 </form>
             </div>
-            
+
             <!-- Reviews Section -->
             <div class="tab-pane fade" id="reviews-tab">
                 <h4 class="mb-4"><strong>Reviews</strong></h4>
@@ -119,63 +198,180 @@ if (!empty($sanphamct)): ?>
                         <p><strong>Great product!</strong> Highly recommend to everyone looking for quality and reliability.</p>
                     </div>
                 </div>
-                <!-- Leave a Review -->
-                <form>
-                    <div class="form-group">
-                        <label for="review-message"><strong>Your Review *</strong></label>
-                        <textarea id="review-message" cols="30" rows="4" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="review-name"><strong>Name *</strong></label>
-                        <input type="text" class="form-control" id="review-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="review-email"><strong>Email *</strong></label>
-                        <input type="email" class="form-control" id="review-email">
-                    </div>
-                    <div class="form-group">
-                        <p class="mb-1"><strong>Your Rating *</strong></p>
-                        <div class="text-primary">
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="form-group mb-0">
-                        <button type="submit" class="btn btn-primary px-3"><strong>Submit Review</strong></button>
-                    </div>
-                </form>
+
             </div>
+
         </div>
     </div>
-</div>
-<?php if ($product): ?>
-    <h2><?php echo htmlspecialchars($product['title']); ?></h2>
-    <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" style="width: 300px; height: auto;">
-    <p><strong>Mô tả:</strong> <?php echo htmlspecialchars($product['description']); ?></p>
-    <p><strong>Giá:</strong> <?php echo number_format($product['price'], 0, ',', '.'); ?> đ</p>
-<?php else: ?>
-    <p>Sản phẩm không tồn tại.</p>
-<?php endif; ?>
+    <!-- Products Start -->
+    <div class="container-fluid pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Sách cùng thể loại</span></h2>
+        </div>
+        <div class="row px-xl-5 pb-3">
+            <?php
+            $count = 0;
+            $displayed_products = array();
 
+            foreach ($sanphamcungloai as $spcl):
+                // Skip if already displayed or if count reaches 5
+                if (in_array($spcl['id'], $displayed_products) || $count >= 5) continue;
+                $displayed_products[] = $spcl['id'];
+                $count++;
+            ?>
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="card product-item border-0 mb-4">
+                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <?php if (!empty($spcl['sale_value'])): ?>
+                                <div class="position-absolute bg-danger text-white p-1" style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
+                                    <?php
+                                    if ($spcl['sale_value'] < 100) {
+                                        echo '-' . number_format($spcl['sale_value'], 0) . '%';
+                                    } else {
+                                        echo '-' . number_format($spcl['sale_value'], 0, ',', '.') . ' đ';
+                                    }
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                            <img class="img-fluid w-100" src="<?php echo $spcl['image'] ?>" alt="" style="width: 50%; height: auto;">
+                        </div>
 
+                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                            <h6 class="text-truncate mb-3"><?php echo $spcl['title'] ?></h6>
 
-<script>
-    function increaseValue() {
-        var value = parseInt(document.getElementById('quantity').value);
-        value = isNaN(value) ? 0 : value;
-        value++;
-        document.getElementById('quantity').value = value;
-    }
+                            <div class="d-flex justify-content-center">
+                                <h5 class="small-price">
+                                    <?php
+                                    $original_price = $spcl['price'];
+                                    $final_price = $original_price;
+                                    $has_discount = false;
 
-    function decreaseValue() {
-        var value = parseInt(document.getElementById('quantity').value);
-        value = isNaN(value) ? 0 : value;
-        if(value > 1) {
-            value--;
+                                    // Kiểm tra giảm giá theo phần trăm hoặc giảm giá cố định
+                                    if (!empty($spcl['sale_value'])) {
+                                        $has_discount = true;
+                                        if ($spcl['sale_value'] < 100) {
+                                            // Giảm giá theo phần trăm
+                                            $final_price -= ($original_price * $spcl['sale_value'] / 100);
+                                        } else {
+                                            // Giảm giá theo số tiền cố định
+                                            $final_price -= $spcl['sale_value'];
+                                        }
+                                    }
+
+                                    echo number_format(max($final_price, 0), 0, ',', '.'); // Đảm bảo giá không âm
+                                    ?> đ
+                                </h5>
+                                <?php if ($has_discount): ?>
+                                    <h6 class="text-muted ml-2"><del><?php echo number_format($original_price, 0, ',', '.') ?> đ</del></h6>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between bg-light border">
+                            <a href="?act=chitietsp&id=<?php echo $spcl['id'] ?>" class="btn btn-sm text-dark p-0">
+                                <i class="fas fa-eye text-primary mr-1"></i>View Detail
+                            </a>
+
+                            <a href="" class="btn btn-sm text-dark p-0">
+                                <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <?php if ($count == 0): ?>
+                <div class="col-12 text-center">Không có sản phẩm cùng loại</div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <script>
+        function increaseValue() {
+            var value = parseInt(document.getElementById('quantity').value);
+            value = isNaN(value) ? 0 : value;
+            value++;
             document.getElementById('quantity').value = value;
         }
-    }
-</script>
+
+        function decreaseValue() {
+            var value = parseInt(document.getElementById('quantity').value);
+            value = isNaN(value) ? 0 : value;
+            if (value > 1) {
+                value--;
+                document.getElementById('quantity').value = value;
+            }
+        }
+
+        function updateVariantInfo(button) {
+            // Lấy các giá trị của biến thể được chọn
+            var price = parseFloat(button.getAttribute('data-price')); // Giá gốc
+            var stock = button.getAttribute('data-stock'); // Tồn kho
+            var image = button.getAttribute('data-image'); // Ảnh biến thể
+            var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0); // Giá giảm
+
+            // Tính giá sau khi giảm giá
+            var finalPrice = price;
+            if (saleValue > 0) {
+                if (saleValue < 100) {
+                    // Giảm giá theo phần trăm
+                    finalPrice = price - (price * saleValue / 100);
+                } else {
+                    // Giảm giá theo số tiền cố định
+                    finalPrice = price - saleValue;
+                }
+            }
+
+            // Cập nhật giá hiển thị
+            document.getElementById('product-price').textContent =
+                new Intl.NumberFormat('vi-VN').format(Math.max(finalPrice, 0)) + ' đ';
+
+            // Hiển thị giá gốc nếu có giảm giá
+            if (saleValue > 0) {
+                document.getElementById('original-price').style.display = 'inline'; // Hiện giá gạch
+                document.getElementById('original-price').textContent =
+                    new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+            } else {
+                // Không có khuyến mãi -> Ẩn giá gạch, hiển thị giá gốc
+                document.getElementById('original-price').style.display = 'none';
+                document.getElementById('product-price').textContent =
+                    new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+            }
+
+            // Cập nhật số lượng tồn kho
+            document.querySelector('.variant-stock').textContent = stock ? stock : '0';
+
+            // Cập nhật hình ảnh
+            document.getElementById('product-image').src = image ? image : '';
+
+            // Cập nhật thông tin biến thể đã chọn
+            document.querySelector('.selected-variant-info').style.display = 'block';
+        }
+    </script>
+
+
+    <style>
+        
+
+        /* Cải thiện giao diện nút khi hover */
+        .btn-primary:hover,
+        .btn-danger:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger:hover {
+            background-color: #cc0000;
+        }
+        .button-group {
+    display: flex;
+    justify-content: flex-start; /* Hoặc `space-between` nếu cần dãn cách đều */
+    gap: 10px; /* Khoảng cách giữa các nút */
+}
+.btn-custom {
+    width: 150px;
+    height: 40px;
+    display: flex;
+    align-items: center; /* Căn giữa nội dung nút theo chiều dọc */
+    justify-content: center; /* Căn giữa nội dung nút theo chiều ngang */
+}
+
+    </style>

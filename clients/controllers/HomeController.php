@@ -13,25 +13,35 @@ class HomeController
     }
 
     public function views_home() {
-        $listdm = $this->modelDanhMuc->getAllDanhMuc();
-        $sanphams = $this->modelSanPham->getAllSanPham();
-
-        require_once './views/layout/navbar.php';
-        require_once './views/home.php';
+        try {
+            $listdm = $this->modelDanhMuc->getAllDanhMuc();
+            $sanphamnew = $this->modelSanPham->getAllSanPham();
+            $sanphams_hot = $this->modelSanPham->getAllSanPhamHot();
+            $sanphams_sale=$this->modelSanPham->getAllSanPhamSale();
+           
+            
+            require_once './views/layout/navbar.php';
+            require_once './views/home.php';
+        } catch (Exception $e) {
+            error_log("Lỗi trong views_home: " . $e->getMessage());
+        }
     }
     public function views_chitietsp() {
-        $sanphamct = $this->modelSanPham->getSanPhamById($_GET['id']);
-        require_once './models/sanpham.php';
-        $id = $_GET['id'] ?? 0;
-    
-        $sanpham_model = new SanPham();
-        $product = $sanpham_model->layChiTietSanPham($id); // Lấy chi tiết sản phẩm từ model
-    
-        if (!$product) {
-            echo "<p>Sản phẩm không tồn tại.</p>";
-        } else {
-            require './views/chitietsp.php'; // Giao diện chi tiết sản phẩm
+        if (!isset($_GET['id'])) {
+            // Xử lý khi không có id
+            header('Location: ./');
+            return;
         }
+        
+        $sanphamct = $this->modelSanPham->getSanPhamById($_GET['id']);
+        $sanphamct['variants'] = $this->modelSanPham->getSanPhamAllVariant($_GET['id']);
+        $sanphamcungloai = [];
+        
+        if ($sanphamct) {
+            $sanphamcungloai = $this->modelSanPham->getSanPhamCungLoai($sanphamct['category_id']);
+        }
+        
+        require_once './views/chitietsp.php';
     }
     public function views_sanpham() {
         $listsp= $this->modelSanPham->getAllSanPham();

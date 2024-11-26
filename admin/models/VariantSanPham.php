@@ -135,7 +135,7 @@ class Variant {
         }
     }
 
-    
+    //
     public function getIdVariants() {
         try {
             $sql = "SELECT v.*, c.title as comic_title FROM comic_variants v

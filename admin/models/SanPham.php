@@ -10,7 +10,7 @@ class SanPham {
     
     public function getAllSanPham(){
         try {
-            $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, comics.description, 
+            $sql = "SELECT comics.id, comics.title, comics.author_id, comics.category_id, 
                            comics.publication_date, comics.price, comics.original_price, comics.stock_quantity, comics.image, 
                            authors.name AS author_name, categories.name AS category_name, comic_sales.sale_value AS sale
                     FROM comics

@@ -49,7 +49,6 @@
                         <i class="menu-icon fa fa-picture-o" style="font-size: 20px; margin-right: 10px;"></i>Quản lí Banner
                     </a>
                 </li>
-                
                 <li class="menu-item-has-children dropdown">
                     <a href="?act=user" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-users" style="font-size: 18px; margin-right: 10px;"></i>Quản lí tài khoản
@@ -61,4 +60,3 @@
         </div><!-- /.navbar-collapse -->
     </nav>
 </aside>
-

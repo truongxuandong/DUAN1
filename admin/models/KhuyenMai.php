@@ -20,11 +20,11 @@ class KhuyenMaiModel {
                 comic_sales.*, 
                 comics.title,
                 CASE
-                    WHEN NOW() < comic_sales.start_date THEN 'pending'
-                    WHEN NOW() BETWEEN comic_sales.start_date AND comic_sales.end_date THEN 'active'
-                    WHEN NOW() > comic_sales.end_date THEN 'inactive'
+                    WHEN NOW() < STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') THEN 'pending'
+                    WHEN NOW() >= STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') AND NOW() <= STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'active'
+                    WHEN NOW() > STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'inactive'
                     ELSE comic_sales.status
-                END
+                END as current_status
             FROM comic_sales
             JOIN comics on comics.id = comic_sales.comic_id";
             $stmt = $this->conn->prepare($sql);
@@ -51,6 +51,8 @@ class KhuyenMaiModel {
             // Nếu cần chuyển đổi timestamp sang DATE
             $start_date = date('Y-m-d H:i', $start_date);
             $end_date = date('Y-m-d H:i', $end_date);
+    
+            $status = ($start_date <= time()) ? 'active' : $status; // Đặt trạng thái dựa trên ngày bắt đầu
     
             $sql = "INSERT INTO comic_sales (comic_id, sale_type, sale_value, start_date, end_date, status) 
             VALUES (:comic_id, :sale_type, :sale_value, :start_date, :end_date, :status)";
@@ -84,9 +86,9 @@ class KhuyenMaiModel {
                 comic_sales.*, 
                 comics.title,
                 CASE
-                    WHEN NOW() < comic_sales.start_date THEN 'pending'
-                    WHEN NOW() BETWEEN comic_sales.start_date AND comic_sales.end_date THEN 'active'
-                    WHEN NOW() > comic_sales.end_date THEN 'expired'
+                    WHEN NOW() < STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') THEN 'pending'
+                    WHEN NOW() >= STR_TO_DATE(comic_sales.start_date, '%Y-%m-%d %H:%i:%s') AND NOW() <= STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'active'
+                    WHEN NOW() > STR_TO_DATE(comic_sales.end_date, '%Y-%m-%d %H:%i:%s') THEN 'expired'
                     ELSE comic_sales.status
                 END as current_status
             FROM comic_sales
@@ -139,6 +141,51 @@ class KhuyenMaiModel {
             return true;
         } catch (Exception $e) {
             echo "lỗi" . $e->getMessage();
+            return false;
+        }
+    }
+    public function updateExpiredPromotions() {
+        try {
+            $sql = "UPDATE comic_sales 
+                    SET status = 'inactive' 
+                    WHERE end_date < NOW() 
+                    AND status != 'inactive'";
+            $stmt = $this->conn->prepare($sql);
+            $result = $stmt->execute();
+            
+            return $result;
+        } catch (Exception $e) {
+            error_log("Error updating expired promotions: " . $e->getMessage());
+            return false;
+        }
+    }
+    public function checkExistingPromotion($comic_id, $start_date, $end_date, $id = null) {
+        try {
+            $sql = "SELECT COUNT(*) FROM comic_sales 
+                    WHERE comic_id = :comic_id 
+                    AND ((start_date BETWEEN :start_date AND :end_date)
+                    OR (end_date BETWEEN :start_date AND :end_date)
+                    OR (:start_date BETWEEN start_date AND end_date))";
+            
+            if ($id !== null) {
+                $sql .= " AND id != :id";
+            }
+            
+            $stmt = $this->conn->prepare($sql);
+            $params = [
+                ':comic_id' => $comic_id,
+                ':start_date' => date('Y-m-d H:i', $start_date),
+                ':end_date' => date('Y-m-d H:i', $end_date)
+            ];
+            
+            if ($id !== null) {
+                $params[':id'] = $id;
+            }
+            
+            $stmt->execute($params);
+            return $stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            error_log("Error checking existing promotion: " . $e->getMessage());
             return false;
         }
     }

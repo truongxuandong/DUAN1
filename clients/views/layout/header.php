@@ -78,6 +78,16 @@
             </button>
         </div>
     </form>
+        
+        <div class="row align-items-center py-3 px-xl-5">
+        <div class="col-lg-3 d-none d-lg-block" style="text-align: center;">
+    <a href="" class="text-decoration-none">
+        <h1 class="m-0 display-5 font-weight-semi-bold">
+            <a href="./" class="text-primary font-weight-bold  px-3 mr-1" style="display: inline-block;">
+                <img src="assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
+            </a> 
+        </h1>
+    </a>
 </div>
 
             
@@ -86,7 +96,7 @@
                     <i class="fas fa-bell"></i>
                     <span class="badge badge-primary">4</span>
                 </a>
-                <a href="#" class="btn border">
+                <a href="?act=show-cart" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
                     <span class="badge badge-primary">0</span>
                 </a>
