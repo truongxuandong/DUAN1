@@ -28,7 +28,6 @@ class KhuyenMaiController
         $end_date = strtotime($_POST['end_date']);
         $today = strtotime(date('Y-m-d'));
 
-        
         if ($start_date < $today) {
             $_SESSION['error'] = 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại';
             header('location: ?act=form-add-khuyen-mai');
@@ -83,7 +82,7 @@ class KhuyenMaiController
                 exit();
             }
         } elseif ($status == 'pending') {
-            if ($today >= $start_date) {
+            if ($today > $start_date) {
                 $_SESSION['error'] = 'Không thể đặt trạng thái chờ khi đã qua ngày bắt đầu';
                 header('location: ?act=form-add-khuyen-mai');
                 exit();
@@ -217,3 +216,5 @@ class KhuyenMaiController
             header('location: ?act=khuyen-mai');
         }
 }
+
+
