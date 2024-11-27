@@ -11,27 +11,70 @@ class LoginController
         $this->loginModel = new Login();
     }
 
+    // public function login()
+    // {
+    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //         $email = trim($_POST['email']);
+    //         $password = $_POST['password'];
+
+    //         // Gọi phương thức checkLogin từ Model
+    //         $user = $this->loginModel->checkLogin($email, $password); // Trả về thông tin người dùng
+
+    //         if ($user && is_array($user)) { // Kiểm tra xem có trả về mảng hay không
+    //             // Lưu đầy đủ thông tin người dùng vào session
+    //             $_SESSION['user'] = [
+    //                 'id' => $user['id'],
+    //                 'name' => $user['name'],
+    //                 'email' => $user['email'],  // Thêm email
+    //                 'role' => $user['role'],    // Thêm vai trò (admin hoặc user)
+    //             ];
+
+    //             $_SESSION['success'] = "Đăng nhập thành công!";
+
+    //             // Chuyển hướng đến trang admin nếu vai trò là admin
+    //             if ($user['role'] === 'admin') {
+    //                 header("Location: http://localhost/duan1/admin/"); // Cập nhật đường dẫn phù hợp
+    //             } else {
+    //                 // Chuyển hướng đến trang chính nếu không phải admin
+    //                 header("Location: ?act=/");
+    //             }
+    //             exit();
+    //         } else {
+    //             $_SESSION['error'] = "Email hoặc mật khẩu không đúng.";
+    //             header("Location: ?act=login");
+    //             exit();
+    //         }
+    //     }
+    //     require_once 'clients/views/formDangky/login.php'; // Hiển thị form đăng nhập
+    // }
     public function login()
-    {
-        // session_start();
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email']);
-            $password = $_POST['password'];
+        // Gọi phương thức checkLogin từ Model
+        $user = $this->loginModel->checkLogin($email, $password);
 
-            // Gọi phương thức checkLogin từ Model
-            if ($this->loginModel->checkLogin($email, $password)) {
-                $_SESSION['success'] = "Đăng nhập thành công!";
-                header("Location: ?act=/");  // Chuyển hướng sau khi đăng nhập thành công
-                exit();
-            } else {
-                $_SESSION['error'] = "Email hoặc mật khẩu không đúng.";
-                header("Location: ?act=login");
-                exit();
-            }
+        if ($user && is_array($user)) {
+            // Lưu đầy đủ thông tin người dùng vào session
+            $_SESSION['user'] = [
+                'id' => $user['id'],          
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'role' => $user['role'],
+            ];
+            $_SESSION['user_id'] = $user['id']; 
+
+            $_SESSION['success'] = "Đăng nhập thành công!";
+            header("Location: ?act=/&user_id=" . $user['id']);
+            exit();
         }
-        require_once './views/formDangky/login.php'; // Hiển thị form đăng nhập
     }
+    require_once 'clients/views/formDangky/login.php';
+}
+
+
 
 
     public function register()
@@ -59,14 +102,14 @@ class LoginController
                 exit();
             }
         }
-        require_once './views/formDangky/register.php';
+        require_once 'clients/views/formDangky/register.php';
     }
 
     public function logout()
     {
         // session_start();
         session_destroy(); // Hủy session để người dùng bị đăng xuất
-        header("Location: ?act=login"); // Chuyển hướng người dùng về trang đăng nhập
+        header("Location: ?act=/"); // Chuyển hướng người dùng về trang đăng nhập
         exit();
     }
 }

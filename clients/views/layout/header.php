@@ -12,9 +12,13 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <!-- Libraries Stylesheet -->
-    <link href="assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="./clients/assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="./clients/assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/duan1/assets/css/style.css">
+
+
 </head>
 
 <body>
@@ -50,7 +54,7 @@
             <div class="col-lg-3 d-none d-lg-block text-center">
                 <a href="#" class="text-decoration-none">
                     <h1 class="m-0 display-5 font-weight-semi-bold">
-                        <img src="assets/logo/logo.png" alt="Book-Store Logo" style="max-width: 100%; height: 80px;">
+                    <img src="clients/assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
                     </h1>
                 </a>
             </div>

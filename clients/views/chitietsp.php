@@ -126,6 +126,7 @@ if (!empty($sanphamct)): ?>
                     <div class="alert alert-warning mb-0">Out of stock</div>
                 <?php endif; ?>
             </form>
+
         </div>
     </div>
 <?php else: ?>

@@ -82,12 +82,11 @@ class KhuyenMaiController
                 exit();
             }
         } elseif ($status == 'pending') {
-            if ($today > $start_date) {
-                $_SESSION['error'] = 'Không thể đặt trạng thái chờ khi đã qua ngày bắt đầu';
+            if ($today >= $start_date) {
+                $_SESSION['error'] = 'Không thể đặt trạng thái chờ khi đã đến hoặc qua ngày bắt đầu';
                 header('location: ?act=form-add-khuyen-mai');
                 exit();
             }
-            
         }
 
         // Thêm kiểm tra trùng lặp

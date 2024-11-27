@@ -1,113 +1,88 @@
 <?php
-class Cart
+class CartModel
 {
-    public $conn;
+    private $conn;
 
     public function __construct()
     {
-        $this->conn = connectDB();  // Giả sử hàm connectDB() đã được định nghĩa để kết nối với cơ sở dữ liệu
+        $this->conn = connectDB();
     }
 
-    // Lấy giỏ hàng của người dùng
-    public function getCart($userId)
+    public function getCartItems($userId)
     {
-        try {
-            $sql = "SELECT * FROM cart WHERE user_id = :user_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetch();  // Trả về giỏ hàng của người dùng nếu tồn tại
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
-        }
+        $sql = "SELECT ci.*, c.title, c.price, c.image 
+                FROM cart_items ci 
+                JOIN comics c ON ci.comic_id = c.id 
+                WHERE ci.cart_id IN (SELECT id FROM cart WHERE user_id = ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
     }
 
-    // Tạo giỏ hàng mới cho người dùng
-    public function createCart($userId)
+    public function addItem($userId, $comicId, $quantity)
     {
-        try {
-            $sql = "INSERT INTO cart (user_id) VALUES (:user_id)";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':user_id', $userId);
-            $stmt->execute();
-            return $this->conn->lastInsertId();  // Trả về ID giỏ hàng vừa tạo
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+        $sql = "SELECT price FROM comics WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$comicId]);
+        $comic = $stmt->fetch();
+        
+        if (!$comic) {
+            return false;
         }
+
+        $cartId = $this->getOrCreateCart($userId);
+        $sql = "INSERT INTO cart_items (cart_id, comic_id, quantity, unit_price) 
+                VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$cartId, $comicId, $quantity, $comic['price']]);
     }
 
-    // Lấy tất cả các sản phẩm trong giỏ hàng
-    public function getCartItems($cartId)
+    private function getOrCreateCart($userId)
     {
-        try {
-            $sql = "SELECT ci.id, ci.quantity, ci.unit_price, c.name AS comic_name
-                    FROM cart_items ci
-                    JOIN comics c ON ci.comic_id = c.id
-                    WHERE ci.cart_id = :cart_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([ ':cart_id' => $cartId ]);
-            return $stmt->fetchAll();  // Trả về tất cả các sản phẩm trong giỏ hàng
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+        $sql = "SELECT id FROM cart WHERE user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+        $cart = $stmt->fetch();
+
+        if ($cart) {
+            return $cart['id'];
         }
+
+        $sql = "INSERT INTO cart (user_id) VALUES (?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+        return $this->conn->lastInsertId();
     }
 
-    // Thêm sản phẩm vào giỏ hàng
-    public function addProductToCart($cartId, $comicId, $quantity, $unitPrice)
+    public function updateQuantity($itemId, $quantity, $userId)
     {
-        try {
-            // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
-            $sql = "SELECT * FROM cart_items WHERE cart_id = :cart_id AND comic_id = :comic_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([ ':cart_id' => $cartId, ':comic_id' => $comicId ]);
-            $item = $stmt->fetch();
-
-            if ($item) {
-                // Nếu có, cập nhật số lượng
-                $newQuantity = $item['quantity'] + $quantity;
-                $sql = "UPDATE cart_items SET quantity = :quantity WHERE id = :id";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([ ':quantity' => $newQuantity, ':id' => $item['id'] ]);
-            } else {
-                // Nếu chưa có, thêm mới sản phẩm vào giỏ
-                $sql = "INSERT INTO cart_items (cart_id, comic_id, quantity, unit_price) 
-                        VALUES (:cart_id, :comic_id, :quantity, :unit_price)";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([
-                    ':cart_id' => $cartId,
-                    ':comic_id' => $comicId,
-                    ':quantity' => $quantity,
-                    ':unit_price' => $unitPrice
-                ]);
-            }
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
-        }
+        $sql = "UPDATE cart_items ci 
+                JOIN cart c ON ci.cart_id = c.id 
+                SET ci.quantity = ? 
+                WHERE ci.id = ? AND c.user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$quantity, $itemId, $userId]);
     }
 
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    public function updateProductQuantity($cartItemId, $quantity)
+    public function removeItem($itemId, $userId)
     {
-        try {
-            $sql = "UPDATE cart_items SET quantity = :quantity WHERE id = :cart_item_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([ ':quantity' => $quantity, ':cart_item_id' => $cartItemId ]);
-            return true;
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
-        }
+        $sql = "DELETE ci FROM cart_items ci 
+                JOIN cart c ON ci.cart_id = c.id 
+                WHERE ci.id = ? AND c.user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$itemId, $userId]);
     }
 
-    // Xóa sản phẩm khỏi giỏ hàng
-    public function removeProductFromCart($cartItemId)
+    public function getCartTotal($userId)
     {
-        try {
-            $sql = "DELETE FROM cart_items WHERE id = :cart_item_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([ ':cart_item_id' => $cartItemId ]);
-            return true;
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
-        }
+        $sql = "SELECT SUM(ci.quantity * c.price) as total 
+                FROM cart_items ci 
+                JOIN comics c ON ci.comic_id = c.id 
+                JOIN cart ca ON ci.cart_id = ca.id 
+                WHERE ca.user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        return $result['total'] ?? 0;
     }
 }
-?>

@@ -14,9 +14,9 @@
                     </a>
                 </li>
                 
-                <li class="menu-item-has-children dropdown">
-                    <a href="?act=san-pham" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                <li class="menu-item-has-children dropdown">">
                         <i class="menu-icon fa fa-book" style="font-size: 18px; margin-right: 10px;"></i>Sản phẩm
+                    <a href="?act=san-pham" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false
                     </a>
                 </li>
                 
