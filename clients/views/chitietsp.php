@@ -14,7 +14,7 @@ if (!empty($sanphamct)): ?>
 
         <div class="col-lg-7 pb-5">
             <h3 class="font-weight-semi-bold"><?= $sanphamct['title'] ?? '' ?></h3>
-            
+
             <div class="d-flex mb-3">
                 <div class="text-primary mr-2">
                     <small class="fas fa-star"></small>
@@ -29,7 +29,7 @@ if (!empty($sanphamct)): ?>
                 <?php if (!empty($sanphamct['variants'])): ?>
                     <div class="variants-container">
                         <?php foreach ($sanphamct['variants'] as $variant): ?>
-                            <button class="btn btn-outline-primary variant-btn" 
+                            <button class="btn btn-outline-primary variant-btn"
                                 data-price="<?= $variant['price'] ?>"
                                 data-stock="<?= $variant['stock_quantity'] ?>"
                                 data-image="<?= $variant['image'] ?>"
@@ -41,7 +41,7 @@ if (!empty($sanphamct)): ?>
                             </button>
                         <?php endforeach; ?>
                     </div>
-                    
+
                     <div class="selected-variant-info mt-3" style="display: none;">
                         <p class="mb-0">Còn: <span class="variant-stock"></span> sản phẩm</p>
                     </div>
@@ -54,7 +54,7 @@ if (!empty($sanphamct)): ?>
                     if (!empty($sanphamct['sale_value'])) {
                         $original_price =  $sanphamct['price'];
                         $sale_value = $sanphamct['sale_value'];
-                        
+
                         // Tính giá sau khuyến mãi
                         if ($sale_value < 100) {
                             // Giảm giá theo phần trăm
@@ -77,28 +77,34 @@ if (!empty($sanphamct)): ?>
                 <?php endif; ?>
             </div>
             <p class="mb-4"><?= $sanphamct['description'] ?? '' ?></p>
-            
-            <form action="" method="POST" class="d-flex align-items-center mb-4 pt-2">
-                <div class="input-group quantity mr-3" style="width: 130px;">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
-                            <i class="fa fa-minus"></i>
-                        </button>
+
+            <form action="?act=add-item-to-cart" method="POST" class="d-flex align-items-center mb-4 pt-2">
+                <!-- ID sản phẩm hoặc biến thể -->
+                <input type="hidden" name="variant_id" value="<?= htmlspecialchars($sanphamct['id'] ?? '') ?>">
+                <input type="hidden" name="comic_id" value="<?= htmlspecialchars($sanphamct['comic_id'] ?? $sanphamct['id'] ?? '') ?>">
+
+                <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
+                    <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-minus" onclick="changeQuantity(-1)">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center"
+                            style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-plus" onclick="changeQuantity(1)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center" value="1" min="1">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <input type="hidden" name="product_id" value="<?= $sanphamct['id'] ?? '' ?>">
-                <button type="submit" name="add_to_cart" class="btn btn-primary px-3">
-                    <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-                </button>
+                    <button type="submit" name="view-shopping-cart" class="btn btn-primary px-3">
+                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                    </button>
+                <?php else: ?>
+                    <div class="alert alert-warning mb-0">Out of stock</div>
+                <?php endif; ?>
             </form>
-
-
 
         </div>
     </div>
@@ -201,151 +207,146 @@ if (!empty($sanphamct)): ?>
                     </div>
                 </form>
             </div>
-            
+
         </div>
     </div>
     <!-- Products Start -->
-<div class="container-fluid pt-5">
-    <div class="text-center mb-4">
-        <h2 class="section-title px-5"><span class="px-2">Sách cùng thể loại</span></h2>
-    </div>
-    <div class="row px-xl-5 pb-3">
-    <?php
-    $count = 0;
-    $displayed_products = array();
-                
-    foreach ($sanphamcungloai as $spcl):
-        // Skip if already displayed or if count reaches 5
-        if (in_array($spcl['id'], $displayed_products) || $count >= 5) continue;
-        $displayed_products[] = $spcl['id'];
-        $count++;
-    ?>
-        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="card product-item border-0 mb-4">
-                <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                <?php if (!empty($spcl['sale_value'])): ?>
-                                    <div class="position-absolute bg-danger text-white p-1" style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
-                                        <?php
+    <div class="container-fluid pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Sách cùng thể loại</span></h2>
+        </div>
+        <div class="row px-xl-5 pb-3">
+            <?php
+            $count = 0;
+            $displayed_products = array();
+
+            foreach ($sanphamcungloai as $spcl):
+                // Skip if already displayed or if count reaches 5
+                if (in_array($spcl['id'], $displayed_products) || $count >= 5) continue;
+                $displayed_products[] = $spcl['id'];
+                $count++;
+            ?>
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="card product-item border-0 mb-4">
+                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <?php if (!empty($spcl['sale_value'])): ?>
+                                <div class="position-absolute bg-danger text-white p-1" style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
+                                    <?php
+                                    if ($spcl['sale_value'] < 100) {
+                                        echo '-' . number_format($spcl['sale_value'], 0) . '%';
+                                    } else {
+                                        echo '-' . number_format($spcl['sale_value'], 0, ',', '.') . ' đ';
+                                    }
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                            <img class="img-fluid w-100" src="<?php echo $spcl['image'] ?>" alt="" style="width: 50%; height: auto;">
+                        </div>
+
+                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                            <h6 class="text-truncate mb-3"><?php echo $spcl['title'] ?></h6>
+
+                            <div class="d-flex justify-content-center">
+                                <h5 class="small-price">
+                                    <?php
+                                    $original_price = $spcl['price'];
+                                    $final_price = $original_price;
+                                    $has_discount = false;
+
+                                    // Kiểm tra giảm giá theo phần trăm hoặc giảm giá cố định
+                                    if (!empty($spcl['sale_value'])) {
+                                        $has_discount = true;
                                         if ($spcl['sale_value'] < 100) {
-                                            echo '-' . number_format($spcl['sale_value'], 0) . '%';
+                                            // Giảm giá theo phần trăm
+                                            $final_price -= ($original_price * $spcl['sale_value'] / 100);
                                         } else {
-                                            echo '-' . number_format($spcl['sale_value'], 0, ',', '.') . ' đ';
+                                            // Giảm giá theo số tiền cố định
+                                            $final_price -= $spcl['sale_value'];
                                         }
-                                        ?>
-                                    </div>
+                                    }
+
+                                    echo number_format(max($final_price, 0), 0, ',', '.'); // Đảm bảo giá không âm
+                                    ?> đ
+                                </h5>
+                                <?php if ($has_discount): ?>
+                                    <h6 class="text-muted ml-2"><del><?php echo number_format($original_price, 0, ',', '.') ?> đ</del></h6>
                                 <?php endif; ?>
-                    <img class="img-fluid w-100" src="<?php echo $spcl['image'] ?>" alt="" style="width: 50%; height: auto;">
-                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between bg-light border">
+                            <a href="?act=chitietsp&id=<?php echo $spcl['id'] ?>" class="btn btn-sm text-dark p-0">
+                                <i class="fas fa-eye text-primary mr-1"></i>View Detail
+                            </a>
 
-                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                    <h6 class="text-truncate mb-3"><?php echo $spcl['title'] ?></h6>
-                    
-                    <div class="d-flex justify-content-center">
-                        <h5 class="small-price">
-                            <?php
-                            $original_price = $spcl['price'];
-                            $final_price = $original_price;
-                            $has_discount = false;
-
-                            // Kiểm tra giảm giá theo phần trăm hoặc giảm giá cố định
-                            if (!empty($spcl['sale_value'])) {
-                                $has_discount = true;
-                                if ($spcl['sale_value'] < 100) {
-                                    // Giảm giá theo phần trăm
-                                    $final_price -= ($original_price * $spcl['sale_value'] / 100);
-                                } else {
-                                    // Giảm giá theo số tiền cố định
-                                    $final_price -= $spcl['sale_value'];
-                                }
-                            }
-
-                            echo number_format(max($final_price, 0), 0, ',', '.'); // Đảm bảo giá không âm
-                            ?> đ
-                        </h5>
-                        <?php if ($has_discount): ?>
-                            <h6 class="text-muted ml-2"><del><?php echo number_format($original_price, 0, ',', '.') ?> đ</del></h6>
-                        <?php endif; ?>
+                           
+                        </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex justify-content-between bg-light border">
-                    <a href="?act=chitietsp&id=<?php echo $spcl['id'] ?>" class="btn btn-sm text-dark p-0">
-                        <i class="fas fa-eye text-primary mr-1"></i>View Detail
-                    </a>
-                   
-                    <a href="" class="btn btn-sm text-dark p-0">
-                        <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
-                    </a>
-                </div>
-            </div>
+            <?php endforeach; ?>
+
+            <?php if ($count == 0): ?>
+                <div class="col-12 text-center">Không có sản phẩm cùng loại</div>
+            <?php endif; ?>
         </div>
-    <?php endforeach; ?>
-        
-    <?php if ($count == 0): ?>
-        <div class="col-12 text-center">Không có sản phẩm cùng loại</div>
-    <?php endif; ?>
     </div>
-</div>
 
 
-<script>
-    function increaseValue() {
-        var value = parseInt(document.getElementById('quantity').value);
-        value = isNaN(value) ? 0 : value;
-        value++;
-        document.getElementById('quantity').value = value;
-    }
-
-    function decreaseValue() {
-        var value = parseInt(document.getElementById('quantity').value);
-        value = isNaN(value) ? 0 : value;
-        if (value > 1) {
-            value--;
+    <script>
+        function increaseValue() {
+            var value = parseInt(document.getElementById('quantity').value);
+            value = isNaN(value) ? 0 : value;
+            value++;
             document.getElementById('quantity').value = value;
         }
-    }
-    function updateVariantInfo(button) {
-        // Lấy các giá trị của biến thể được chọn
-        var price = parseFloat(button.getAttribute('data-price'));
-        var stock = button.getAttribute('data-stock');
-        var image = button.getAttribute('data-image');
-        var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0);
 
-        // Tính giá sau khi giảm giá
-        var finalPrice = price;
-        if (saleValue > 0) {
-            if (saleValue < 100) {
-                // Giảm giá theo phần trăm
-                finalPrice = price - (price * saleValue / 100);
-            } else {
-                // Giảm giá theo số tiền cố định
-                finalPrice = price - saleValue;
+        function decreaseValue() {
+            var value = parseInt(document.getElementById('quantity').value);
+            value = isNaN(value) ? 0 : value;
+            if (value > 1) {
+                value--;
+                document.getElementById('quantity').value = value;
             }
         }
 
-        // Cập nhật giá hiển thị
-        document.getElementById('product-price').textContent = 
-            new Intl.NumberFormat('vi-VN').format(Math.max(finalPrice, 0)) + ' đ';
-        
-        // Hiển thị giá gốc nếu có giảm giá
-        if (saleValue > 0) {
-            document.getElementById('original-price').style.display = 'inline';
-            document.getElementById('original-price').textContent = 
-                new Intl.NumberFormat('vi-VN').format(price) + ' đ';
-        } else {
-            document.getElementById('original-price').style.display = 'none';
+        function updateVariantInfo(button) {
+            // Lấy các giá trị của biến thể được chọn
+            var price = parseFloat(button.getAttribute('data-price'));
+            var stock = button.getAttribute('data-stock');
+            var image = button.getAttribute('data-image');
+            var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0);
+
+            // Tính giá sau khi giảm giá
+            var finalPrice = price;
+            if (saleValue > 0) {
+                if (saleValue < 100) {
+                    // Giảm giá theo phần trăm
+                    finalPrice = price - (price * saleValue / 100);
+                } else {
+                    // Giảm giá theo số tiền cố định
+                    finalPrice = price - saleValue;
+                }
+            }
+
+            // Cập nhật giá hiển thị
+            document.getElementById('product-price').textContent =
+                new Intl.NumberFormat('vi-VN').format(Math.max(finalPrice, 0)) + ' đ';
+
+            // Hiển thị giá gốc nếu có giảm giá
+            if (saleValue > 0) {
+                document.getElementById('original-price').style.display = 'inline';
+                document.getElementById('original-price').textContent =
+                    new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+            } else {
+                document.getElementById('original-price').style.display = 'none';
+            }
+
+            // Cập nhật số lượng tồn kho
+            document.querySelector('.variant-stock').textContent = stock ? stock : '0';
+
+            // Cập nhật hình ảnh
+            document.getElementById('product-image').src = image ? image : '';
+
+            // Cập nhật thông tin biến thể đã chọn
+            document.querySelector('.selected-variant-info').style.display = 'block';
         }
-
-        // Cập nhật số lượng tồn kho
-        document.querySelector('.variant-stock').textContent = stock ? stock : '0';
-
-        // Cập nhật hình ảnh
-        document.getElementById('product-image').src = image ? image : '';
-
-        // Cập nhật thông tin biến thể đã chọn
-        document.querySelector('.selected-variant-info').style.display = 'block';
-    }
-
-
-
-    
-</script>
+    </script>

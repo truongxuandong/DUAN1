@@ -21,7 +21,7 @@ class AccountController
         $user = $_SESSION['user'];
 
         // Gọi view để hiển thị trang profile
-        require_once './views/account/thongtin.php';
+        require_once 'clients/views/account/thongtin.php';
     }
 
     // Phương thức sửa hồ sơ
@@ -60,7 +60,7 @@ class AccountController
         $user = $_SESSION['user'];
 
         // Gọi view sửa hồ sơ
-        require_once './views/account/edit-profile.php';
+        require_once 'clients/views/account/edit-profile.php';
     }
 
     // Phương thức đổi mật khẩu
@@ -90,14 +90,14 @@ class AccountController
 
         if (!password_verify($currentPassword, $currentPasswordHash)) {
             $_SESSION['error'] = "Mật khẩu hiện tại không đúng.";
-            require_once './views/account/change-password.php';
+            require_once 'clients/views/account/change-password.php';
             return;
         }
 
         // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp không
         if ($newPassword !== $confirmPassword) {
             $_SESSION['error'] = "Mật khẩu mới và xác nhận mật khẩu không khớp.";
-            require_once './views/account/change-password.php';
+            require_once 'clients/views/account/change-password.php';
             return;
         }
 
@@ -116,7 +116,7 @@ class AccountController
     }
 
     // Gọi view để hiển thị form đổi mật khẩu
-    require_once './views/account/change-password.php';
+    require_once 'clients/views/account/change-password.php';
 }
 
     

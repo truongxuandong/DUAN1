@@ -7,7 +7,7 @@
   <title>PetLand</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/css/thongtin.css">
+  <link rel="stylesheet" href="clients/assets/css/thongtin.css">
   <style>
     .hidden {
       display: none;
@@ -24,7 +24,7 @@
         <div class="list-group">
           <div class="profile-section p-3 border-bottom text-center">
             <!-- Avatar và tên người dùng -->
-            <img src="../uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
+            <img src="uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
             <h5 class="fw-bold mt-2">
               <?php
               if (isset($_SESSION['user']['name'])) {

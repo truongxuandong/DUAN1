@@ -1,6 +1,6 @@
 <?php
 // Thêm ở đầu file navbar.php
-require_once './models/danhmuc.php';
+require_once 'clients/models/danhmuc.php';
 $modelDanhMuc = new DanhMuc();
 $listdm = $modelDanhMuc->getAllDanhMuc();
 ?>
@@ -65,20 +65,26 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                         $email = $_SESSION['user']['email'] ?? 'Người dùng';
 
                         // Kiểm tra xem người dùng có phải admin hay không
-                        $isAdmin = ($_SESSION['role'] ?? '') === 'admin';
+                        $isAdmin = ($_SESSION['user']['role'] ?? '') === 'admin'; // Lấy role từ session
 
                         // Hiển thị menu dropdown tài khoản
                         echo '<div class="dropdown">';
                         echo '<button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
-                        echo '<img src="./assets/img/avata.jpg" alt="Account" style="height: 30px; width: auto;" /> ' . htmlspecialchars($email);
+                        echo '<img src="clients/assets/img/avata.jpg" alt="Account" style="height: 30px; width: auto;" /> ' . htmlspecialchars($email);
                         echo '</button>';
                         echo '<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
                         echo '<li><a class="dropdown-item" href="?act=profile">Tài Khoản Của Tôi</a></li>';
 
                         // Nếu là admin, hiển thị mục "Quản lý Admin"
+                        // if ($isAdmin) {
+                        //     echo '<li><a class="dropdown-item" href="lo">Quản lý Admin</a></li>';
+                        // }
+
+                        // Thêm mục chuyển đến trang admin nếu là admin
                         if ($isAdmin) {
-                            echo '<li><a class="dropdown-item" href="?act=admin">Quản lý Admin</a></li>';
+                            echo '<li><a class="dropdown-item text-danger" href="http://localhost/duan1/admin/">Trang Admin</a></li>';
                         }
+                        
 
                         echo '<li><a class="dropdown-item" href="?act=logout">Đăng Xuất</a></li>';
                         echo '</ul>';
@@ -88,6 +94,7 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                         echo '<a href="?act=login" class="nav-item nav-link">Đăng nhập</a>';
                     }
                     ?>
+
 
 
 

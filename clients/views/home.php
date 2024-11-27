@@ -219,7 +219,7 @@
     <div class="row px-xl-5">
         <div class="col-md-6 pb-4">
             <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5">
-                <img src="../assets/img/offer-1.png"  alt="">
+                <img src="clients/assets/img/offer-1.png"  alt="">
                 <div class="position-relative" style="z-index: 1;">
                     <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
                     <h1 class="mb-4 font-weight-semi-bold">Spring Collection</h1>
@@ -229,7 +229,7 @@
         </div>
         <div class="col-md-6 pb-4">
             <div class="position-relative bg-secondary text-center text-md-left text-white mb-2 py-5 px-5">
-                <img src="../assets/img/offer-2.png"  alt="">
+                <img src="clients/assets/img/offer-2.png"  alt="">
                 <div class="position-relative" style="z-index: 1;">
                     <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
                     <h1 class="mb-4 font-weight-semi-bold">Winter Collection</h1>
@@ -246,30 +246,6 @@
     <div class="text-center mb-4">
         <h2 class="section-title px-5"><span class="px-2">Sách Siêu Ưu Đãi</span></h2>
     </div>
-    <div class="row px-xl-5 pb-3">
-        <?php
-        $count = 0;
-        // Sắp xếp mảng $sanphams theo thời gian tạo giảm dần (mới nhất trước)
-        usort($sanphams, function ($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
-        foreach ($sanphams as $sanpham):
-            if ($count >= 8) break; // Dừng sau 8 sản phẩm
-        ?>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <?php if (!empty($sanpham['sale_value'])): ?>
-                            <div class="position-absolute bg-danger text-white p-1" style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
-                                <?php
-                                if ($sanpham['sale_value'] < 100) {
-                                    echo '-' . number_format($sanpham['sale_value'], 0) . '%';
-                                } else {
-                                    echo '-' . number_format($sanpham['sale_value'], 0, ',', '.') . ' đ';
-                                }
-
-
-                                ?>
     <div class="position-relative">
         <!-- Wrapper sản phẩm -->
         <div class="products-container overflow-hidden" style="position: relative; width: 100%;">
@@ -587,3 +563,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 </style>
+
+   

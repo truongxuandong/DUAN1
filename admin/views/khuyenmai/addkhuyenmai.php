@@ -16,13 +16,7 @@
 
       <div class="row">
         <div class="col-12">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h4 class="card-title">Thêm khuyến mãi mới</h4>
-            </div>
-            <!-- /.card-header -->
-
-             <!-- thong bao   -->
+           <!-- thong bao   -->
       <?php if(isset($_SESSION['error'])): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa fa-exclamation-circle"></i> <?= $_SESSION['error'] ?>
@@ -32,6 +26,12 @@
         </div>
         <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
+          <div class="card card-primary">
+
+            <div class="card-header">
+              <h4 class="card-title">Thêm khuyến mãi mới</h4>
+            </div>
+            <!-- /.card-header -->
             <!-- form start -->
             <form action="?act=post-add-khuyen-mai" method="post" enctype="multipart/form-data">
 

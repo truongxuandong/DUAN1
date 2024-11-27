@@ -20,8 +20,8 @@ class HomeController
             $sanphams_sale=$this->modelSanPham->getAllSanPhamSale();
            
             
-            require_once './views/layout/navbar.php';
-            require_once './views/home.php';
+            require_once 'clients/views/layout/navbar.php';
+            require_once 'clients/views/home.php';
         } catch (Exception $e) {
             error_log("Lỗi trong views_home: " . $e->getMessage());
         }
@@ -29,7 +29,7 @@ class HomeController
     public function views_chitietsp() {
         if (!isset($_GET['id'])) {
             // Xử lý khi không có id
-            header('Location: ./');
+            header('Location: clients');
             return;
         }
         
@@ -41,15 +41,15 @@ class HomeController
             $sanphamcungloai = $this->modelSanPham->getSanPhamCungLoai($sanphamct['category_id']);
         }
         
-        require_once './views/chitietsp.php';
+        require_once 'clients/views/chitietsp.php';
     }
     public function views_sanpham() {
         $listsp= $this->modelSanPham->getAllSanPham();
-        require_once './views/sanpham.php';
+        require_once 'clients/views/sanpham.php';
     }
 
     public function views_lienhe() {
-        require_once './views/contact.php';
+        require_once 'clients/views/contact.php';
     }
     
 } 

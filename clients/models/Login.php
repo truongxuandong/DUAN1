@@ -25,8 +25,7 @@
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     // Kiểm tra mật khẩu đã hash
                     if (password_verify($password, $user['password'])) {
-                        $_SESSION['user'] = $user; // Lưu thông tin user vào session
-                        return true;
+                        return $user; // Trả về thông tin người dùng nếu đúng mật khẩu
                     } else {
                         $_SESSION['error'] = "Sai mật khẩu.";
                     }
@@ -37,8 +36,9 @@
                 error_log($e->getMessage());
                 $_SESSION['error'] = "Đã xảy ra lỗi trong hệ thống.";
             }
-            return false;
+            return false; // Trả về false nếu không tìm thấy hoặc lỗi
         }
+        
         
 
         // Tạo người dùng mới

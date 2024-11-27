@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./assets/css/thongtin.css">
+    <link rel="stylesheet" href="clients/clients/assets/css/thongtin.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </head>
 
@@ -19,7 +19,7 @@
                 <div class="list-group">
                     <div class="profile-section p-3 border-bottom text-center">
                         <!-- Avatar và tên người dùng -->
-                        <img src="../uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
+                        <img src=".clients/uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
                         <h5 class="fw-bold mt-2">
                             <?php
                             if (isset($_SESSION['user']['name'])) {
