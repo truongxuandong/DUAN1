@@ -20,46 +20,39 @@ class SanPham
         }
     }
 
-    public function getAllSanPham()
-    {
-        try {
-            $sql = "
-                SELECT comics.*, comic_sales.sale_value
-                FROM comics
-                LEFT JOIN comic_sales ON comics.id = comic_sales.comic_id
-                ORDER BY comics.id ASC";
-   public function getAllSanPhamHot(){
-       try {
-           $sql = "SELECT 
-    c.id, 
-    c.title, 
-    c.image, 
-    c.original_price,
-    cs.sale_value,
     
-    COALESCE(AVG(r.rating), 0) AS average_rating,
-    COUNT(DISTINCT r.id) AS review_count,
-    COUNT(DISTINCT o.id) AS purchase_count
-FROM comics c
-LEFT JOIN comic_sales cs ON c.id = cs.comic_id
-AND cs.end_date >= CURRENT_DATE 
-AND cs.start_date <= CURRENT_DATE
-LEFT JOIN reviews r ON c.id = r.comic_id AND r.status = 'approved' 
-LEFT JOIN order_items od ON c.id = od.comic_id
-LEFT JOIN orders o ON od.order_id = o.id AND o.shipping_status = 'delivered' 
-GROUP BY c.id, c.title, c.image, c.original_price, cs.sale_value
-HAVING review_count > 0 AND purchase_count > 0 
-ORDER BY review_count DESC, purchase_count DESC
-
-";
-           $stmt = $this->conn->prepare($sql);
-           $stmt->execute();
-           return $stmt->fetchAll(PDO::FETCH_ASSOC);
-       } catch (Exception $e) {
-           error_log("Error in getAllSanPhamHot: " . $e->getMessage());
-           return [];
-       }
-   }
+    public function getAllSanPhamHot(){
+        try {
+            $sql = "SELECT 
+     c.id, 
+     c.title, 
+     c.image, 
+     c.original_price,
+     cs.sale_value,
+     
+     COALESCE(AVG(r.rating), 0) AS average_rating,
+     COUNT(DISTINCT r.id) AS review_count,
+     COUNT(DISTINCT o.id) AS purchase_count
+ FROM comics c
+ LEFT JOIN comic_sales cs ON c.id = cs.comic_id
+ AND cs.end_date >= CURRENT_DATE 
+ AND cs.start_date <= CURRENT_DATE
+ LEFT JOIN reviews r ON c.id = r.comic_id AND r.status = 'approved' 
+ LEFT JOIN order_items od ON c.id = od.comic_id
+ LEFT JOIN orders o ON od.order_id = o.id AND o.shipping_status = 'delivered' 
+ GROUP BY c.id, c.title, c.image, c.original_price, cs.sale_value
+ HAVING review_count > 0 AND purchase_count > 0 
+ ORDER BY review_count DESC, purchase_count DESC
+ 
+ ";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error in getAllSanPhamHot: " . $e->getMessage());
+            return [];
+        }
+    }
     public function getAllSanPham()
     {
         try {
@@ -82,34 +75,9 @@ ORDER BY review_count DESC, purchase_count DESC
         }
     }
 
-    public function getSanPhamById($id)
-    {
-        try {
-            $sql = "SELECT * FROM comics WHERE id = :id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetch();
-        } catch (Exception $e) {
-            error_log("Error fetching product by ID: " . $e->getMessage());
-            return null;
-        }
-    }
+   
 
-    public function timKiem($query)
-    {
-        try {
-            $sql = "SELECT * FROM comics WHERE title LIKE :query OR description LIKE :query";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
-            $stmt->execute();
-            return $stmt->fetchAll();
-        } catch (Exception $e) {
-            error_log("Error searching products: " . $e->getMessage());
-            error_log("Error in getAllSanPham: " . $e->getMessage());
-            return [];
-        }
-    }   
+      
     public function getSanPhamCungLoai($category_id)
     {
         try {
@@ -198,71 +166,74 @@ ORDER BY review_count DESC, purchase_count DESC
         }
     }
 
-    public function layChiTietSanPham($id)
-    {
+    public function searchProducts($keyword = '', $category_id = '', $price_min = 0, $price_max = PHP_INT_MAX, $sort = '') {
         try {
-            $sql = "SELECT * FROM comics WHERE id = :id";
+            $sql = "SELECT c.*, cs.sale_value,
+                    CASE 
+                        WHEN cs.sale_value IS NOT NULL 
+                        THEN c.original_price * (1 - cs.sale_value/100)
+                        ELSE c.original_price 
+                    END as final_price
+                    FROM comics c
+                    LEFT JOIN comic_sales cs ON c.id = cs.comic_id 
+                        AND cs.end_date >= CURRENT_DATE 
+                        AND cs.start_date <= CURRENT_DATE
+                    WHERE 1=1";
+            
+            $params = [];
+
+            // Tìm kiếm theo từ khóa
+            if (!empty($keyword)) {
+                $sql .= " AND (c.title LIKE :keyword OR c.description LIKE :keyword)";
+                $params[':keyword'] = "%$keyword%";
+            }
+
+            // Lọc theo danh mục
+            if (!empty($category_id)) {
+                $sql .= " AND c.category_id = :category_id";
+                $params[':category_id'] = $category_id;
+            }
+
+            // Lọc theo giá
+            if ($price_min > 0) {
+                $sql .= " AND c.original_price >= :price_min";
+                $params[':price_min'] = $price_min;
+            }
+            if ($price_max < PHP_INT_MAX) {
+                $sql .= " AND c.original_price <= :price_max";
+                $params[':price_max'] = $price_max;
+            }
+
+            // Sắp xếp
+            switch ($sort) {
+                case 'price_asc':
+                    $sql .= " ORDER BY final_price ASC";
+                    break;
+                case 'price_desc':
+                    $sql .= " ORDER BY final_price DESC";
+                    break;
+                case 'name_asc':
+                    $sql .= " ORDER BY c.title ASC";
+                    break;
+                case 'name_desc':
+                    $sql .= " ORDER BY c.title DESC";
+                    break;
+                default:
+                    $sql .= " ORDER BY c.id DESC";
+            }
+
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
             $stmt->execute();
-            return $stmt->fetch();
-        } catch (Exception $e) {
-            error_log("Error fetching product details: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    public function timKiemVaLoc($query, $category_id = null, $min_price = null, $max_price = null, $min_rating = null, $page = 1, $limit = 10)
-    {
-        try {
-            $offset = ($page - 1) * $limit;
-            $sql = "SELECT * FROM comics WHERE (title LIKE :query OR description LIKE :query)";
-
-            // Add dynamic filters
-            if (!empty($category_id) && $category_id !== 'all') {
-                $sql .= " AND category_id = :category_id";
-            }
-            if (!empty($min_price)) {
-                $sql .= " AND price >= :min_price";
-            }
-            if (!empty($max_price)) {
-                $sql .= " AND price <= :max_price";
-            }
-            if (!empty($min_rating)) {
-                $sql .= " AND rating >= :min_rating"; // Assuming `rating` is a column in the comics table
-            }
-
-            // Add pagination limit and offset
-            $sql .= " LIMIT :offset, :limit";
-
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
-
-            // Bind dynamic filters
-            if (!empty($category_id) && $category_id !== 'all') {
-                $stmt->bindValue(':category_id', (int)$category_id, PDO::PARAM_INT);
-            }
-            if (!empty($min_price)) {
-                $stmt->bindValue(':min_price', (int)$min_price, PDO::PARAM_INT);
-            }
-            if (!empty($max_price)) {
-                $stmt->bindValue(':max_price', (int)$max_price, PDO::PARAM_INT);
-            }
-            if (!empty($min_rating)) {
-                $stmt->bindValue(':min_rating', (int)$min_rating, PDO::PARAM_INT);
-            }
-
-            // Bind limit and offset
-            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-
-            $stmt->execute();
-            return $stmt->fetchAll();
-        } catch (Exception $e) {
-            error_log("Error filtering and searching products: " . $e->getMessage());
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Lỗi truy vấn searchProducts: " . $e->getMessage());
             return [];
         }
     }
-
+    
 }
 ?>
