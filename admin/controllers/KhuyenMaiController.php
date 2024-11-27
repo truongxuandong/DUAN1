@@ -28,7 +28,6 @@ class KhuyenMaiController
         $end_date = strtotime($_POST['end_date']);
         $today = strtotime(date('Y-m-d'));
 
-        
         if ($start_date < $today) {
             $_SESSION['error'] = 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại';
             header('location: ?act=form-add-khuyen-mai');
@@ -216,3 +215,5 @@ class KhuyenMaiController
             header('location: ?act=khuyen-mai');
         }
 }
+
+

@@ -4,9 +4,6 @@ require_once 'clients/models/danhmuc.php';
 $modelDanhMuc = new DanhMuc();
 $listdm = $modelDanhMuc->getAllDanhMuc();
 ?>
-<!-- Navbar Start -->
-<!DOCTYPE html>
-<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -143,14 +140,9 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
 <!-- Navbar End -->
 
 <script>
-    function toggleMenu() {
-        var menu = document.getElementById('category-menu');
-        if (menu.style.display === 'none') {
-            menu.style.display = 'block';
-        } else {
-            menu.style.display = 'none';
-        }
-    }
+function toggleMenu() {
+    $('#category-menu').slideToggle();
+}
 
     // Đóng menu khi click ra ngoài
     document.addEventListener('click', function(event) {
