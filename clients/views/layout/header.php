@@ -55,40 +55,23 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-    <form action="?act=timkiem" method="GET" class="d-flex">
-        <!-- Hidden field to pass action -->
-        <input type="hidden" name="act" value="timkiem">
-
-        <!-- Search input field -->
-        <label for="search" class="sr-only">Tìm kiếm sản phẩm</label>
-        <input 
-            type="text" 
-            id="search" 
-            class="form-control" 
-            name="q" 
-            placeholder="Tìm kiếm sản phẩm..." 
-            value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8') : ''; ?>" 
-            required
-        >
-
-        <!-- Search button -->
-        <div class="input-group-append">
-            <button type="submit" class="input-group-text bg-transparent text-primary">
-                <i class="fa fa-search"></i>
-            </button>
+            <form action="index.php" method="GET" class="d-flex">
+                <input type="hidden" name="act" value="search">
+                <div class="input-group">
+                    <input type="text" 
+                        name="keyword" 
+                        class="form-control" 
+                        placeholder="Tìm kiếm sản phẩm..." 
+                        value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>"
+                        required>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-        
-        <div class="row align-items-center py-3 px-xl-5">
-        <div class="col-lg-3 d-none d-lg-block" style="text-align: center;">
-    <a href="" class="text-decoration-none">
-        <h1 class="m-0 display-5 font-weight-semi-bold">
-            <a href="./" class="text-primary font-weight-bold  px-3 mr-1" style="display: inline-block;">
-                <img src="assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
-            </a> 
-        </h1>
-    </a>
-</div>
 
             
             <div class="col-lg-3 col-6 text-right">
@@ -96,7 +79,7 @@
                     <i class="fas fa-bell"></i>
                     <span class="badge badge-primary">4</span>
                 </a>
-                <a href="?act=show-cart" class="btn border">
+                <a href="#" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
                     <span class="badge badge-primary">0</span>
                 </a>

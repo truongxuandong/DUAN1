@@ -51,33 +51,42 @@ class HomeController
     public function views_lienhe() {
         require_once './views/contact.php';
     }
-    public function views_timkiem()
-{
-    // Get search parameters from the URL
-    $query = $_GET['q'] ?? ''; 
-    $category_id = $_GET['category_id'] ?? 'all';
-    $price_min = $_GET['price_min'] ?? '';
-    $price_max = $_GET['price_max'] ?? '';
-    $min_rating = $_GET['min_rating'] ?? '';
-    $page = $_GET['page'] ?? 1;  // Get the current page, default to 1
-    $limit = 10;  // Define the number of products per page
+    public function views_search() {
+        try {
+            // Lấy tham số tìm kiếm từ URL
+            $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+            $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : '';
+            $price_range = isset($_GET['price_range']) ? $_GET['price_range'] : '';
+            $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
 
-    // Create an instance of the SanPham model
-    $sanphamModel = new SanPham();
+            // Xử lý price range
+            $price_min = 0;
+            $price_max = PHP_INT_MAX;
+            if (!empty($price_range)) {
+                list($price_min, $price_max) = explode('-', $price_range);
+            }
 
-    // Call the filtering and search method in the model
-    $products = $sanphamModel->timKiemVaLoc($query, $category_id, $price_min, $price_max, $min_rating, $page, $limit);
+            // Lấy danh sách danh mục cho form lọc
+            $listdm = $this->modelDanhMuc->getAllDanhMuc();
 
-    // Calculate total pages for pagination
-    $totalProducts = count($sanphamModel->timKiemVaLoc($query, $category_id, $price_min, $price_max, $min_rating, 1, 10000));  // Get total products to calculate pages
-    $totalPages = ceil($totalProducts / $limit);
+            // Tìm kiếm sản phẩm
+            $listsp = $this->modelSanPham->searchProducts(
+                $keyword,
+                $category_id,
+                $price_min,
+                $price_max,
+                $sort
+            );
 
-    // Include the view for displaying filtered products
-    // include './views/sanpham.php';
-    include './views/timkiem.php';
-}
-
-    
+            // Load view
+            require_once './views/search.php';
+        } catch (Exception $e) {
+            error_log("Lỗi trong views_search: " . $e->getMessage());
+            $error_message = "Đã xảy ra lỗi khi tìm kiếm sản phẩm.";
+            require_once './views/search.php';
+           
+        }
+    }  
     
     
 } 
