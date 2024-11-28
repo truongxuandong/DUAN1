@@ -38,10 +38,10 @@
                             <div class="form-group">
                                 <label>Phương thức thanh toán</label>
                                 <select class="form-control" name="payment_method">
-                                    <option value="Credit Card" <?php echo $order['payment_method'] == 'Credit Card' ? 'selected' : ''; ?>>Thẻ tín dụng</option>
-                                    <option value="Cash on Delivery" <?php echo $order['payment_method'] == 'Cash on Delivery' ? 'selected' : ''; ?>>Thanh toán khi nhận hàng (COD)</option>
-                                    <option value="Internet Banking" <?php echo $order['payment_method'] == 'Internet Banking' ? 'selected' : ''; ?>>Chuyển khoản </option>
-                                    <option value="E-Wallet" <?php echo $order['payment_method'] == 'E-Wallet' ? 'selected' : ''; ?>>Ví điện tử</option>
+                                    <option value="CREDIT" <?php echo $order['payment_method'] == 'CREDIT' ? 'selected' : ''; ?>>Thẻ tín dụng</option>
+                                    <option value="COD" <?php echo $order['payment_method'] == 'COD' ? 'selected' : ''; ?>>Thanh toán khi nhận hàng (COD)</option>
+                                    <option value="BANKING" <?php echo $order['payment_method'] == 'BANKING' ? 'selected' : ''; ?>>Chuyển khoản ngân hàng </option>
+                                    <option value="MOMO" <?php echo $order['payment_method'] == 'MOMO' ? 'selected' : ''; ?>>Ví MoMo</option>
                                 </select>
                             </div>
                             <!-- Trạng thái thanh toán (payment_status) -->

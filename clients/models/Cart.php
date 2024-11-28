@@ -10,7 +10,7 @@ class CartModel
 
     public function getCartItems($userId)
     {
-        $sql = "SELECT ci.*, c.title, c.price, c.image 
+        $sql = "SELECT ci.*, c.title, c.price, c.image, c.stock_quantity 
                 FROM cart_items ci 
                 JOIN comics c ON ci.comic_id = c.id 
                 WHERE ci.cart_id IN (SELECT id FROM cart WHERE user_id = ?)";
@@ -84,5 +84,20 @@ class CartModel
         $stmt->execute([$userId]);
         $result = $stmt->fetch();
         return $result['total'] ?? 0;
+    }
+
+    public function deleteCart($userId)
+    {
+        // Xóa cart_items trước
+        $sql = "DELETE ci FROM cart_items ci 
+                JOIN cart c ON ci.cart_id = c.id 
+                WHERE c.user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+
+        // Sau đó xóa cart
+        $sql = "DELETE FROM cart WHERE user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$userId]);
     }
 }
