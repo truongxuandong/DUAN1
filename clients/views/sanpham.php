@@ -18,16 +18,6 @@
     <h5 class="font-weight-semi-bold mb-4">Bộ lọc sản phẩm</h5>
     <form method="GET" action="index.php">
         <input type="hidden" name="act" value="search">
-        
-        <!-- Search Products -->
-        <div class="border-bottom mb-4 pb-4">
-            <h6 class="font-weight-semi-bold mb-3">Tìm kiếm</h6>
-            <div class="input-group">
-                <input type="text" name="keyword" class="form-control" 
-                       value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>" 
-                       placeholder="Nhập tên sản phẩm...">
-            </div>
-        </div>
 
         <!-- Categories -->
         <div class="border-bottom mb-4 pb-4">
@@ -97,7 +87,7 @@
             <button type="submit" class="btn btn-primary btn-block">
                 <i class="fa fa-search mr-2"></i>Lọc sản phẩm
             </button>
-            <a href="index.php?act=search" class="btn btn-outline-secondary btn-block mt-2">
+            <a href="index.php?act=search" class="btn btn-primary btn-block">
                 <i class="fa fa-redo mr-2"></i>Đặt lại
             </a>
         </div>
@@ -260,14 +250,6 @@
                 </li>
             </ul>
         </nav>
-
-        <!-- Pagination Info -->
-        <div class="text-center mt-2">
-            <small class="text-muted">
-                Trang <?php echo $page; ?> / <?php echo $totalPages; ?> 
-                (Hiển thị <?php echo count($current_page_products); ?> trên tổng số <?php echo $total_products; ?> sản phẩm)
-            </small>
-        </div>
     </div>
     <?php endif; ?>
 </div>
