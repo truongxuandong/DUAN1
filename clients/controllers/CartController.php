@@ -13,7 +13,8 @@ class CartController
     {
         if (!isset($_SESSION['user_id']) || !isset($_POST['comic_id']) || !isset($_POST['quantity'])) {
             $_SESSION['error'] = 'Yêu cầu không hợp lệ!';
-            header('Location: ?act=view-shopping-cart');
+
+            header('Location:?act=view-shopping-cart');
             return;
         }
 

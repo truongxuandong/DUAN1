@@ -304,6 +304,7 @@ if (!empty($sanphamct)): ?>
     <script>
         function increaseValue() {
             var input = document.getElementById('quantity');
+
             var value = parseInt(input.value);
             var maxStock = parseInt(input.getAttribute('max'));
             
@@ -311,6 +312,7 @@ if (!empty($sanphamct)): ?>
             if (value < maxStock) {
                 value++;
                 input.value = value;
+
             }
         }
 
@@ -334,6 +336,7 @@ if (!empty($sanphamct)): ?>
                 this.value = 1;
             } else if (value > maxStock) {
                 this.value = maxStock;
+
             }
         });
 
