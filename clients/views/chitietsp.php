@@ -1,3 +1,4 @@
+
 <?php
 
 if (!empty($sanphamct)): ?>
@@ -14,17 +15,67 @@ if (!empty($sanphamct)): ?>
 
         <div class="col-lg-7 pb-5">
             <h3 class="font-weight-semi-bold"><?= $sanphamct['title'] ?? '' ?></h3>
+            <!-- // -->
+            <?php
+// Kiểm tra nếu có đánh giá thực tế từ cơ sở dữ liệu và comic_id trùng với id của sản phẩm
+if (!empty($danhgias)) {
+    // Tính tổng số đánh giá chỉ với comic_id == sanphamct['id']
+    $filteredDanhgias = array_filter($danhgias, function($danhgia) use ($sanphamct) {
+        return $danhgia['comic_id'] == $sanphamct['id'];
+    });
 
-            <div class="d-flex mb-3">
-                <div class="text-primary mr-2">
-                    <small class="fas fa-star"></small>
-                    <small class="fas fa-star"></small>
-                    <small class="fas fa-star"></small>
-                    <small class="fas fa-star-half-alt"></small>
-                    <small class="far fa-star"></small>
-                </div>
-                <small class="pt-1">(50 Reviews)</small>
-            </div>
+    // Kiểm tra nếu có đánh giá phù hợp
+    if (!empty($filteredDanhgias)) {
+        // Tính tổng số đánh giá
+        $tongSoDanhGia = count($filteredDanhgias);
+
+        // Tính tổng số sao
+        $tongSoSao = 0;
+        foreach ($filteredDanhgias as $danhgia) {
+            $tongSoSao += getRatingStars($danhgia['rating']);
+        }
+
+        // Tính số sao trung bình
+        $soSaoTrungBinh = $tongSoSao / $tongSoDanhGia;
+
+        ?>
+        <div>
+            <p>Đánh giá (<?= $tongSoDanhGia ?>): <?php
+                $fullStars = floor($soSaoTrungBinh); // Số sao đầy
+                $halfStar = ($soSaoTrungBinh - $fullStars >= 0.5) ? 1 : 0; // Kiểm tra sao nửa
+                $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+
+                // Hiển thị sao vàng đầy
+                for ($i = 0; $i < $fullStars; $i++) {
+                    echo '<i class="fas fa-star text-warning"></i>';
+                }
+
+                // Hiển thị sao nửa
+                if ($halfStar) {
+                    echo '<i class="fas fa-star-half-alt text-warning"></i>';
+                }
+
+                // Hiển thị sao trống
+                for ($i = 0; $i < $emptyStars; $i++) {
+                    echo '<i class="far fa-star text-warning"></i>';
+                }
+            ?></p>
+        </div>
+    <?php
+    } else {
+        echo '<p>Chưa có đánh giá nào cho sản phẩm này.</p>';
+    }
+} else {
+    echo '<p>Chưa có đánh giá nào.</p>';
+}
+?>
+
+
+
+
+
+
+
             <div class="product-details mb-4">
                 <?php if (!empty($sanphamct['variants'])): ?>
                     <div class="variants-container">
@@ -86,14 +137,14 @@ if (!empty($sanphamct)): ?>
                 <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-minus" onclick="changeQuantity(-1)">
+                            <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
-                        <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center"
+                        <input type="text" name="quantity" id="quantity" class="form-control bg-secondary text-center"
                             style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-plus" onclick="changeQuantity(1)">
+                            <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -147,79 +198,133 @@ if (!empty($sanphamct)): ?>
             <a class="nav-item nav-link active" data-toggle="tab" href="#comments-tab"><strong>Comments</strong></a>
             <a class="nav-item nav-link" data-toggle="tab" href="#reviews-tab"><strong>Reviews</strong></a>
         </div>
-
+        
         <div class="tab-content">
             <!-- Comments Section -->
             <div class="tab-pane fade show active" id="comments-tab">
-                <h4 class="mb-4"><strong>Comments</strong></h4>
-                <div class="media mb-4">
-                    <img src="../assets/img/user.jpg" alt="User" class="img-fluid mr-3 mt-1" style="width: 45px;">
+            <div class="row">
+    <!-- Cột bên trái: Danh sách bình luận -->
+    <div class="col-md-6">
+    <h4 class="mb-6">Danh sách bình luận và giá về sản phẩm</h4>
+
+    <?php 
+    $comments_shown = 0; // Biến đếm số lượng bình luận đã hiển thị
+    $has_comments = false; // Khởi tạo biến kiểm tra có bình luận hay không
+    ?>
+
+    <div id="comment-list">
+        <?php foreach ($binhluans as $key => $binhluan): ?>
+            <?php if ($binhluan['comics_id'] == $sanphamct['id']): ?>
+                <?php $has_comments = true; ?>
+                <div class="media mb-4 pl-3 comment-item" style="display: <?= $comments_shown < 5 ? 'block' : 'none'; ?>; flex-direction: column; border-bottom: 1px solid #ddd;">
                     <div class="media-body">
-                        <h6><strong>Jane Doe</strong><small> - <i>02 Feb 2045</i></small></h6>
-                        <p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Nulla pretium arcu nec lacus feugiat, vel euismod lacus fringilla.</p>
+                        <h6><span><?= $binhluan['name'] ?: 'Khách' ?></span><small> - <i><?= $binhluan['Create_at'] ?></i></small></h6>
+                        <p><span>Nội dung: <?= $binhluan['Content'] ?></span></p>
                     </div>
                 </div>
-                <form>
-                    <div class="form-group">
-                        <label for="comment"><strong>Leave a Comment</strong></label>
-                        <textarea id="comment" cols="30" rows="4" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group mb-0">
-                        <button type="submit" class="btn btn-primary px-3"><strong>Post Comment</strong></button>
-                    </div>
-                </form>
+                <?php $comments_shown++; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if (!$has_comments): ?>
+        <p>Sản phẩm chưa được comment.</p>
+    <?php elseif ($comments_shown > 5): ?>
+        <div class="btn-group mt-3">
+            <button id="load-more-comments" class="btn btn-primary">Xem thêm</button>
+            <button id="close-comments" class="btn btn-secondary" style="display: none;">Đóng</button>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+    <!-- Cột bên phải: Form thêm bình luận -->
+    <div class="col-md-6">
+    <h4 class="mb-3">Thêm bình luận mới</h4>
+
+    <form action="<?= '?act=add-binh-luan&id=' . $sanphamct['id'] ?>" method="POST"> <!-- Trỏ đến file xử lý -->
+    <div class="form-group">
+        <label for="Content">Nội dung bình luận:</label>
+        <textarea name="Content" id="Content" class="form-control" rows="4" placeholder="Nhập nội dung bình luận..." required></textarea>
+    </div>
+    <!-- ID người dùng (ẩn, lấy từ phiên đăng nhập) -->
+    <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+
+    <!-- ID sản phẩm (ẩn) -->
+    <input type="hidden" name="comics_id" value="<?= $sanphamct['id'] ?>"> 
+    <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+</form>
+
+
+</div>
+</div>
+
+            </div>
+            
+          <!-- Reviews Section -->
+<div class="tab-pane fade" id="reviews-tab">
+    <div class="col-md-12">
+        <h4 style="margin-bottom: 1.5rem; color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 0.5rem; font-weight: bold; text-transform: uppercase;">
+            Danh sách đánh giá về sản phẩm
+        </h4>
+
+        <?php
+// Định nghĩa hàm getRatingStars() bên ngoài vòng lặp
+function getRatingStars($ratingText) {
+    $ratings = [
+        'very_bad' => 1,
+        'bad' => 2,
+        'average' => 3,
+        'good' => 4,
+        'excellent' => 5,
+    ];
+    return $ratings[$ratingText] ?? 0;
+}
+?>
+
+<?php foreach ($danhgias as $key => $danhgia): ?>
+    <?php if($sanphamct['id']==$danhgia['comic_id']): ?>
+    <!-- <?php var_dump($danhgia);?> -->
+    <div class="media" style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; transition: all 0.3s ease;">
+        <div class="media-body">
+            <!-- Tên người đánh giá -->
+            <h6 style="margin-bottom: 0.5rem;">
+                <strong><?= $danhgia['name'] ?: 'Khách' ?></strong>
+                <small style="color: #999;"> - <i><?= date('d/m/Y', strtotime($danhgia['created_at'])) ?></i></small>
+            </h6>
+
+            <!-- Đánh giá bằng sao -->
+            <div style="margin-bottom: 0.75rem;">
+                <?php 
+                $danhgia_text = $danhgia['rating'];
+                $rating = getRatingStars($danhgia_text);
+                ?>
+                <span style="color: gold;">
+                    <?php 
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($i <= $rating) {
+                            echo '<i class="fa fa-star" style="font-size: 16px; margin-right: 2px;"></i>';
+                        } else {
+                            echo '<i class="fa fa-star-o" style="font-size: 16px; margin-right: 2px;"></i>';
+                        }
+                    }
+                    ?>
+                </span>
+                <span style="color: #999;">(<?= ucfirst($danhgia['rating']) ?>)</span>
             </div>
 
-            <!-- Reviews Section -->
-            <div class="tab-pane fade" id="reviews-tab">
-                <h4 class="mb-4"><strong>Reviews</strong></h4>
-                <!-- Review Item -->
-                <div class="media mb-4">
-                    <img src="img/user.jpg" alt="User" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                    <div class="media-body">
-                        <h6><strong>John Smith</strong><small> - <i>03 Mar 2045</i></small></h6>
-                        <div class="text-primary mb-2">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <p><strong>Great product!</strong> Highly recommend to everyone looking for quality and reliability.</p>
-                    </div>
-                </div>
-                <!-- Leave a Review -->
-                <form>
-                    <div class="form-group">
-                        <label for="review-message"><strong>Your Review *</strong></label>
-                        <textarea id="review-message" cols="30" rows="4" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="review-name"><strong>Name *</strong></label>
-                        <input type="text" class="form-control" id="review-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="review-email"><strong>Email *</strong></label>
-                        <input type="email" class="form-control" id="review-email">
-                    </div>
-                    <div class="form-group">
-                        <p class="mb-1"><strong>Your Rating *</strong></p>
-                        <div class="text-primary">
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="form-group mb-0">
-                        <button type="submit" class="btn btn-primary px-3"><strong>Submit Review</strong></button>
-                    </div>
-                </form>
-            </div>
-
+            <!-- Nội dung đánh giá -->
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #333;">Nội dung:
+                <?= htmlspecialchars($danhgia['review_text']) ?>
+            </p>
         </div>
     </div>
+<?php endif; ?>
+<?php endforeach; ?>
+
+    </div>
+</div>
+
     <!-- Products Start -->
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
@@ -304,11 +409,15 @@ if (!empty($sanphamct)): ?>
     <script>
         function increaseValue() {
             var input = document.getElementById('quantity');
-            var max = parseInt(input.getAttribute('max'));
+
             var value = parseInt(input.value);
+            var maxStock = parseInt(input.getAttribute('max'));
             
-            if (value < max) {
-                input.value = value + 1;
+            if (isNaN(value)) value = 0;
+            if (value < maxStock) {
+                value++;
+                input.value = value;
+
             }
         }
 
@@ -316,20 +425,23 @@ if (!empty($sanphamct)): ?>
             var input = document.getElementById('quantity');
             var value = parseInt(input.value);
             
+            if (isNaN(value)) value = 0;
             if (value > 1) {
-                input.value = value - 1;
+                value--;
+                input.value = value;
             }
         }
 
-        // Thêm validation khi người dùng nhập trực tiếp
-        document.getElementById('quantity').addEventListener('change', function() {
+        // Thêm sự kiện kiểm tra khi người dùng nhập trực tiếp
+        document.getElementById('quantity').addEventListener('input', function() {
             var value = parseInt(this.value);
-            var max = parseInt(this.getAttribute('max'));
+            var maxStock = parseInt(this.getAttribute('max'));
             
             if (isNaN(value) || value < 1) {
                 this.value = 1;
-            } else if (value > max) {
-                this.value = max;
+            } else if (value > maxStock) {
+                this.value = maxStock;
+
             }
         });
 
@@ -410,4 +522,68 @@ if (!empty($sanphamct)): ?>
             document.getElementById('buy_now_quantity').value = quantity;
             return true;
         }
+        //
+        document.addEventListener("DOMContentLoaded", function () {
+        const loadMoreBtn = document.getElementById("load-more-comments");
+        const closeCommentsBtn = document.getElementById("close-comments");
+        const commentItems = document.querySelectorAll(".comment-item");
+        let visibleCount = 5;
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener("click", function () {
+                // Hiển thị các bình luận tiếp theo
+                for (let i = visibleCount; i < visibleCount + 5; i++) {
+                    if (commentItems[i]) {
+                        commentItems[i].style.display = "block";
+                    }
+                }
+                visibleCount += 5;
+
+                // Hiển thị nút "Đóng" khi có nhiều hơn 5 bình luận
+                if (visibleCount > 5) {
+                    closeCommentsBtn.style.display = "inline-block";
+                }
+
+                // Ẩn nút "Xem thêm" nếu không còn bình luận
+                if (visibleCount >= commentItems.length) {
+                    loadMoreBtn.style.display = "none";
+                }
+            });
+        }
+
+        if (closeCommentsBtn) {
+            closeCommentsBtn.addEventListener("click", function () {
+                // Ẩn các bình luận và chỉ hiển thị 5 bình luận đầu
+                for (let i = 5; i < commentItems.length; i++) {
+                    commentItems[i].style.display = "none";
+                }
+                visibleCount = 5;
+
+                // Hiển thị lại nút "Xem thêm" và ẩn nút "Đóng"
+                loadMoreBtn.style.display = "inline-block";
+                closeCommentsBtn.style.display = "none";
+            });
+        }
+    });
+    function increaseValue() {
+        var value = parseInt(document.getElementById('quantity').value);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        document.getElementById('quantity').value = value;
+    }
+
+    function decreaseValue() {
+        var value = parseInt(document.getElementById('quantity').value);
+        value = isNaN(value) ? 0 : value;
+        if(value > 1) {
+            value--;
+            document.getElementById('quantity').value = value;
+        }
+    }
     </script>
+    <style>
+        .text-warning {
+    color: gold; /* Màu vàng cho biểu tượng sao */
+}
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
