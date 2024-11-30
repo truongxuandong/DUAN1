@@ -70,7 +70,8 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                         echo '<img src="clients/assets/img/avata.jpg" alt="Account" style="height: 30px; width: auto;" /> ' . htmlspecialchars($email);
                         echo '</button>';
                         echo '<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
-                        echo '<li><a class="dropdown-item" href="?act=profile">Tài Khoản Của Tôi</a></li>';
+                        // echo '<li><a class="dropdown-item" href="?act=profile">Tài Khoản Của Tôi</a></li>';
+                        echo '<li><a class="dropdown-item" href="?act=don-hang">Đơn hàng</a></li>';
 
                         // Nếu là admin, hiển thị mục "Quản lý Admin"
                         // if ($isAdmin) {
