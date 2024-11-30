@@ -1,3 +1,4 @@
+<?php ob_start();?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -17,6 +18,10 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="./clients/assets/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="/duan1/assets/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 
 
 </head>
