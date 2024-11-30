@@ -535,7 +535,7 @@ function validateBeforeCheckout() {
 
             // Cập nhật thông tin biến thể đã chọn
             document.querySelector('.selected-variant-info').style.display = 'block';
-        }
+        
 
         function validateBeforeCheckout() {
             // Kiểm tra đăng nhập
