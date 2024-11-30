@@ -13,7 +13,7 @@ class CartController
     {
         if (!isset($_SESSION['user_id']) || !isset($_POST['comic_id']) || !isset($_POST['quantity'])) {
             $_SESSION['error'] = 'Yêu cầu không hợp lệ!';
-            header('Location: index.php?act=view-shopping-cart');
+            header('Location: ?act=view-shopping-cart');
             return;
         }
 
@@ -27,7 +27,7 @@ class CartController
             $_SESSION['error'] = 'Không thể thêm vào giỏ hàng!';
         }
 
-        header('Location: index.php?act=view-shopping-cart');
+        header('Location: ?act=view-shopping-cart');
         exit();
     }
 
@@ -35,7 +35,7 @@ class CartController
     public function view_shoppingCart()
     {
         if (!isset($_SESSION['user_id'])) {
-            header('Location: index.php?act=login');
+            header('Location: ?act=login');
             return;
         }
         
@@ -51,7 +51,7 @@ class CartController
     {
         if (!isset($_SESSION['user_id']) || !isset($_POST['item_id']) || !isset($_POST['quantity'])) {
             $_SESSION['error'] = 'Yêu cầu không hợp lệ!';
-            header('Location: index.php?act=view-shopping-cart');
+            header('Location: ?act=view-shopping-cart');
             return;
         }
 
@@ -65,7 +65,7 @@ class CartController
             $_SESSION['error'] = 'Không thể cập nhật số lượng!';
         }
 
-        header('Location: index.php?act=view-shopping-cart');
+        header('Location: ?act=view-shopping-cart');
         exit();
     }
 
@@ -74,7 +74,7 @@ class CartController
     {
         if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
             $_SESSION['error'] = 'Yêu cầu không hợp lệ!';
-            header('Location: index.php?act=view-shopping-cart');
+            header('Location: ?act=view-shopping-cart');
             return;
         }
     
@@ -87,7 +87,7 @@ class CartController
             $_SESSION['error'] = 'Không thể xóa sản phẩm!';
         }
     
-        header('Location: index.php?act=view-shopping-cart');
+        header('Location: ?act=view-shopping-cart');
         exit();
     }
 }
