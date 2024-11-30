@@ -180,3 +180,8 @@ match ($act) {
 if (!in_array($act, $publicRoutes)) {
     include_once "./views/layout/footer.php";
 }
+
+// Thêm định nghĩa BASE_URL ở đầu file hoặc trong file config
+define('BASE_URL', 'http://localhost/duan1/');
+define('UPLOAD_PATH', $_SERVER['DOCUMENT_ROOT'] . '/duan1/uploads/');
+define('UPLOAD_URL', BASE_URL . 'uploads/');
