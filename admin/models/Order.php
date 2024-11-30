@@ -7,14 +7,14 @@ class Order{
 
     public function getAll() {
         try {
-            $sql = "SELECT orders.id, orders.user_id, users.phone,
+            $sql = "SELECT orders.id, orders.user_id, 
                        SUM(order_items.quantity * order_items.unit_price) as total_products_amount,
-                       users.name, orders.payment_method, orders.payment_status, 
+                       orders.phone,orders.receiver_name, orders.payment_method, orders.payment_status, 
                        orders.shipping_status
                 FROM orders
                 LEFT JOIN users ON orders.user_id = users.id
                 LEFT JOIN order_items ON orders.id = order_items.order_id
-                GROUP BY orders.id, orders.user_id, orders.order_date, users.name, 
+                GROUP BY orders.id, orders.user_id, orders.order_date, orders.receiver_name, 
                          orders.payment_method, orders.payment_status, 
                          orders.shipping_status, orders.shipping_address
                 ORDER BY orders.order_date DESC";

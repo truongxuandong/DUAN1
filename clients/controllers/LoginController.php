@@ -64,10 +64,10 @@ class LoginController
                 'email' => $user['email'],
                 'role' => $user['role'],
             ];
-            $_SESSION['user_id'] = $user['id']; 
+            
 
             $_SESSION['success'] = "Đăng nhập thành công!";
-            header("Location: ?act=/&user_id=" . $user['id']);
+            header("Location:./");
             exit();
         }
     }
@@ -109,7 +109,7 @@ class LoginController
     {
         // session_start();
         session_destroy(); // Hủy session để người dùng bị đăng xuất
-        header("Location: ?act=/"); // Chuyển hướng người dùng về trang đăng nhập
+        header("Location:./"); // Chuyển hướng người dùng về trang đăng nhập
         exit();
     }
 }
