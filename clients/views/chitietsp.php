@@ -303,20 +303,35 @@ if (!empty($sanphamct)): ?>
 
     <script>
         function increaseValue() {
-            var value = parseInt(document.getElementById('quantity').value);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById('quantity').value = value;
+            var input = document.getElementById('quantity');
+            var max = parseInt(input.getAttribute('max'));
+            var value = parseInt(input.value);
+            
+            if (value < max) {
+                input.value = value + 1;
+            }
         }
 
         function decreaseValue() {
-            var value = parseInt(document.getElementById('quantity').value);
-            value = isNaN(value) ? 0 : value;
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            
             if (value > 1) {
-                value--;
-                document.getElementById('quantity').value = value;
+                input.value = value - 1;
             }
         }
+
+        // Thêm validation khi người dùng nhập trực tiếp
+        document.getElementById('quantity').addEventListener('change', function() {
+            var value = parseInt(this.value);
+            var max = parseInt(this.getAttribute('max'));
+            
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            } else if (value > max) {
+                this.value = max;
+            }
+        });
 
         function updateVariantInfo(button) {
             // Lấy các giá trị của biến thể được chọn

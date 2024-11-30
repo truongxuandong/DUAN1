@@ -79,6 +79,7 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
 
                         // Thêm mục chuyển đến trang admin nếu là admin
                         if ($isAdmin) {
+                            $_SESSION['admin_auth'] = true;
                             echo '<li><a class="dropdown-item text-danger" href="http://localhost/duan1/admin/">Trang Admin</a></li>';
                         }
                         
