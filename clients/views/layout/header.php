@@ -52,7 +52,7 @@
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block text-center">
-                <a href="#" class="text-decoration-none">
+                <a href="./" class="text-decoration-none">
                     <h1 class="m-0 display-5 font-weight-semi-bold">
                     <img src="clients/assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
                     </h1>
@@ -81,11 +81,11 @@
             <div class="col-lg-3 col-6 text-right">
                 <a href="#" class="btn border">
                     <i class="fas fa-bell"></i>
-                    <span class="badge badge-primary">4</span>
+                    <!-- <span class="badge badge-primary">4</span> -->
                 </a>
-                <a href="#" class="btn border">
+                <a href="?act=view-shopping-cart" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge badge-primary">0</span>
+                    <!-- <span class="badge badge-primary">0</span> -->
                 </a>
             </div>
         </div>

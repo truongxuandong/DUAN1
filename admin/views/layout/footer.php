@@ -1,8 +1,8 @@
  <!-- Footer -->
-  <?php
-  ob_start();
-  ?>
- <footer class="site-footer">
+<?php
+ob_start();
+?>
+<footer class="site-footer">
             <div class="footer-inner bg-white">
                 <div class="row">
                     <div class="col-sm-6" style="padding-left:300px ;">
@@ -252,6 +252,75 @@
             });
             // Bar Chart #flotBarChart End
         });
+    </script>
+    <script>
+    // Biến để theo dõi trạng thái của trang
+    let isReload = false;
+    let isAction = false;
+
+    // Theo dõi các hành động trong admin
+    document.addEventListener('click', function(e) {
+        // Kiểm tra nếu click vào các nút thêm, sửa, xóa hoặc form submit
+        if (e.target.closest('form') || 
+            e.target.closest('a[href*="add"]') || 
+            e.target.closest('a[href*="edit"]') || 
+            e.target.closest('a[href*="delete"]')) {
+            isAction = true;
+            setTimeout(() => { isAction = false; }, 1000);
+        }
+    });
+
+    // Theo dõi reload page
+    window.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+            isReload = true;
+        }
+    });
+
+    // Xử lý khi đóng tab hoặc window
+    window.addEventListener('beforeunload', function(e) {
+        if (!isReload && !isAction) {
+            fetch('index.php?act=end-session', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                keepalive: true
+            });
+        }
+    });
+
+    // Reset các flag khi trang load xong
+    window.addEventListener('load', function() {
+        isReload = false;
+        isAction = false;
+    });
+
+    // Xử lý timeout sau 10 phút không hoạt động
+    let inactivityTime = function () {
+        let time;
+        
+        function resetTimer() {
+            clearTimeout(time);
+            if (document.cookie.includes('PHPSESSID')) {
+                time = setTimeout(logout, 600000); // 10 phút = 600,000 milliseconds
+            }
+        }
+
+        function logout() {
+            window.location.href = 'index.php?act=logout';
+        }
+
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeydown = resetTimer;
+        document.onclick = resetTimer;
+        document.onscroll = resetTimer;
+
+        resetTimer();
+    };
+
+    inactivityTime();
     </script>
 </body>
 </html>
