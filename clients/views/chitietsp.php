@@ -29,6 +29,7 @@ if (!empty($sanphamct)): ?>
                 <?php if (!empty($sanphamct['variants'])): ?>
                     <div class="variants-container">
                         <?php foreach ($sanphamct['variants'] as $variant): ?>
+
                             <button class="btn btn-outline-primary variant-btn"
                                 data-price="<?= $variant['price'] ?>"
                                 data-stock="<?= $variant['stock_quantity'] ?>"
@@ -41,12 +42,11 @@ if (!empty($sanphamct)): ?>
                             </button>
                         <?php endforeach; ?>
                     </div>
-
-                    <div class="selected-variant-info mt-3" style="display: none;">
-                        <p class="mb-0">Còn: <span class="variant-stock"></span> sản phẩm</p>
-                    </div>
-                <?php endif; ?>
+                    
+                 <?php endif; ?>
             </div>
+            <p class="mb-4" id="stock-display">Còn : <?= $sanphamct['stock_quantity'] ?? '' ?> sản phẩm</p>
+
 
             <div class="mb-4">
                 <h3 class="font-weight-semi-bold d-inline" id="product-price">
@@ -75,6 +75,7 @@ if (!empty($sanphamct)): ?>
                         <?= number_format($sanphamct['original_price'] ?? $sanphamct['price'], 0, ',', '.') ?> đ
                     </h5>
                 <?php endif; ?>
+
             </div>
             <p class="mb-4"><?= $sanphamct['description'] ?? '' ?></p>
 
@@ -86,14 +87,14 @@ if (!empty($sanphamct)): ?>
                 <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-minus" onclick="changeQuantity(-1)">
+                            <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
                         <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center"
                             style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-plus" onclick="changeQuantity(1)">
+                            <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -303,111 +304,113 @@ if (!empty($sanphamct)): ?>
 
     <script>
         function increaseValue() {
-            var input = document.getElementById('quantity');
-            var max = parseInt(input.getAttribute('max'));
-            var value = parseInt(input.value);
-            
-            if (value < max) {
-                input.value = value + 1;
-            }
-        }
+    var input = document.getElementById('quantity');
+    var max = parseInt(input.getAttribute('max'));
+    var value = parseInt(input.value);
 
-        function decreaseValue() {
-            var input = document.getElementById('quantity');
-            var value = parseInt(input.value);
-            
-            if (value > 1) {
-                input.value = value - 1;
-            }
-        }
+    if (value < max) {
+        input.value = value + 1;
+    }
+}
 
-        // Thêm validation khi người dùng nhập trực tiếp
-        document.getElementById('quantity').addEventListener('change', function() {
-            var value = parseInt(this.value);
-            var max = parseInt(this.getAttribute('max'));
-            
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            } else if (value > max) {
-                this.value = max;
+function decreaseValue() {
+    var input = document.getElementById('quantity');
+    var value = parseInt(input.value);
+
+    if (value > 1) {
+        input.value = value - 1;
+    }
+}
+
+// Thêm validation khi người dùng nhập trực tiếp
+document.getElementById('quantity').addEventListener('change', function () {
+    var value = parseInt(this.value);
+    var max = parseInt(this.getAttribute('max'));
+
+    if (isNaN(value) || value < 1) {
+        this.value = 1;
+    } else if (value > max) {
+        this.value = max;
+    }
+});
+
+function updateVariantInfo(button) {
+    // Lấy các giá trị từ data-* của nút
+    var price = parseFloat(button.getAttribute('data-price'));
+    var stock = parseInt(button.getAttribute('data-stock'));
+    var image = button.getAttribute('data-image');
+    var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0);
+
+    // Kiểm tra các giá trị đã được lấy đúng chưa
+    console.log('Price:', price, 'Stock:', stock, 'Image:', image, 'Sale Value:', saleValue);
+
+    // Tính giá sau giảm giá nếu có
+    var finalPrice = price;
+    if (saleValue > 0) {
+        if (saleValue < 100) {
+            // Giảm giá theo phần trăm
+            finalPrice = price - (price * saleValue / 100);
+        } else {
+            // Giảm giá theo số tiền cố định
+            finalPrice = price - saleValue;
+        }
+    }
+
+    // Cập nhật giá hiển thị
+    document.getElementById('product-price').textContent =
+        new Intl.NumberFormat('vi-VN').format(Math.max(finalPrice, 0)) + ' đ';
+
+    // Cập nhật số lượng tồn kho
+    var stockDisplay = document.getElementById('stock-display');
+    stockDisplay.textContent = `Còn : ${stock} sản phẩm`;
+
+    // Cập nhật hình ảnh sản phẩm
+    document.getElementById('product-image').src = image ? image : '';
+
+    // Cập nhật số lượng tối đa (max) cho input số lượng
+    var quantityInput = document.getElementById('quantity');
+    quantityInput.setAttribute('max', stock);
+    quantityInput.value = Math.min(quantityInput.value, stock);
+
+    // Cập nhật giá trị số lượng "mua ngay"
+    document.getElementById('buy_now_quantity').value = Math.min(1, stock);
+}
+
+
+function validateBeforeCheckout() {
+    // Kiểm tra đăng nhập
+    <?php if (!isset($_SESSION['user'])): ?>
+        Swal.fire({
+            title: 'Thông báo',
+            text: 'Vui lòng đăng nhập để mua hàng!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đăng nhập',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'index.php?act=login';
             }
         });
+        return false;
+    <?php endif; ?>
 
-        function updateVariantInfo(button) {
-            // Lấy các giá trị của biến thể được chọn
-            var price = parseFloat(button.getAttribute('data-price'));
-            var stock = button.getAttribute('data-stock');
-            var image = button.getAttribute('data-image');
-            var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0);
+    // Kiểm tra số lượng tồn kho
+    const quantity = parseInt(document.getElementById('quantity').value);
+    const stock = parseInt(document.getElementById('quantity').getAttribute('max'));
 
-            // Tính giá sau khi giảm giá
-            var finalPrice = price;
-            if (saleValue > 0) {
-                if (saleValue < 100) {
-                    // Giảm giá theo phần trăm
-                    finalPrice = price - (price * saleValue / 100);
-                } else {
-                    // Giảm giá theo số tiền cố định
-                    finalPrice = price - saleValue;
-                }
-            }
+    if (quantity > stock) {
+        Swal.fire({
+            title: 'Lỗi',
+            text: 'Số lượng vượt quá tồn kho!',
+            icon: 'error'
+        });
+        return false;
+    }
 
-            // Cập nhật giá hiển thị
-            document.getElementById('product-price').textContent =
-                new Intl.NumberFormat('vi-VN').format(Math.max(finalPrice, 0)) + ' đ';
+    // Cập nhật số lượng cho form mua ngay
+    document.getElementById('buy_now_quantity').value = quantity;
+    return true;
+}
 
-            // Hiển thị giá gốc nếu có giảm giá
-            if (saleValue > 0) {
-                document.getElementById('original-price').style.display = 'inline';
-                document.getElementById('original-price').textContent =
-                    new Intl.NumberFormat('vi-VN').format(price) + ' đ';
-            } else {
-                document.getElementById('original-price').style.display = 'none';
-            }
-
-            // Cập nhật số lượng tồn kho
-            document.querySelector('.variant-stock').textContent = stock ? stock : '0';
-
-            // Cập nhật hình ảnh
-            document.getElementById('product-image').src = image ? image : '';
-
-            // Cập nhật thông tin biến thể đã chọn
-            document.querySelector('.selected-variant-info').style.display = 'block';
-        }
-
-        function validateBeforeCheckout() {
-            // Kiểm tra đăng nhập
-            <?php if (!isset($_SESSION['user'])): ?>
-                Swal.fire({
-                    title: 'Thông báo',
-                    text: 'Vui lòng đăng nhập để mua hàng!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Đăng nhập',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = 'index.php?act=login';
-                    }
-                });
-                return false;
-            <?php endif; ?>
-
-            // Kiểm tra số lượng tồn kho
-            const quantity = parseInt(document.getElementById('quantity').value);
-            const stock = parseInt('<?= $sanphamct['stock_quantity'] ?? 0 ?>');
-            
-            if (quantity > stock) {
-                Swal.fire({
-                    title: 'Lỗi',
-                    text: 'Số lượng vượt quá tồn kho!',
-                    icon: 'error'
-                });
-                return false;
-            }
-            
-            // Cập nhật số lượng cho form mua ngay
-            document.getElementById('buy_now_quantity').value = quantity;
-            return true;
-        }
     </script>

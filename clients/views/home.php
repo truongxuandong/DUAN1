@@ -11,6 +11,7 @@
                 <?php
                 $displayed_products = array();
                 foreach ($sanphams_hot as $sanpham):
+                    
                     if (in_array($sanpham['id'], $displayed_products)) continue;
                     $displayed_products[] = $sanpham['id'];
                 ?>
