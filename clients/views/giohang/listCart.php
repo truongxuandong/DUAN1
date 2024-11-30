@@ -100,9 +100,9 @@
                         </a>
                     </div>
                     <div class="col-md-6 text-right">
-                        <a href="javascript:void(0)" onclick="checkoutHandler()" class="btn btn-primary" id="checkout-btn" style="opacity: 0.5;">
+                        <button onclick="checkoutHandler(event)" class="btn btn-primary" id="checkout-btn" style="opacity: 0.5;" disabled>
                             Thanh toán <i class="fas fa-arrow-right"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
             <?php endif; ?>
@@ -167,7 +167,7 @@
                     success: function(response) {
                         const result = JSON.parse(response);
                         if (result.success) {
-                            // Thêm hiệu ứng fade out trước khi xóa
+                            // Thêm hiệu ���ng fade out trước khi xóa
                             $('#cart-item-' + itemId).fadeOut(300, function() {
                                 $(this).remove();
                                 $('#cart-total').html('<strong>' + result.newTotal + 'đ</strong>');
@@ -264,7 +264,8 @@
             updateTotal();
         }
 
-        function checkoutHandler() {
+        function checkoutHandler(event) {
+            event.preventDefault();
             const checkboxes = document.getElementsByClassName('item-checkbox');
             let hasCheckedItems = false;
 
@@ -275,15 +276,18 @@
                 }
             }
 
-            if(hasCheckedItems) {
-                window.location.href = '?act=checkout';
-            } else {
+            if(!hasCheckedItems) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Thông báo',
-                    text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!'
+                    text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!',
+                    confirmButtonColor: '#e53637'
                 });
+                return false;
             }
+
+            // Nếu có sản phẩm được chọn, chuyển đến trang thanh toán
+            window.location.href = '?act=checkout';
         }
 
         function updateTotal() {
@@ -301,14 +305,42 @@
                 }
             }
 
-            // Cập nhật tổng tiền - luôn hiển thị 0đ khi không có item được chọn
+            // Cập nhật tổng tiền
             document.getElementById('cart-total').innerHTML = 
                 `<strong>${hasCheckedItems ? new Intl.NumberFormat('vi-VN').format(total) : '0'}đ</strong>`;
 
-            // Cập nhật style nút thanh toán
+            // Cập nhật trạng thái nút thanh toán
             checkoutBtn.style.opacity = hasCheckedItems ? '1' : '0.5';
+            checkoutBtn.disabled = !hasCheckedItems;
         }
     </script>
+    <style>
+        .btn-primary {
+            background-color: #e53637;
+            border-color: #e53637;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .btn-primary:disabled {
+            background-color: #e53637;
+            border-color: #e53637;
+            cursor: not-allowed;
+        }
+
+        #checkout-btn {
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+
+        #checkout-btn i {
+            margin-left: 8px;
+        }
+    </style>
 </body>
 
 </html>

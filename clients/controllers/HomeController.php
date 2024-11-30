@@ -79,11 +79,11 @@ class HomeController
             );
 
             // Load view
-            require_once './views/search.php';
+            require_once 'clients/views/search.php';
         } catch (Exception $e) {
             error_log("Lỗi trong views_search: " . $e->getMessage());
             $error_message = "Đã xảy ra lỗi khi tìm kiếm sản phẩm.";
-            require_once './views/search.php';
+            require_once 'clients/views/search.php';
            
         }
     }  

@@ -58,8 +58,8 @@ if (!empty($sanphamct)): ?>
                         // Tính giá sau khuyến mãi
                         if ($sale_value < 100) {
                             // Giảm giá theo phần trăm
-                            $final_price = $original_price - ($original_price * $sale_value / 100);
-                        } else {
+                            $final_price = $original_price - ($original_price * $sale_value / 100);} 
+                            else {
                             // Giảm giá theo số tiền cố định
                             $final_price = $original_price - $sale_value;
                         }
@@ -86,14 +86,14 @@ if (!empty($sanphamct)): ?>
                 <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
+                            <button type="button" class="btn btn-primary btn-minus" onclick="changeQuantity(-1)">
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
                         <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center"
                             style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
+                            <button type="button" class="btn btn-primary btn-plus" onclick="changeQuantity(1)">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -105,10 +105,17 @@ if (!empty($sanphamct)): ?>
                     <div class="alert alert-warning mb-0">Out of stock</div>
                 <?php endif; ?>
             </form>
-            <button type="submit" name="buy_now" class="btn btn-danger btn-sm" style="width: 150px; height: 40px;">
-                <i class="fa fa-shopping-basket mr-1"></i> Mua ngay
-            </button>
-
+                <form action="?act=checkout" method="POST" style="display: inline;" onsubmit="return validateBeforeCheckout()">
+                    <input type="hidden" name="buy_now" value="1">
+                    <input type="hidden" name="comic_id" value="<?= htmlspecialchars($sanphamct['id'] ?? '') ?>">
+                    <input type="hidden" name="quantity" id="buy_now_quantity" value="1">
+                    <input type="hidden" name="price" value="<?= htmlspecialchars($final_price ?? $sanphamct['price'] ?? '') ?>">
+                    <input type="hidden" name="title" value="<?= htmlspecialchars($sanphamct['title'] ?? '') ?>">
+                    <input type="hidden" name="image" value="<?= htmlspecialchars($sanphamct['image'] ?? '') ?>">
+                    <button type="submit" class="btn btn-danger px-3 ml-2">
+                        <i class="fa fa-flash mr-1"></i> Mua ngay
+                    </button>
+                </form>
         </div>
     </div>
 <?php else: ?>
@@ -278,7 +285,7 @@ if (!empty($sanphamct)): ?>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
                             <a href="?act=chitietsp&id=<?php echo $spcl['id'] ?>" class="btn btn-sm text-dark p-0">
-                                <i class="fas fa-eye text-primary mr-1"></i>View Detail
+                                 <i class="fas fa-eye text-primary mr-1"></i>View Detail
                             </a>
 
 
@@ -367,5 +374,40 @@ if (!empty($sanphamct)): ?>
             // Cập nhật thông tin biến thể đã chọn
             document.querySelector('.selected-variant-info').style.display = 'block';
         }
-    </script>
+
+        function validateBeforeCheckout() {
+            // Kiểm tra đăng nhập
+            <?php if (!isset($_SESSION['user'])): ?>
+                Swal.fire({
+                    title: 'Thông báo',
+                    text: 'Vui lòng đăng nhập để mua hàng!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đăng nhập',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'index.php?act=login';
+                    }
+                });
+                return false;
+            <?php endif; ?>
+
+            // Kiểm tra số lượng tồn kho
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const stock = parseInt('<?= $sanphamct['stock_quantity'] ?? 0 ?>');
+            
+            if (quantity > stock) {
+                Swal.fire({
+                    title: 'Lỗi',
+                    text: 'Số lượng vượt quá tồn kho!',
+                    icon: 'error'
+                });
+                return false;
+            }
+            
+            // Cập nhật số lượng cho form mua ngay
+            document.getElementById('buy_now_quantity').value = quantity;
+            return true;
+        }
     </script>

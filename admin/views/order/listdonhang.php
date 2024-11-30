@@ -43,15 +43,15 @@
                       <table id="example1" class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>id đơn hàng</th>
-            <th>tên khách hàng</th>
-            <th>số điện thoại</th>
-            <th>tổng giá trị đơn hàng</th>
-            <th>phương thức thanh toán</th>
-            <th>trạng thái thanh toán</th>
-            <th>trạng thái đơn hàng</th>
+            <th>ID đơn hàng</th>
+            <th>Tên khách hàng</th>
+            <th>Số điện thoại</th>
+            <th>Tổng giá trị đơn hàng</th>
+            <th>Phương thức thanh toán</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Trạng thái đơn hàng</th>
             
-            <th>thao tác</th>
+            <th>Thao tác</th>
         </tr>
     </thead>
     <tbody>
@@ -65,17 +65,17 @@
                 <td><?php
                 
                         switch($donhang['payment_method']) {
-                          case 'Cash on Delivery': // Cash on Delivery
-                              echo '<span class="badge bg-primary" style="font-size: 15px;">thanh toán khi nhận hàng</span>';
+                          case 'COD': // COD
+                              echo '<span class="badge bg-primary" style="font-size: 15px;">Thanh toán khi nhận hàng</span>';
                               break;
-                          case 'E-Wallet': // E-Wallet
-                              echo '<span class="badge bg-danger" style="font-size: 15px;">ví điện tử</span>';
+                          case 'MOMO': // MOMO
+                              echo '<span class="badge bg-danger" style="font-size: 15px;">Ví điện tử</span>';
                               break;
-                          case 'Internet Banking': // Internet Banking
-                              echo '<span class="badge bg-info" style="font-size: 15px;">chuyển khoản</span>';
+                          case 'BANKING': // BANKING
+                              echo '<span class="badge bg-info" style="font-size: 15px;">Chuyển khoản</span>';
                               break;
-                          case 'Credit Card': // Credit Card
-                              echo '<span class="badge bg-warning" style="font-size: 15px;">thẻ tín dụng</span>';
+                          case 'CREDIT': // CREDIT
+                              echo '<span class="badge bg-warning" style="font-size: 15px;">Thẻ tín dụng</span>';
                               break;
                           default:
                               echo '<span class="badge bg-secondary" style="font-size: 15px;">Unknown</span>'; // Nếu không có giá trị khớp

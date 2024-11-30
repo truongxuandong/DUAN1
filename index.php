@@ -8,19 +8,19 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 require_once './commons/env.php';
 require_once './clients/views/layout/header.php';
-// require_once './clients/views/layout/sidebar.php';
 
 #require Controller
 require_once './clients/controllers/HomeController.php';
 require_once './clients/controllers/CartController.php';
 require_once './clients/controllers/LoginController.php';
 require_once './clients/controllers/AccountController.php';
+require_once './clients/controllers/CheckoutController.php';
 
 #require Model
 require_once './clients/models/Cart.php';
 require_once './clients/models/Login.php';
 require_once './clients/models/Account.php';
-
+require_once './clients/models/Order.php';
 require_once './clients/models/danhmuc.php';
 require_once './clients/models/sanpham.php';
 
@@ -34,6 +34,7 @@ match ($act) {
     '/' => $home->views_home(),
     'chitietsp' => $home->views_chitietsp(),
     'sanpham' => $home->views_sanpham(),
+    'search' => $home->views_search(),
     'lienhe' => $home->views_lienhe(),
     'view-shopping-cart' => (new CartController())->view_shoppingCart(),
     'add-item-to-cart' => (new CartController())->addToCart(),
@@ -45,6 +46,11 @@ match ($act) {
     'profile' => (new AccountController($pdo))->profile(),
     'edit-profile' => (new AccountController($pdo))->editProfile(),
     'change-password' => (new AccountController($pdo))->changePassword(),
+    'thanhtoan' => (new CheckoutController())->index(),
+    'process-checkout' => (new CheckoutController())->processCheckout(),
+    'checkout' => (new CheckoutController())->index(),
+    'process-checkout' => (new CheckoutController())->processCheckout(),
+    'order-success' => (new CheckoutController())->orderSuccess(),
 };
 
 require_once './clients/views/layout/footer.php';
