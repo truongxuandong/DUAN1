@@ -47,36 +47,8 @@ class LoginController
     //     }
     //     require_once 'clients/views/formDangky/login.php'; // Hiển thị form đăng nhập
     // }
-//     public function login()
-// {
-//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//         $email = trim($_POST['email']);
-//         $password = $_POST['password'];
-
-//         // Gọi phương thức checkLogin từ Model
-//         $user = $this->loginModel->checkLogin($email, $password);
-
-//         if ($user && is_array($user)) {
-//             // Lưu đầy đủ thông tin người dùng vào session
-//             $_SESSION['user'] = [
-//                 'id' => $user['id'],          
-//                 'name' => $user['name'],
-//                 'email' => $user['email'],
-//                 'role' => $user['role'],
-//             ];
-//             $_SESSION['user_id'] = $user['id']; 
-
-//             $_SESSION['success'] = "Đăng nhập thành công!";
-//             header("Location: ?act=/&user_id=" . $user['id']);
-//             exit();
-//         }
-//     }
-//     require_once 'clients/views/formDangky/login.php';
-// }
-public function login()
+    public function login()
 {
-    // session_start(); // Khởi động session
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email']);
         $password = $_POST['password'];
@@ -92,15 +64,14 @@ public function login()
                 'email' => $user['email'],
                 'role' => $user['role'],
             ];
-            
+            $_SESSION['user_id'] = $user['id']; 
 
             $_SESSION['success'] = "Đăng nhập thành công!";
-            header("Location:./");
+            header("Location: ?act=/&user_id=" . $user['id']);
             exit();
         }
     }
-
-    require_once './views/formDangky/login.php'; // Hiển thị form đăng nhập
+    require_once 'clients/views/formDangky/login.php';
 }
 
 
@@ -138,7 +109,7 @@ public function login()
     {
         // session_start();
         session_destroy(); // Hủy session để người dùng bị đăng xuất
-        header("Location:./"); // Chuyển hướng người dùng về trang đăng nhập
+        header("Location: ?act=/"); // Chuyển hướng người dùng về trang đăng nhập
         exit();
     }
 }
