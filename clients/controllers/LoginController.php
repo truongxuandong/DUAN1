@@ -84,15 +84,18 @@ public function login()
         // Gọi phương thức checkLogin từ Model
         $user = $this->loginModel->checkLogin($email, $password);
 
-        if ($user) { // Nếu đăng nhập thành công
-            $_SESSION['user'] = $user; // Lưu thông tin người dùng vào session
-            $_SESSION['user_id'] = $user['id']; // Gán user_id vào session
+        if ($user && is_array($user)) {
+            // Lưu đầy đủ thông tin người dùng vào session
+            $_SESSION['user'] = [
+                'id' => $user['id'],          
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'role' => $user['role'],
+            ];
+            
+
             $_SESSION['success'] = "Đăng nhập thành công!";
-            header("Location: ?act=/");
-            exit();
-        } else { // Nếu đăng nhập thất bại
-            $_SESSION['error'] = $_SESSION['error'] ?? "Email hoặc mật khẩu không đúng.";
-            header("Location: ?act=login");
+            header("Location:./");
             exit();
         }
     }
@@ -135,7 +138,7 @@ public function login()
     {
         // session_start();
         session_destroy(); // Hủy session để người dùng bị đăng xuất
-        header("Location: ?act=/"); // Chuyển hướng người dùng về trang đăng nhập
+        header("Location:./"); // Chuyển hướng người dùng về trang đăng nhập
         exit();
     }
 }

@@ -43,13 +43,13 @@
                       <table id="example1" class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>ID đơn hàng</th>
-            <th>Tên khách hàng</th>
-            <th>Số điện thoại</th>
-            <th>Tổng giá trị đơn hàng</th>
-            <th>Phương thức thanh toán</th>
-            <th>Trạng thái thanh toán</th>
-            <th>Trạng thái đơn hàng</th>
+            <th>id </th>
+            <th>tên khách hàng</th>
+            <th>số điện thoại</th>
+            <th>tổng giá trị đơn hàng</th>
+            <th>phương thức thanh toán</th>
+            <th>trạng thái thanh toán</th>
+            <th>trạng thái đơn hàng</th>
             
             <th>Thao tác</th>
         </tr>
@@ -59,7 +59,7 @@
             <tr>
                 <td><?= $donhang['id'] ?></td>
                 <!-- Hiển thị tên khách hàng, nếu không có thì hiển thị user_id -->
-                <td><?= $donhang['name'] ?? $donhang['user_id'] ?></td>
+                <td><?= $donhang['receiver_name']?></td>
                 <td><?= $donhang['phone'] ?></td>
                 <td><?= number_format($donhang['total_products_amount'] ?? 0, 0, ',', '.') ?> đ</td>
                 <td><?php

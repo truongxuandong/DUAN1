@@ -56,8 +56,10 @@ class CheckoutController {
             $userId = $_SESSION['user']['id'];
             $address = $_POST['shipping_address'] ?? '';
             $paymentMethod = $_POST['payment_method'] ?? '';
+            $receiverName = $_POST['receiver_name'] ?? '';
+            $phone = $_POST['phone_car'] ?? '';
             
-            if (empty($address) || empty($paymentMethod)) {
+            if (empty($address) || empty($paymentMethod) || empty($receiverName) || empty($phone)) {
                 throw new Exception("Vui lòng điền đầy đủ thông tin");
             }
 
@@ -68,7 +70,9 @@ class CheckoutController {
                     'total_amount' => $_POST['price'] * $_POST['quantity'],
                     'payment_method' => $paymentMethod,
                     'shipping_address' => $address,
-                    'payment_status' => 'processing'
+                    'payment_status' => 'processing',
+                    'receiver_name' => $receiverName,
+                    'phone_car' => $phone
                 ];
 
                 $orderId = $this->orderModel->createOrder($orderData);
@@ -94,7 +98,9 @@ class CheckoutController {
                     'total_amount' => $totalAmount,
                     'payment_method' => $paymentMethod,
                     'shipping_address' => $address,
-                    'payment_status' => 'processing'
+                    'payment_status' => 'processing',
+                    'receiver_name' => $receiverName,
+                    'phone_car' => $phone
                 ];
 
                 $orderId = $this->orderModel->createOrder($orderData);
@@ -124,29 +130,24 @@ class CheckoutController {
     }
 
     public function orderSuccess() {
-        if (!isset($_GET['id'])) {
+        $orderId = $_GET['id'] ?? null;
+        
+        if (!$orderId) {
             header('Location: index.php');
             exit;
         }
 
-        $orderId = $_GET['id'];
+        // Lấy thông tin đơn hàng
+        $order = $this->orderModel->getOrderById($orderId);
         
-        try {
-            // Lấy thông tin đơn hàng
-            $order = $this->orderModel->getOrderById($orderId);
-            
-            if (!$order || $order['user_id'] != $_SESSION['user']['id']) {
-                throw new Exception("Không tìm thấy đơn hàng");
-            }
-
-            // Lấy chi tiết đơn hàng
-            $orderItems = $this->orderModel->getOrderItems($orderId);
-            
-            require_once './clients/views/checkout/order-success.php';
-            
-        } catch (Exception $e) {
-            $_SESSION['error'] = $e->getMessage();
+        if (!$order) {
             header('Location: index.php');
+            exit;
         }
+        
+        // Lấy chi tiết đơn hàng
+        $orderItems = $this->orderModel->getOrderItems($orderId);
+        
+        require_once 'clients/views/checkout/order-success.php';
     }
 }
