@@ -8,8 +8,8 @@ class OrderModel {
 
     public function createOrder($data) {
         try {
-            $sql = "INSERT INTO orders (user_id, total_amount, payment_method, shipping_address, payment_status) 
-                    VALUES (:user_id, :total_amount, :payment_method, :shipping_address, :payment_status)";
+            $sql = "INSERT INTO orders (user_id, total_amount, payment_method, shipping_address, payment_status, receiver_name, phone_car) 
+                    VALUES (:user_id, :total_amount, :payment_method, :shipping_address, :payment_status, :receiver_name, :phone_car)";
             
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([
@@ -17,7 +17,9 @@ class OrderModel {
                 ':total_amount' => $data['total_amount'],
                 ':payment_method' => $data['payment_method'],
                 ':shipping_address' => $data['shipping_address'],
-                ':payment_status' => $data['payment_status']
+                ':payment_status' => $data['payment_status'],
+                ':receiver_name' => $data['receiver_name'],
+                ':phone_car' => $data['phone_car']
             ]);
 
             return $this->conn->lastInsertId();
@@ -54,7 +56,7 @@ class OrderModel {
 
     public function getOrderById($orderId) {
         try {
-            $sql = "SELECT o.*, u.fullname, u.email, u.phone 
+            $sql = "SELECT o.*, u.name, u.email, u.phone 
                     FROM orders o 
                     JOIN users u ON o.user_id = u.id 
                     WHERE o.id = ?";
@@ -77,6 +79,17 @@ class OrderModel {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Lỗi khi lấy chi tiết đơn hàng: " . $e->getMessage());
+        }
+    }
+
+    public function updateOrderTotal($orderId, $totalAmount) {
+        try {
+            $sql = "UPDATE orders SET total_amount = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$totalAmount, $orderId]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception("Lỗi khi cập nhật tổng tiền đơn hàng: " . $e->getMessage());
         }
     }
 }
