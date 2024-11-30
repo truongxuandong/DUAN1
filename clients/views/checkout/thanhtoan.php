@@ -26,7 +26,7 @@
                     <h3>Thông tin thanh toán</h3>
                 </div>
                 
-                <form action="index.php?act=process-checkout" method="POST" id="checkout-form">
+                <form action="?act=process-checkout" method="POST" id="checkout-form">
                     <div class="form-group">
                         <label>Họ tên người nhận:</label>
                         <input type="text" name="receiver_name" required 
@@ -35,7 +35,7 @@
 
                     <div class="form-group">
                         <label>Số điện thoại:</label>
-                        <input type="tel" name="phone" required 
+                        <input type="tel" name="phone_car" required 
                                value="<?= $_SESSION['user']['phone'] ?? '' ?>">
                     </div>
 
