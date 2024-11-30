@@ -32,7 +32,7 @@
             <?php if (empty($cartItems)): ?>
                 <div class="text-center">
                     <p>Giỏ hàng trống</p>
-                    <a href="index.php" class="btn btn-primary">Tiếp tục mua sắm</a>
+                    <a href="./" class="btn btn-primary">Tiếp tục mua sắm</a>
                 </div>
             <?php else: ?>
                 <div class="table-responsive">
@@ -45,6 +45,7 @@
                                 <th>Số lượng</th>
                                 <th>Thành tiền</th>
                                 <th>Thao tác</th>
+                                <th><input type="checkbox" id="select-all" onclick="toggleAll(this)"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,44 +58,24 @@
                                     <td class="text-right">
                                         <?= number_format($item['price'], 0, ',', '.') ?>đ
                                     </td>
-                                    <!-- Thay đổi phần td chứa số lượng -->
                                     <td class="text-center" style="width: 150px;">
-                                        <div class="quantity-control">
-                                            <div class="input-group">
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                    onclick="updateQuantity(<?= $item['id'] ?>, -1)"
-                                                    style="width: 40px; font-weight: bold;">
-                                                    -
-                                                </button>
-
-                                                <input type="number" class="form-control text-center quantity-input"
-                                                    value="<?= $item['quantity'] ?>"
-                                                    min="1"
-                                                    data-item-id="<?= $item['id'] ?>"
-                                                    style="max-width: 60px;">
-
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                    onclick="updateQuantity(<?= $item['id'] ?>, 1)"
-                                                    style="width: 40px; font-weight: bold;">
-                                                    +
-                                                </button>
-                                            </div>
-                                            <button type="button" class="btn btn-success btn-sm mt-2"
-                                                onclick="saveQuantity(<?= $item['id'] ?>)"
-                                                style="width: 140px; font-weight: 500;">
-                                                Cập nhật
-                                            </button>
-                                        </div>
+                                        <?= $item['quantity'] ?>
                                     </td>
                                     <td class="text-right item-total" id="subtotal-<?= $item['id'] ?>">
                                         <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?>đ
                                     </td>
                                     <td class="text-center">
-                                        <a href="index.php?act=delete-cart-item&id=<?= $item['id'] ?>"
+                                        <a href="?act=delete-cart-item&id=<?= $item['id'] ?>"
                                             class="btn btn-danger btn-sm"
                                             onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="item-checkbox" 
+                                               data-price="<?= $item['price'] ?>" 
+                                               data-quantity="<?= $item['quantity'] ?>"
+                                               onchange="updateTotal()">
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -103,8 +84,9 @@
                             <tr>
                                 <td colspan="4" class="text-right"><strong>Tổng tiền:</strong></td>
                                 <td class="text-right" id="cart-total">
-                                    <strong><?= number_format($totalAmount, 0, ',', '.') ?>đ</strong>
+                                    <strong>0đ</strong>
                                 </td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </tfoot>
@@ -113,12 +95,12 @@
 
                 <div class="row mt-4">
                     <div class="col-md-6">
-                        <a href="index.php" class="btn btn-secondary">
+                        <a href="./" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
                         </a>
                     </div>
                     <div class="col-md-6 text-right">
-                        <a href="index.php?act=checkout" class="btn btn-primary">
+                        <a href="javascript:void(0)" onclick="checkoutHandler()" class="btn btn-primary" id="checkout-btn" style="opacity: 0.5;">
                             Thanh toán <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -133,7 +115,7 @@
 
             // Gửi yêu cầu AJAX
             $.ajax({
-                url: 'index.php?act=update-quantity',
+                url: '?act=update-quantity',
                 method: 'POST',
                 data: {
                     item_id: itemId,
@@ -177,7 +159,7 @@
         function removeItem(itemId) {
             if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
                 $.ajax({
-                    url: 'index.php?act=delete-cart-item',
+                    url: '?act=delete-cart-item',
                     method: 'POST',
                     data: {
                         item_id: itemId
@@ -196,7 +178,7 @@
                                         $(this).replaceWith(`
                                             <div class="text-center">
                                                 <p>Giỏ hàng trống</p>
-                                                <a href="index.php" class="btn btn-primary">Tiếp tục mua sắm</a>
+                                                <a href="./" class="btn btn-primary">Tiếp tục mua sắm</a>
                                             </div>
                                         `);
                                     });
@@ -216,62 +198,115 @@
             }
         }
 
-        function updateQuantity(itemId, change) {
-            const input = document.querySelector(`input[data-item-id="${itemId}"]`);
-            let newQuantity = parseInt(input.value) + change;
+        // function updateQuantity(itemId, change) {
+        //     const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+        //     let newQuantity = parseInt(input.value) + change;
 
-            // Đảm bảo số lượng không nhỏ hơn 1
-            if (newQuantity < 1) {
-                newQuantity = 1;
+        //     // Đảm bảo số lượng không nhỏ hơn 1
+        //     if (newQuantity < 1) {
+        //         newQuantity = 1;
+        //     }
+
+        //     input.value = newQuantity;
+        // }
+
+        // function saveQuantity(itemId) {
+        //     const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+        //     const newQuantity = parseInt(input.value);
+
+        //     if (newQuantity < 1) {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Lỗi',
+        //             text: 'Số lượng phải lớn hơn 0!'
+        //         });
+        //         return;
+        //     }
+
+        //     // Gửi form cập nhật số lượng
+        //     const formData = new FormData();
+        //     formData.append('item_id', itemId);
+        //     formData.append('quantity', newQuantity);
+
+        //     fetch('?act=update-quantity', {
+        //             method: 'POST',
+        //             body: formData
+        //         })
+        //         .then(response => response.text())
+        //         .then(() => {
+        //             // Hiển thị thông báo thành công
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: 'Thành công',
+        //                 text: 'Cập nhật số lượng thành công!',
+        //                 showConfirmButton: false,
+        //                 timer: 1500
+        //             }).then(() => {
+        //                 // Reload trang sau khi hiển thị thông báo
+        //                 window.location.reload();
+        //             });
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'Lỗi',
+        //                 text: 'Có lỗi xảy ra khi cập nhật số lượng!'
+        //             });
+        //         });
+        // }
+
+        function toggleAll(source) {
+            const checkboxes = document.getElementsByClassName('item-checkbox');
+            for(let checkbox of checkboxes) {
+                checkbox.checked = source.checked;
             }
-
-            input.value = newQuantity;
+            updateTotal();
         }
 
-        function saveQuantity(itemId) {
-            const input = document.querySelector(`input[data-item-id="${itemId}"]`);
-            const newQuantity = parseInt(input.value);
+        function checkoutHandler() {
+            const checkboxes = document.getElementsByClassName('item-checkbox');
+            let hasCheckedItems = false;
 
-            if (newQuantity < 1) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: 'Số lượng phải lớn hơn 0!'
-                });
-                return;
+            for(let checkbox of checkboxes) {
+                if(checkbox.checked) {
+                    hasCheckedItems = true;
+                    break;
+                }
             }
 
-            // Gửi form cập nhật số lượng
-            const formData = new FormData();
-            formData.append('item_id', itemId);
-            formData.append('quantity', newQuantity);
-
-            fetch('index.php?act=update-quantity', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(() => {
-                    // Hiển thị thông báo thành công
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Thành công',
-                        text: 'Cập nhật số lượng thành công!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        // Reload trang sau khi hiển thị thông báo
-                        window.location.reload();
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi',
-                        text: 'Có lỗi xảy ra khi cập nhật số lượng!'
-                    });
+            if(hasCheckedItems) {
+                window.location.href = '?act=checkout';
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thông báo',
+                    text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!'
                 });
+            }
+        }
+
+        function updateTotal() {
+            let total = 0;
+            const checkboxes = document.getElementsByClassName('item-checkbox');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            let hasCheckedItems = false;
+
+            for(let checkbox of checkboxes) {
+                if(checkbox.checked) {
+                    hasCheckedItems = true;
+                    const price = parseFloat(checkbox.getAttribute('data-price'));
+                    const quantity = parseInt(checkbox.getAttribute('data-quantity'));
+                    total += price * quantity;
+                }
+            }
+
+            // Cập nhật tổng tiền - luôn hiển thị 0đ khi không có item được chọn
+            document.getElementById('cart-total').innerHTML = 
+                `<strong>${hasCheckedItems ? new Intl.NumberFormat('vi-VN').format(total) : '0'}đ</strong>`;
+
+            // Cập nhật style nút thanh toán
+            checkoutBtn.style.opacity = hasCheckedItems ? '1' : '0.5';
         }
     </script>
 </body>

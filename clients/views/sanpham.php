@@ -97,7 +97,7 @@
             <button type="submit" class="btn btn-primary btn-block">
                 <i class="fa fa-search mr-2"></i>Lọc sản phẩm
             </button>
-            <a href="index.php?act=search" class="btn btn-outline-secondary btn-block mt-2">
+            <a href="?act=search" class="btn btn-outline-secondary btn-block mt-2">
                 <i class="fa fa-redo mr-2"></i>Đặt lại
             </a>
         </div>
@@ -192,11 +192,11 @@
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="index.php?act=chitietsp&id=<?php echo $sp['id']; ?>" 
+                            <a href="?act=chitietsp&id=<?php echo $sp['id']; ?>" 
                                class="btn btn-sm text-dark p-0">
                                 <i class="fas fa-eye text-primary mr-1"></i>Chi tiết
                             </a>
-                            <a href="index.php?act=addtocart&id=<?php echo $sp['id']; ?>" 
+                            <a href="?act=addtocart&id=<?php echo $sp['id']; ?>" 
                                class="btn btn-sm text-dark p-0">
                                 <i class="fas fa-shopping-cart text-primary mr-1"></i>Thêm vào giỏ
                             </a>

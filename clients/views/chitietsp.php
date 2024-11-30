@@ -29,7 +29,7 @@ if (!empty($sanphamct)): ?>
                 <?php if (!empty($sanphamct['variants'])): ?>
                     <div class="variants-container">
                         <?php foreach ($sanphamct['variants'] as $variant): ?>
-                            <button type="button" class="btn btn-outline-danger variant-btn"
+                            <button class="btn btn-outline-primary variant-btn"
                                 data-price="<?= $variant['price'] ?>"
                                 data-stock="<?= $variant['stock_quantity'] ?>"
                                 data-image="<?= $variant['image'] ?>"
@@ -51,9 +51,8 @@ if (!empty($sanphamct)): ?>
             <div class="mb-4">
                 <h3 class="font-weight-semi-bold d-inline" id="product-price">
                     <?php
-                    $original_price = $sanphamct['original_price'];
                     if (!empty($sanphamct['sale_value'])) {
-                        $original_price =  $sanphamct['original_price'];
+                        $original_price =  $sanphamct['price'];
                         $sale_value = $sanphamct['sale_value'];
 
                         // Tính giá sau khuyến mãi
@@ -67,65 +66,48 @@ if (!empty($sanphamct)): ?>
                         echo number_format(max($final_price, 0), 0, ',', '.') . ' đ';
                     } else {
                         // Không có khuyến mãi, hiển thị giá gốc
-                        echo number_format($original_price, 0, ',', '.') . ' đ';
+                        echo number_format($sanphamct['price'] ?? 0, 0, ',', '.') . ' đ';
                     }
                     ?>
                 </h3>
                 <?php if (!empty($sanphamct['sale_value'])): ?>
                     <h5 class="font-weight-semi-bold d-inline text-muted ml-2" id="original-price" style="text-decoration: line-through;">
-                        <?= number_format($original_price, 0, ',', '.') ?> đ
+                        <?= number_format($sanphamct['original_price'] ?? $sanphamct['price'], 0, ',', '.') ?> đ
                     </h5>
                 <?php endif; ?>
             </div>
             <p class="mb-4"><?= $sanphamct['description'] ?? '' ?></p>
 
-            <form action="" method="POST" class="d-flex align-items-center mb-4 pt-2">
-                <?php if (!empty($sanphamct['id'])): ?>
-                    <input type="hidden" name="variant_id" value="<?= $sanphamct['id'] ?>">
-                <?php endif; ?>
-                <input type="hidden" name="comic_id" value="<?= $sanphamct['comic_id'] ?? $sanphamct['id'] ?? '' ?>">
+            <form action="?act=add-item-to-cart" method="POST" class="d-flex align-items-center mb-4 pt-2">
+                <!-- ID sản phẩm hoặc biến thể -->
+                <input type="hidden" name="variant_id" value="<?= htmlspecialchars($sanphamct['id'] ?? '') ?>">
+                <input type="hidden" name="comic_id" value="<?= htmlspecialchars($sanphamct['comic_id'] ?? $sanphamct['id'] ?? '') ?>">
 
                 <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
-
-
-                    <div class="product-details">
-    <!-- Phần tăng giảm số lượng -->
-    <div class="quantity-box mb-4" style="width: 150px;">
-        <div class="input-group quantity">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
-                    <i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <input type="number" name="quantity" id="quantity" class="form-control bg-light text-center" value="1" min="1">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
-                    <i class="fa fa-plus"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Nút Add To Cart và Mua ngay nằm cùng 1 hàng -->
-    <div class="button-group d-flex justify-content-between" style="gap: 10px;margin-top: 40px;">
-    <button type="submit" name="add_to_cart" class="btn btn-outline-primary btn-sm" style="width: 150px; height: 40px;">
-        <i class="fa fa-shopping-cart mr-1"></i> Thêm vào giỏ
-    </button>
-    <button type="submit" name="buy_now" class="btn btn-danger btn-sm" style="width: 150px; height: 40px;">
-        <i class="fa fa-shopping-basket mr-1"></i> Mua ngay
-    </button>
-    </div>
-</div>
-
-</div>
-
-
-
-
+                    <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center"
+                            style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" name="view-shopping-cart" class="btn btn-primary px-3">
+                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                    </button>
                 <?php else: ?>
                     <div class="alert alert-warning mb-0">Out of stock</div>
                 <?php endif; ?>
             </form>
+            <button type="submit" name="buy_now" class="btn btn-danger btn-sm" style="width: 150px; height: 40px;">
+                <i class="fa fa-shopping-basket mr-1"></i> Mua ngay
+            </button>
 
         </div>
     </div>
@@ -199,7 +181,34 @@ if (!empty($sanphamct)): ?>
                         <p><strong>Great product!</strong> Highly recommend to everyone looking for quality and reliability.</p>
                     </div>
                 </div>
-
+                <!-- Leave a Review -->
+                <form>
+                    <div class="form-group">
+                        <label for="review-message"><strong>Your Review *</strong></label>
+                        <textarea id="review-message" cols="30" rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-name"><strong>Name *</strong></label>
+                        <input type="text" class="form-control" id="review-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="review-email"><strong>Email *</strong></label>
+                        <input type="email" class="form-control" id="review-email">
+                    </div>
+                    <div class="form-group">
+                        <p class="mb-1"><strong>Your Rating *</strong></p>
+                        <div class="text-primary">
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="form-group mb-0">
+                        <button type="submit" class="btn btn-primary px-3"><strong>Submit Review</strong></button>
+                    </div>
+                </form>
             </div>
 
         </div>
@@ -272,9 +281,7 @@ if (!empty($sanphamct)): ?>
                                 <i class="fas fa-eye text-primary mr-1"></i>View Detail
                             </a>
 
-                            <a href="" class="btn btn-sm text-dark p-0">
-                                <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
-                            </a>
+
                         </div>
                     </div>
                 </div>
@@ -286,29 +293,45 @@ if (!empty($sanphamct)): ?>
         </div>
     </div>
 
+
     <script>
         function increaseValue() {
-            var value = parseInt(document.getElementById('quantity').value);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById('quantity').value = value;
-        }
-
-        function decreaseValue() {
-            var value = parseInt(document.getElementById('quantity').value);
-            value = isNaN(value) ? 0 : value;
-            if (value > 1) {
-                value--;
-                document.getElementById('quantity').value = value;
+            var input = document.getElementById('quantity');
+            var max = parseInt(input.getAttribute('max'));
+            var value = parseInt(input.value);
+            
+            if (value < max) {
+                input.value = value + 1;
             }
         }
 
+        function decreaseValue() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+
+        // Thêm validation khi người dùng nhập trực tiếp
+        document.getElementById('quantity').addEventListener('change', function() {
+            var value = parseInt(this.value);
+            var max = parseInt(this.getAttribute('max'));
+            
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            } else if (value > max) {
+                this.value = max;
+            }
+        });
+
         function updateVariantInfo(button) {
             // Lấy các giá trị của biến thể được chọn
-            var price = parseFloat(button.getAttribute('data-price')); // Giá gốc
-            var stock = button.getAttribute('data-stock'); // Tồn kho
-            var image = button.getAttribute('data-image'); // Ảnh biến thể
-            var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0); // Giá giảm
+            var price = parseFloat(button.getAttribute('data-price'));
+            var stock = button.getAttribute('data-stock');
+            var image = button.getAttribute('data-image');
+            var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0);
 
             // Tính giá sau khi giảm giá
             var finalPrice = price;
@@ -328,14 +351,11 @@ if (!empty($sanphamct)): ?>
 
             // Hiển thị giá gốc nếu có giảm giá
             if (saleValue > 0) {
-                document.getElementById('original-price').style.display = 'inline'; // Hiện giá gạch
+                document.getElementById('original-price').style.display = 'inline';
                 document.getElementById('original-price').textContent =
                     new Intl.NumberFormat('vi-VN').format(price) + ' đ';
             } else {
-                // Không có khuyến mãi -> Ẩn giá gạch, hiển thị giá gốc
                 document.getElementById('original-price').style.display = 'none';
-                document.getElementById('product-price').textContent =
-                    new Intl.NumberFormat('vi-VN').format(price) + ' đ';
             }
 
             // Cập nhật số lượng tồn kho
@@ -348,31 +368,4 @@ if (!empty($sanphamct)): ?>
             document.querySelector('.selected-variant-info').style.display = 'block';
         }
     </script>
-
-
-    <style>
-        
-
-        /* Cải thiện giao diện nút khi hover */
-        .btn-primary:hover,
-        .btn-danger:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-danger:hover {
-            background-color: #cc0000;
-        }
-        .button-group {
-    display: flex;
-    justify-content: flex-start; /* Hoặc `space-between` nếu cần dãn cách đều */
-    gap: 10px; /* Khoảng cách giữa các nút */
-}
-.btn-custom {
-    width: 150px;
-    height: 40px;
-    display: flex;
-    align-items: center; /* Căn giữa nội dung nút theo chiều dọc */
-    justify-content: center; /* Căn giữa nội dung nút theo chiều ngang */
-}
-
-    </style>
+    </script>

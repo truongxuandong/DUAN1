@@ -82,6 +82,25 @@ ob_start();
             height: 160px;
         }
     </style>
+    <script>
+        let isReload = false;
+
+        // Đánh dấu khi reload trang
+        window.onbeforeunload = function() {
+            if (performance.navigation.type === 1) {
+                isReload = true;
+            }
+            if (!isReload) {
+                // Chỉ gửi request kết thúc session khi không phải là reload
+                navigator.sendBeacon('?act=end-session');
+            }
+        };
+
+        // Reset flag khi load trang mới
+        window.onload = function() {
+            isReload = false;
+        };
+    </script>
 </head>
 
 <body>
@@ -182,13 +201,15 @@ ob_start();
                         </a>
 
                         <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
+                            <a class="nav-link" href="?act=profile"><i class="fa fa-user"></i>My Profile</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
+                            <a class="nav-link" href="#"><i class="fa fa-user"></i>Notifications <span class="count">13</span></a>
 
-                            <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
+                            <a class="nav-link" href="#"><i class="fa fa-cog"></i>Settings</a>
 
-                            <a class="nav-link" href="<?= BASE_URL_ADMIN . '?act=login-admin' ?>" onclick="return confirm(' Đăng xuất tài khoản?')"><i class="fa fa-power -off"></i>Logout</a>
+                            <a class="nav-link" href="?act=logout">
+                                <i class="fa fa-power-off"></i>Logout
+                            </a>
 
                         </div>
                     </div>
