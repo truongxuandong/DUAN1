@@ -52,7 +52,9 @@
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block text-center">
-                <a href="./" class="text-decoration-none">
+
+                <a href="index.php" class="text-decoration-none">
+
                     <h1 class="m-0 display-5 font-weight-semi-bold">
                     <img src="clients/assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
                     </h1>

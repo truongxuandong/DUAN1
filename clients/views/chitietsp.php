@@ -86,14 +86,14 @@ if (!empty($sanphamct)): ?>
                 <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-minus" onclick="changeQuantity(-1)">
+                            <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
-                        <input type="number" name="quantity" id="quantity" class="form-control bg-secondary text-center"
+                        <input type="text" name="quantity" id="quantity" class="form-control bg-secondary text-center"
                             style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-plus" onclick="changeQuantity(1)">
+                            <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -304,11 +304,15 @@ if (!empty($sanphamct)): ?>
     <script>
         function increaseValue() {
             var input = document.getElementById('quantity');
-            var max = parseInt(input.getAttribute('max'));
+
             var value = parseInt(input.value);
+            var maxStock = parseInt(input.getAttribute('max'));
             
-            if (value < max) {
-                input.value = value + 1;
+            if (isNaN(value)) value = 0;
+            if (value < maxStock) {
+                value++;
+                input.value = value;
+
             }
         }
 
@@ -316,20 +320,23 @@ if (!empty($sanphamct)): ?>
             var input = document.getElementById('quantity');
             var value = parseInt(input.value);
             
+            if (isNaN(value)) value = 0;
             if (value > 1) {
-                input.value = value - 1;
+                value--;
+                input.value = value;
             }
         }
 
-        // Thêm validation khi người dùng nhập trực tiếp
-        document.getElementById('quantity').addEventListener('change', function() {
+        // Thêm sự kiện kiểm tra khi người dùng nhập trực tiếp
+        document.getElementById('quantity').addEventListener('input', function() {
             var value = parseInt(this.value);
-            var max = parseInt(this.getAttribute('max'));
+            var maxStock = parseInt(this.getAttribute('max'));
             
             if (isNaN(value) || value < 1) {
                 this.value = 1;
-            } else if (value > max) {
-                this.value = max;
+            } else if (value > maxStock) {
+                this.value = maxStock;
+
             }
         });
 
