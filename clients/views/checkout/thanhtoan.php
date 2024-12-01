@@ -295,7 +295,7 @@
                 <div class="cart-items">
                     <?php foreach ($cartItems as $item): ?>
                     <div class="cart-item">
-                        <img src="<?= $item['image'] ?>" alt="<?= $item['title'] ?>">
+                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>">
                         <div class="item-info">
                             <h4><?= $item['title'] ?></h4>
                             <div class="item-details">

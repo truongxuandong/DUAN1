@@ -49,7 +49,7 @@
             <div class="cart-items">
                 <?php foreach ($orderItems as $item): ?>
                 <div class="cart-item">
-                    <img src="<?= $item['image'] ?>" alt="<?= $item['title'] ?>">
+                    <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>">
                     <div class="item-info">
                         <h4><?= $item['title'] ?></h4>
                         <div class="item-details">
@@ -79,7 +79,7 @@
 
         <div class="action-buttons">
             <a href="index.php" class="btn btn-primary">Tiếp tục mua sắm</a>
-            <a href="?act=profile" class="btn btn-outline">Xem đơn hàng</a>
+            <a href="?act=don-hang" class="btn btn-outline">Xem đơn hàng</a>
         </div>
     </div>
 

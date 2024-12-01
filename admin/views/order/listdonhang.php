@@ -60,8 +60,8 @@
                 <td><?= $donhang['id'] ?></td>
                 <!-- Hiển thị tên khách hàng, nếu không có thì hiển thị user_id -->
                 <td><?= $donhang['receiver_name']?></td>
-                <td><?= $donhang['phone'] ?></td>
-                <td><?= number_format($donhang['total_products_amount'] ?? 0, 0, ',', '.') ?> đ</td>
+                <td><?= $donhang['phone_car'] ?></td>
+                <td><?= number_format($donhang['total_amount'] ?? 0, 0, ',', '.') ?> đ</td>
                 <td><?php
                 
                         switch($donhang['payment_method']) {

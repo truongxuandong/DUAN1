@@ -45,7 +45,7 @@ $status = $status_classes[$shipping_status] ?? ['class' => 'bg-secondary', 'text
             <p><strong>Đơn giá:</strong> <?=$orders_item['unit_price']?></p>
             <p><strong>Tổng tiền:</strong> <?=$orders_item['subtotal']?></p>
             <p><strong>Địa chỉ:</strong> <?=$orders_item['shipping_address']?></p>
-            <p><img src="<?=$orders_item['image']?>" alt="" style=" width:100px;"></p>
+            <p><img src="<?=removeFirstChar($orders_item['image'])?>" alt="" style=" width:100px;"></p>
             <p><hr></p>
         </div>
     <?php endif; ?>
