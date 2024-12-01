@@ -13,7 +13,6 @@ class CartController
     {
         if (!isset($_SESSION['user_id']) || !isset($_POST['comic_id']) || !isset($_POST['quantity'])) {
             $_SESSION['error'] = 'Yêu cầu không hợp lệ!';
-
             header('Location:?act=view-shopping-cart');
             return;
         }
@@ -21,8 +20,17 @@ class CartController
         $userId = $_SESSION['user_id'];
         $comicId = (int)$_POST['comic_id'];
         $quantity = (int)$_POST['quantity'];
+        $variantId = !empty($_POST['variant_id']) ? (int)$_POST['variant_id'] : null;
 
-        if ($this->cartModel->addItem($userId, $comicId, $quantity)) {
+        if ($variantId !== null) {
+            if (!$this->cartModel->isValidVariant($comicId, $variantId)) {
+                $_SESSION['error'] = 'Phiên bản sản phẩm không hợp lệ!';
+                header('Location: ' . $_SERVER['HTTP_REFERER']);
+                return;
+            }
+        }
+
+        if ($this->cartModel->addItem($userId, $comicId, $quantity, $variantId)) {
             $_SESSION['message'] = 'Thêm vào giỏ hàng thành công!';
         } else {
             $_SESSION['error'] = 'Không thể thêm vào giỏ hàng!';

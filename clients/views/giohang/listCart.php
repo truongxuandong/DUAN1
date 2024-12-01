@@ -54,15 +54,28 @@
                                     <td class="text-center" style="width: 100px;">
                                         <img src="<?= $item['image'] ?>" alt="<?= $item['title'] ?>" class="img-fluid" style="max-width: 80px;">
                                     </td>
-                                    <td><?= $item['title'] ?></td>
+                                    <td>
+                                        <?= $item['title'] ?>
+                                        <?php if (!empty($item['format']) && !empty($item['language'])): ?>
+                                            <br>
+                                            <small class="text-muted">
+                                                Phiên bản: <?= $item['format'] ?> - <?= $item['language'] ?>
+                                            </small>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="text-right">
-                                        <?= number_format($item['price'], 0, ',', '.') ?>đ
+                                        <?= number_format($item['variant_price'] ?? $item['price'], 0, ',', '.') ?>đ
                                     </td>
                                     <td class="text-center" style="width: 150px;">
                                         <?= $item['quantity'] ?>
                                     </td>
                                     <td class="text-right item-total" id="subtotal-<?= $item['id'] ?>">
-                                        <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?>đ
+                                        <?php
+                                        // Tính thành tiền dựa trên giá biến thể hoặc giá gốc
+                                        $unitPrice = $item['variant_price'] ?? $item['price'];
+                                        $subtotal = $unitPrice * $item['quantity'];
+                                        echo number_format($subtotal, 0, ',', '.') . 'đ';
+                                        ?>
                                     </td>
                                     <td class="text-center">
                                         <a href="?act=delete-cart-item&id=<?= $item['id'] ?>"
@@ -73,7 +86,7 @@
                                     </td>
                                     <td class="text-center">
                                         <input type="checkbox" class="item-checkbox" 
-                                               data-price="<?= $item['price'] ?>" 
+                                               data-price="<?= $item['variant_price'] ?? $item['price'] ?>" 
                                                data-quantity="<?= $item['quantity'] ?>"
                                                onchange="updateTotal()">
                                     </td>
@@ -167,7 +180,7 @@
                     success: function(response) {
                         const result = JSON.parse(response);
                         if (result.success) {
-                            // Thêm hiệu ���ng fade out trước khi xóa
+                            // Thêm hiệu ng fade out trước khi xóa
                             $('#cart-item-' + itemId).fadeOut(300, function() {
                                 $(this).remove();
                                 $('#cart-total').html('<strong>' + result.newTotal + 'đ</strong>');

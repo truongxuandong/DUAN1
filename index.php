@@ -31,6 +31,13 @@ $home = new HomeController();
 
 // Route
 $act = $_GET['act'] ?? '/';
+// Định nghĩa các route không cần header
+$publicRoutes = ['login', 'register'];
+
+// Include header nếu không phải trang login hoặc register
+if (!in_array($act, $publicRoutes)) {
+    include_once './clients/views/layout/header.php';
+}
 
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
@@ -62,5 +69,7 @@ match ($act) {
     'add-reviews'=>(new OrderController())->addReview(),
 
 };
-
-require_once './clients/views/layout/footer.php';
+// Include footer nếu không phải trang login hoặc register
+if (!in_array($act, $publicRoutes)) {
+    include_once './clients/views/layout/footer.php';
+}

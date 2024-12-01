@@ -9,7 +9,7 @@ class Order{
         try {
             $sql = "SELECT orders.id, orders.user_id, 
                        SUM(order_items.quantity * order_items.unit_price) as total_products_amount,
-                       orders.phone,orders.receiver_name, orders.payment_method, orders.payment_status, 
+                       orders.phone_car,orders.receiver_name, orders.payment_method, orders.payment_status, 
                        orders.shipping_status
                 FROM orders
                 LEFT JOIN users ON orders.user_id = users.id
