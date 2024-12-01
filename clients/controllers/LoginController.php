@@ -92,7 +92,7 @@ public function login()
                 'email' => $user['email'],
                 'role' => $user['role'],
             ];
-            
+            $_SESSION['user_id'] = $user['id'];
 
             $_SESSION['success'] = "Đăng nhập thành công!";
             header("Location:./");
@@ -100,7 +100,7 @@ public function login()
         }
     }
 
-    require_once './views/formDangky/login.php'; // Hiển thị form đăng nhập
+    require_once 'clients/views/formDangky/login.php'; // Hiển thị form đăng nhập
 }
 
 

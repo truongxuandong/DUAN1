@@ -27,7 +27,7 @@
                                             }
                                             ?>
                                         </span></div>
-                                    <div class="stat-heading">Tổng tiền</div>
+                                    <div class="stat-heading">Doanh thu</div>
 
                                 </div>
                             </div>

@@ -163,10 +163,10 @@
                             <?php if (!empty($sp['sale_value'])): ?>
                                 <div class="position-absolute bg-danger text-white p-1" 
                                      style="top: 0; left: 0; font-size: 0.9rem; z-index: 1;">
-                                    -<?php echo $sp['sale_value']; ?>%
+                                    -<?php echo number_format($sp['sale_value'], 0); ?>%
                                 </div>
                             <?php endif; ?>
-                            <img class="img-fluid w-100" src="<?php echo htmlspecialchars($sp['image']); ?>" alt="">
+                            <img class="img-fluid w-100" src="<?php echo removeFirstChar($sp['image']); ?>" alt="">
                         </div>
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                             <h6 class="text-truncate mb-3"><?php echo htmlspecialchars($sp['title']); ?></h6>
@@ -181,16 +181,12 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="?act=chitietsp&id=<?php echo $sp['id']; ?>" 
-                               class="btn btn-sm text-dark p-0">
-                                <i class="fas fa-eye text-primary mr-1"></i>Chi tiết
-                            </a>
-                            <a href="?act=addtocart&id=<?php echo $sp['id']; ?>" 
-                               class="btn btn-sm text-dark p-0">
-                                <i class="fas fa-shopping-cart text-primary mr-1"></i>Thêm vào giỏ
-                            </a>
-                        </div>
+                        
+                        <div class="card-footer d-flex justify-content-center bg-light border">
+                                    <a href="?act=chitietsp&id=<?php echo $sp['id'] ?>" class="btn btn-sm text-dark p-0">
+                                        Xem chi tiết
+                                    </a>
+                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>

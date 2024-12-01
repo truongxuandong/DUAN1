@@ -18,7 +18,7 @@
                             <div class="form-group">
                                 <label>tên khách hàng</label>
                                 <input type="text" class="form-control" name="user_id" 
-                                       value="<?php echo htmlspecialchars($order['name'] ?? ''); ?>" readonly>
+                                       value="<?php echo htmlspecialchars($order['receiver_name'] ?? ''); ?>" readonly>
                             </div>
                             
                             

@@ -31,6 +31,13 @@ function uploadFile($file, $folderUpload){
     return null;
 
 }
+function removeFirstChar($str) {
+
+    if (strlen($str) > 0) {
+        return substr($str, 1); 
+    }
+    return $str; // Trả lại chuỗi gốc nếu chuỗi rỗng
+}
 function deleteFile($file){
     $pathStorage= PATH_ROOT .$file;
     if(file_exists($pathStorage)){

@@ -44,7 +44,7 @@ class HomeController
         $sanphamcungloai = [];
         
         if ($sanphamct) {
-            $sanphamcungloai = $this->modelSanPham->getSanPhamCungLoai($sanphamct['category_id']);
+            $sanphamcungloai = $this->modelSanPham->getSanPhamCungLoai($sanphamct['category_id'],$_GET['id']);
         }
         
         require_once 'clients/views/chitietsp.php';

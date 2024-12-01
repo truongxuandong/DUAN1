@@ -24,7 +24,7 @@
         <div class="list-group">
           <div class="profile-section p-3 border-bottom text-center">
             <!-- Avatar và tên người dùng -->
-            <img src="uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
+            <img src="./uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
             <h5 class="fw-bold mt-2">
               <?php
               if (isset($_SESSION['user']['name'])) {
