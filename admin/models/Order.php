@@ -8,7 +8,9 @@ class Order{
     public function getAll() {
         try {
             $sql = "SELECT orders.id, orders.user_id, 
-                       SUM(order_items.quantity * order_items.unit_price) as total_products_amount,
+
+                       SUM(order_items.quantity * order_items.unit_price) as total_amount,
+
                        orders.phone_car,orders.receiver_name, orders.payment_method, orders.payment_status, 
                        orders.shipping_status
                 FROM orders
@@ -41,8 +43,8 @@ class Order{
     }
     public function getById($id) {
         try {
-            $sql = "SELECT orders.id, orders.user_id, users.phone, orders.total_amount, 
-                    users.name, orders.payment_method, orders.payment_status, 
+            $sql = "SELECT orders.id, orders.user_id, orders.phone_car, orders.total_amount, 
+                    orders.receiver_name, orders.payment_method, orders.payment_status, 
                     orders.shipping_status, orders.shipping_address
                 FROM orders
                 LEFT JOIN users ON orders.user_id = users.id
@@ -57,7 +59,7 @@ class Order{
     }
     public function getOrderThongTinKhachHang($id) {
         try {
-            $sql = "SELECT orders.id, users.name, users.email, users.phone, orders.shipping_address, orders.payment_method
+            $sql = "SELECT orders.id,orders.receiver_name, users.email, orders.phone_car, orders.shipping_address, orders.payment_method
             FROM orders
             JOIN users ON users.id = orders.user_id
             WHERE orders.id = :id";
@@ -76,12 +78,13 @@ class Order{
             $sql = "SELECT 
                 order_items.order_id,
                 order_items.quantity,
-                order_items.unit_price,/-strong/-heart:>:o:-((:-h (order_items.quantity * order_items.unit_price) AS subtotal,
+                order_items.unit_price,
+                (order_items.quantity * order_items.unit_price) AS subtotal,
                 comics.title,
                 orders.order_date,
-                users.name,
-                users.email,
-                users.phone
+                orders.phone_car,
+                orders.receiver_name,
+                users.email
             FROM order_items
             JOIN comics ON order_items.comic_id = comics.id
             JOIN orders ON order_items.order_id = orders.id
@@ -117,6 +120,8 @@ class Order{
                     }
                     break;
             }
+
+            
             
             $sql = "UPDATE orders SET 
                     total_amount = :total_amount,

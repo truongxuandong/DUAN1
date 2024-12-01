@@ -52,7 +52,7 @@
                             <?php foreach ($cartItems as $item): ?>
                                 <tr id="cart-item-<?= $item['id'] ?>">
                                     <td class="text-center" style="width: 100px;">
-                                        <img src="<?= $item['image'] ?>" alt="<?= $item['title'] ?>" class="img-fluid" style="max-width: 80px;">
+                                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>" class="img-fluid" style="max-width: 80px;">
                                     </td>
                                     <td>
                                         <?= $item['title'] ?>

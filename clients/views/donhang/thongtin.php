@@ -216,7 +216,7 @@
         <div class="list-group">
           <div class="profile-section p-3 border-bottom text-center">
             <!-- Avatar và tên người dùng -->
-            <img src="../uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
+            <img src="./uploads/user/default.jpg" alt="Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
             <h5 class="fw-bold mt-2">
               <?php
               if (isset($_SESSION['user']['name'])) {
@@ -269,9 +269,10 @@
     <!-- Tất cả -->
     <div class="tab-pane fade show active" id="all-orders">
       <?php foreach ($orders_items as $order): ?>
+        
         <?php if ($_SESSION['user_id'] == $order['user_id']): ?>
           <div class="order-card">
-            <img src="<?= htmlspecialchars($order['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
               <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
               <p class="order-status">
@@ -356,7 +357,7 @@ $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id'
       <?php foreach ($orders_items as $order): ?>
         <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'pending'): ?>
           <div class="order-card">
-            <img src="<?= htmlspecialchars($order['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
               <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
               <p class="order-status">
@@ -375,7 +376,7 @@ $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id'
       <?php foreach ($orders_items as $order): ?>
         <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'delivering'): ?>
           <div class="order-card">
-            <img src="<?= htmlspecialchars($order['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
               <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
               <p class="order-status">
@@ -394,7 +395,7 @@ $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id'
   <?php foreach ($orders_items as $order): ?>
     <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'delivered'): ?>
       <div class="order-card">
-        <img src="<?= htmlspecialchars($order['image']) ?>" alt="Product Image" class="order-image">
+        <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
         <div class="order-info">
           <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
           <p class="order-status">
@@ -471,7 +472,7 @@ $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id'
       <?php foreach ($orders_items as $order): ?>
         <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'cancelled'): ?>
           <div class="order-card">
-            <img src="<?= htmlspecialchars($order['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
               <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
               <p class="order-status">
@@ -490,7 +491,7 @@ $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id'
       <?php foreach ($orders_items as $order): ?>
         <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'return'): ?>
           <div class="order-card">
-            <img src="<?= htmlspecialchars($order['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
               <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
               <p class="order-status">
