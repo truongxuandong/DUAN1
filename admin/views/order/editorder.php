@@ -32,17 +32,13 @@
                             <div class="form-group">
                                 <label>Tổng tiền</label>
                                 <input type="number" class="form-control" name="total_amount" 
-                                       value="<?php echo htmlspecialchars($order['total_amount']); ?>">
+                                       value="<?php echo htmlspecialchars($order['total_amount']); ?>" readonly>
                             </div>
                             <!-- Phương thức thanh toán (payment_method) -->
                             <div class="form-group">
                                 <label>Phương thức thanh toán</label>
-                                <select class="form-control" name="payment_method">
-                                    <option value="CREDIT" <?php echo $order['payment_method'] == 'CREDIT' ? 'selected' : ''; ?>>Thẻ tín dụng</option>
-                                    <option value="COD" <?php echo $order['payment_method'] == 'COD' ? 'selected' : ''; ?>>Thanh toán khi nhận hàng (COD)</option>
-                                    <option value="BANKING" <?php echo $order['payment_method'] == 'BANKING' ? 'selected' : ''; ?>>Chuyển khoản ngân hàng </option>
-                                    <option value="MOMO" <?php echo $order['payment_method'] == 'MOMO' ? 'selected' : ''; ?>>Ví MoMo</option>
-                                </select>
+                                <input type="text" class="form-control" name="payment_method" value="<?php echo htmlspecialchars($order['payment_method']); ?>" readonly>
+
                             </div>
                             <!-- Trạng thái thanh toán (payment_status) -->
                             <div class="form-group">
