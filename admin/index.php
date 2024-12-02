@@ -110,7 +110,7 @@ match ($act) {
 
     //order
     'order' => $order->views_order(),
-    'delete-order' => $order->deleteorder(),
+    
     'edit-order' => $order->views_edit_order(),
     'post-edit-order' => $order->views_post_edit_order(),
     'order-detail' => $order->views_order_detail(),
