@@ -56,7 +56,6 @@ match ($act) {
     'checkout' => (new CheckoutController())->index(),
     'process-checkout' => (new CheckoutController())->processCheckout(),
     'order-success' => (new CheckoutController())->orderSuccess(),
-
     'don-hang'=>(new OrderController())->views_order(),
     'chi-tiet-don-hang'=>(new OrderController())->formchitietdonhang(),
     'add-reviews'=>(new OrderController())->addReview(),

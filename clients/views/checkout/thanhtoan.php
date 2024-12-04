@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh toán</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./clients/assets/css/thanhtoan.css">
 </head>
 <body>
@@ -30,7 +31,7 @@
                     <div class="form-group">
                         <label>Họ tên người nhận:</label>
                         <input type="text" name="receiver_name" required 
-                               value="<?= $_SESSION['user']['fullname'] ?? '' ?>">
+                               value="<?= $_SESSION['user']['name'] ?? '' ?>">
                     </div>
 
                     <div class="form-group">
@@ -268,8 +269,27 @@
                                     <div class="account-details">
                                         <p class="mb-2"><strong>Số điện thoại:</strong> 0865819798</p>
                                         <p class="mb-2"><strong>Chủ tài khoản:</strong> TRUONG XUAN DONG</p>
-                                        <p class="mb-2"><strong>Số tiền:</strong> <?= number_format($totalAmount, 0, ',', '.') ?>đ</p>
-                                        <p class="mb-2"><strong>Nội dung:</strong> <span id="momo-content">Thanh toán đơn hàng <?= time() ?></span></p>
+                                        <p class="mb-2"><strong>Số tiền:</strong> 
+                                            <?php
+                                            if (isset($_SESSION['buy_now_item'])) {
+                                                $displayAmount = $_SESSION['buy_now_item']['price'] * $_SESSION['buy_now_item']['quantity'];
+                                            } else {
+                                                $displayAmount = $totalAmount;
+                                            }
+                                            echo number_format($displayAmount, 0, ',', '.') . 'đ';
+                                            ?>
+                                        </p>
+                                        <p class="mb-2"><strong>Nội dung:</strong> 
+                                            <span id="momo-content">
+                                                <?php
+                                                if (isset($_SESSION['buy_now_item'])) {
+                                                    echo "Thanh toan don hang " . $_SESSION['buy_now_item']['title'] . " " . time();
+                                                } else {
+                                                    echo "Thanh toan don hang " . time();
+                                                }
+                                                ?>
+                                            </span>
+                                        </p>
                                         <button type="button" class="btn btn-outline-primary btn-sm" onclick="copyToClipboard('momo-content')">
                                             <i class="fas fa-copy"></i> Sao chép
                                         </button>
@@ -292,29 +312,57 @@
                     <h3>Thông tin đơn hàng</h3>
                 </div>
 
+                <!-- Phần hiển thị sản phẩm -->
                 <div class="cart-items">
-                    <?php foreach ($cartItems as $item): ?>
-                    <div class="cart-item">
-                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>">
-                        <div class="item-info">
-                            <h4><?= $item['title'] ?></h4>
-                            <div class="item-details">
-                                <span>Số lượng: <?= $item['quantity'] ?></span>
-                                <span class="price"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
+                    <?php 
+                    $totalAmount = 0;
+
+                    // Kiểm tra nếu có sản phẩm "mua ngay"
+                    if (isset($_SESSION['buy_now_item'])) {
+                        $item = $_SESSION['buy_now_item'];
+                        ?>
+                        <div class="cart-item">
+                            <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>">
+                            <div class="item-info">
+                                <h4><?= $item['title'] ?></h4>
+                                <div class="item-details">
+                                    <span>Số lượng: <?= $item['quantity'] ?></span>
+                                    <span class="price"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <?php endforeach; ?>
-
-                    <!-- Thêm input hidden cho mua ngay -->
-                    <?php if (isset($_POST['buy_now'])): ?>
-                        <input type="hidden" name="buy_now" value="1">
-                        <input type="hidden" name="comic_id" value="<?= htmlspecialchars($_POST['comic_id']) ?>">
-                        <input type="hidden" name="quantity" value="<?= htmlspecialchars($_POST['quantity']) ?>">
-                        <input type="hidden" name="price" value="<?= htmlspecialchars($_POST['price']) ?>">
-                    <?php endif; ?>
+                        <?php
+                        $totalAmount += $item['price'] * $item['quantity'];
+                    } else if (isset($_POST['selected_items'])) {
+                        // Xử lý các sản phẩm được chọn từ giỏ hàng
+                        $selectedItems = json_decode($_POST['selected_items'], true);
+                        
+                        foreach ($selectedItems as $selectedItem) {
+                            // Lấy thông tin chi tiết sản phẩm từ giỏ hàng
+                            foreach ($cartItems as $item) {
+                                if ($item['id'] == $selectedItem['id']) {
+                                    ?>
+                                    <div class="cart-item">
+                                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>">
+                                        <div class="item-info">
+                                            <h4><?= $item['title'] ?></h4>
+                                            <div class="item-details">
+                                                <span>Số lượng: <?= $item['quantity'] ?></span>
+                                                <span class="price"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $totalAmount += $item['price'] * $item['quantity'];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    ?>
                 </div>
 
+                <!-- Phần tổng tiền -->
                 <div class="summary-footer">
                     <div class="subtotal">
                         <span>Tạm tính:</span>
