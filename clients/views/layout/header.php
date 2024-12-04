@@ -1,3 +1,4 @@
+<?php ob_start();?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -16,7 +17,11 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="./clients/assets/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="/duan1/assets/css/style.css">
+    <link rel="stylesheet" href="./clients/assets/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 
 
 </head>
@@ -53,7 +58,7 @@
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block text-center">
 
-                <a href="index.php" class="text-decoration-none">
+                <a href="./" class="text-decoration-none">
 
                     <h1 class="m-0 display-5 font-weight-semi-bold">
                     <img src="clients/assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">

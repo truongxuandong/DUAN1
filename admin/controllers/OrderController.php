@@ -77,7 +77,7 @@ class OrderController{
             }
         }
 
-        if($currentOrder['payment_method'] === 'Credit Card' || $currentOrder['payment_method'] === 'Internet Banking' || $currentOrder['payment_method'] === 'E-Wallet'){
+        if($currentOrder['payment_method'] === 'CREDIT' || $currentOrder['payment_method'] === 'BANKING' || $currentOrder['payment_method'] === 'MOMO'){
             // Kiểm tra và cập nhật trạng thái thanh toán
             if ($currentOrder['payment_status'] === 'unpaid') {
                 $data[':payment_status'] = 'processing';
@@ -119,7 +119,7 @@ class OrderController{
                 }
                 
                 // Chỉ cho phép thay đổi trạng thái đơn hàng khi đã thanh toán thành công
-                if ($currentOrder['payment_method'] !== 'Cash on Delivery' && 
+                if ($currentOrder['payment_method'] !== 'COD' && 
                     $currentOrder['payment_status'] !== 'paid' && 
                     $data[':shipping_status'] !== 'cancelled') {
                     throw new Exception("Trạng thái đơn hàng chỉ có thể thay đổi sau khi đã thanh toán thành công");
@@ -143,9 +143,12 @@ class OrderController{
         
 
         
-        if ($data[':payment_method'] === 'Cash on Delivery') {
+        if ($data[':payment_method'] === 'COD') {
+            if ($currentOrder['payment_status'] === 'processing') {
+                $data[':payment_status'] = 'unpaid';
+            }
             // Kiểm tra nếu đơn hàng mới được chuyển sang COD
-            if ($currentOrder['payment_method'] !== 'Cash on Delivery') {
+            if ($currentOrder['payment_method'] !== 'COD') {
                 throw new Exception("Không thể chuyển đổi sang phương thức thanh toán COD sau khi đã đặt hàng");
             }
             
@@ -165,6 +168,7 @@ class OrderController{
                     throw new Exception("COD chỉ có thể đánh dấu đã thanh toán khi đã giao hàng thành công");
                 }
             }
+            
            
             
             
@@ -220,6 +224,8 @@ class OrderController{
         
         require_once './views/order/chitietdh.php';
     }
+
+    
 
 }
 ?>

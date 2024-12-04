@@ -9,6 +9,7 @@ class User
         $this->conn = connectDB();
     }
 
+
     public function getAll()
     {
         try {

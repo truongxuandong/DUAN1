@@ -15,14 +15,17 @@ require_once './clients/controllers/CartController.php';
 require_once './clients/controllers/LoginController.php';
 require_once './clients/controllers/AccountController.php';
 require_once './clients/controllers/CheckoutController.php';
+require_once './clients/controllers/OderController.php';
 
 #require Model
 require_once './clients/models/Cart.php';
 require_once './clients/models/Login.php';
 require_once './clients/models/Account.php';
 require_once './clients/models/Order.php';
+require_once './clients/models/oder.php';
 require_once './clients/models/danhmuc.php';
 require_once './clients/models/sanpham.php';
+require_once './clients/models/binhluan.php';
 
 $home = new HomeController();
 
@@ -33,6 +36,8 @@ $act = $_GET['act'] ?? '/';
 match ($act) {
     '/' => $home->views_home(),
     'chitietsp' => $home->views_chitietsp(),
+    'add-binh-luan' => $home ->addBinhluan(),
+
     'sanpham' => $home->views_sanpham(),
     'search' => $home->views_search(),
     'lienhe' => $home->views_lienhe(),
@@ -51,6 +56,10 @@ match ($act) {
     'checkout' => (new CheckoutController())->index(),
     'process-checkout' => (new CheckoutController())->processCheckout(),
     'order-success' => (new CheckoutController())->orderSuccess(),
+    'don-hang'=>(new OrderController())->views_order(),
+    'chi-tiet-don-hang'=>(new OrderController())->formchitietdonhang(),
+    'add-reviews'=>(new OrderController())->addReview(),
+
 };
 
 require_once './clients/views/layout/footer.php';

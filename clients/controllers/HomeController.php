@@ -5,10 +5,13 @@ class HomeController
     public $home;
     public $modelDanhMuc;
     public $modelSanPham;
+    public $modelBinhluan;
+
 
     public function __construct() {
         $this->modelDanhMuc = new DanhMuc();
         $this->modelSanPham = new SanPham();
+        $this->modelBinhluan = new Binhluan();
 
     }
 
@@ -27,18 +30,21 @@ class HomeController
         }
     }
     public function views_chitietsp() {
+          $binhluans = $this->modelBinhluan->getAllBinhLuan();
+        // var_dump($binhluans);
+        $danhgias=$this->modelBinhluan->getAllDanhGia();
         if (!isset($_GET['id'])) {
             // Xử lý khi không có id
             header('Location: clients');
             return;
         }
-        
+      
         $sanphamct = $this->modelSanPham->getSanPhamById($_GET['id']);
         $sanphamct['variants'] = $this->modelSanPham->getSanPhamAllVariant($_GET['id']);
         $sanphamcungloai = [];
         
         if ($sanphamct) {
-            $sanphamcungloai = $this->modelSanPham->getSanPhamCungLoai($sanphamct['category_id']);
+            $sanphamcungloai = $this->modelSanPham->getSanPhamCungLoai($sanphamct['category_id'],$_GET['id']);
         }
         
         require_once 'clients/views/chitietsp.php';
@@ -87,6 +93,26 @@ class HomeController
            
         }
     }  
+    public function addBinhluan() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $user_id = $_POST['user_id'] ?? null;
+            $comics_id = $_POST['comics_id'] ?? null;
+            $Content = $_POST['Content'] ?? null;
+            // var_dump($comics_id,$user_id);
+
+            if ($user_id && $comics_id && $Content) {
+                $result = $this->modelBinhluan->addComment($user_id, $comics_id, $Content);
+    
+                if ($result) {
+                    header('location:?act=chitietsp&id='.$comics_id);
+                } else {
+                    echo "Đã có lỗi xảy ra khi thêm bình luận.";
+                }
+            } else {
+                echo "Vui lòng nhập đầy đủ thông tin.";
+            }
+        }
+    }
     
     
 } 
