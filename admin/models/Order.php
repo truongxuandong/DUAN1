@@ -27,18 +27,7 @@ class Order{
         }
     }
 
-    public function deleteorder($id){
-        try {
-            $sql = 'DELETE FROM orders WHERE id=:id';
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->execute([':id'=>$id]);
-            return true;
-        }catch (Exception $e){
-            echo "lỗi" .$e->getMessage();
-        }
-    }
+   
     public function getById($id) {
         try {
             $sql = "SELECT orders.id, orders.user_id, orders.phone_car, orders.total_amount, 
@@ -122,10 +111,9 @@ class Order{
             
             
             $sql = "UPDATE orders SET 
-                    total_amount = :total_amount,
-                    payment_status = :payment_status,
+                    
                     shipping_status = :shipping_status,
-                    payment_method = :payment_method
+                    payment_status = :payment_status
                     WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
