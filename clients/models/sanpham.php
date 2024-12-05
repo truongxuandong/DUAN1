@@ -40,8 +40,9 @@ class SanPham
             LEFT JOIN order_items od ON c.id = od.comic_id
             LEFT JOIN orders o ON od.order_id = o.id AND o.shipping_status = 'delivered' 
             GROUP BY c.id, c.title, c.image, c.original_price, cs.sale_value
-            HAVING review_count > 0 AND purchase_count > 0 
-            ORDER BY review_count DESC, purchase_count DESC";
+            HAVING (review_count > 0 OR purchase_count > 0)
+            ORDER BY (review_count + purchase_count) DESC
+            ";
             
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
@@ -73,27 +74,29 @@ class SanPham
         }
     }
 
-    public function getSanPhamCungLoai($category_id)
-    {
-        try {
-            $sql = "SELECT 
+    public function getSanPhamCungLoai($category_id, $product_id)
+{
+    try {
+        $sql = "SELECT 
                 c.*, 
                 cs.sale_value
             FROM comics c
             LEFT JOIN comic_sales cs ON c.id = cs.comic_id 
                 AND cs.end_date >= CURRENT_DATE 
                 AND cs.start_date <= CURRENT_DATE
-            WHERE c.category_id = :category_id
+            WHERE c.category_id = :category_id 
+            AND c.id != :product_id
             ORDER BY c.id ASC";
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([":category_id" => $category_id]);
-            return $stmt->fetchAll();
-        } catch (Exception $e) {
-            error_log("Error in getSanPhamCungLoai: " . $e->getMessage());
-            return [];
-        }
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([":category_id" => $category_id, ":product_id" => $product_id]);
+        return $stmt->fetchAll();
+    } catch (Exception $e) {
+        error_log("Error in getSanPhamCungLoai: " . $e->getMessage());
+        return [];
     }
+}
+
 
     public function getAllSanPhamSale()
     {

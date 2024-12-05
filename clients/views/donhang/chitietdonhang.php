@@ -50,7 +50,9 @@ if (!empty($orderDetails)):
         </tbody>
     </table>
 
+
     <hr>
+
 
     <!-- Tổng giá trị đơn hàng -->
     <div class="order-total">

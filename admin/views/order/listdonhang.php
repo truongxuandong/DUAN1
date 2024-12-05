@@ -60,8 +60,8 @@
                 <td><?= $donhang['id'] ?></td>
                 <!-- Hiển thị tên khách hàng, nếu không có thì hiển thị user_id -->
                 <td><?= $donhang['receiver_name']?></td>
-                <td><?= $donhang['phone'] ?></td>
-                <td><?= number_format($donhang['total_products_amount'] ?? 0, 0, ',', '.') ?> đ</td>
+                <td><?= $donhang['phone_car'] ?></td>
+                <td><?= number_format($donhang['total_amount'] ?? 0, 0, ',', '.') ?> đ</td>
                 <td><?php
                 
                         switch($donhang['payment_method']) {
@@ -144,12 +144,7 @@
                             </button>
                         </a>
                         
-                        <a href="?act=delete-order&id=<?= $donhang['id'] ?>" 
-                           onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này không?')">
-                            <button class="btn btn-danger btn-sm">
-                                <i class="fas fa fa-trash"></i> Xóa
-                            </button>
-                        </a>
+                        
                 
                 </td>
             </tr>

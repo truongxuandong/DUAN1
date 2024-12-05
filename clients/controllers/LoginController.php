@@ -64,14 +64,20 @@ class LoginController
                 'email' => $user['email'],
                 'role' => $user['role'],
             ];
-            $_SESSION['user_id'] = $user['id']; 
+
+            $_SESSION['user_id'] = $user['id'];
+
 
             $_SESSION['success'] = "Đăng nhập thành công!";
             header("Location: ?act=/&user_id=" . $user['id']);
             exit();
         }
     }
+
     require_once 'clients/views/formDangky/login.php';
+
+
+  
 }
 // public function login()
 // {

@@ -17,7 +17,7 @@
     <h4>Thông tin khách hàng</h4>
     <div class="form-group">
         <label for="">Tên khách hàng:</label>
-        <p ><?php echo $order['name']; ?></p>
+        <p ><?php echo $order['receiver_name']; ?></p>
     </div>
     <div class="form-group">
         <label for="">Email:</label>
@@ -25,7 +25,7 @@
     </div>
     <div class="form-group">
         <label for="">Số điện thoại:</label>
-        <p ><?php echo $order['phone']; ?></p>
+        <p ><?php echo $order['phone_car']; ?></p>
     </div>
     <div class="form-group">
         <label for="">Địa chỉ giao hàng:</label>
