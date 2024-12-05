@@ -52,7 +52,7 @@ class AccountController
             }
 
             // Chuyển hướng về trang profile
-            header("Location: ?act=profile");
+            header("Location: ?act=don-hang");
             exit();
         }
 

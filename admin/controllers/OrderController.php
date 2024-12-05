@@ -49,18 +49,10 @@ class OrderController{
     private function validateOrderUpdate($data) {
         $currentOrder = $this->modelOrder->getById($data[':id']);
 
-        if ($data[':payment_method'] !== $currentOrder['payment_method']) {
-            if ($currentOrder['shipping_status'] !== 'returned') {
-                throw new Exception("Không thể thay đổi phương thức thanh toán sau khi đã đặt hàng");
-            }
-        }
-
-        if($currentOrder['payment_method'] === 'CREDIT' || $currentOrder['payment_method'] === 'BANKING' || $currentOrder['payment_method'] === 'MOMO'){
-            // Kiểm tra và cập nhật trạng thái thanh toán
-            if ($currentOrder['payment_status'] === 'unpaid') {
-                $data[':payment_status'] = 'processing';
-            }
-            
+        // Kiểm tra trạng thái thanh toán cho các phương thức thanh toán online
+        if ($currentOrder['payment_method'] === 'CREDIT' || 
+            $currentOrder['payment_method'] === 'BANKING' || 
+            $currentOrder['payment_method'] === 'MOMO') {
             
             $validTransitions = [
                 'unpaid' => ['processing', 'cancelled'],  
@@ -85,15 +77,13 @@ class OrderController{
 
             // Kiểm tra điều kiện shipping_status
             if ($data[':shipping_status'] !== $currentOrder['shipping_status']) {
-                if ($currentOrder['payment_status'] === 'failed' || $currentOrder['payment_status'] === 'unpaid') {
+                 if ($currentOrder['payment_status'] === 'failed' || $currentOrder['payment_status'] === 'unpaid') {
                     if ($data[':shipping_status'] !== 'cancelled') {
                         throw new Exception("Không thể thay đổi trạng thái đơn hàng khi thanh toán chưa thành công");
                     }
                 }
                 
-                // Chỉ cho phép thay đổi trạng thái đơn hàng khi đã thanh toán thành công
-                if ($currentOrder['payment_method'] !== 'COD' && 
-                    $currentOrder['payment_status'] !== 'paid' && 
+                if ($currentOrder['payment_status'] !== 'paid' && 
                     $data[':shipping_status'] !== 'cancelled') {
                     throw new Exception("Trạng thái đơn hàng chỉ có thể thay đổi sau khi đã thanh toán thành công");
                 }
@@ -107,15 +97,10 @@ class OrderController{
             }
         }
         
-
-        
-        if ($data[':payment_method'] === 'COD') {
+        // Xử lý COD
+        if ($currentOrder['payment_method'] === 'COD') {
             if ($currentOrder['payment_status'] === 'processing') {
                 $data[':payment_status'] = 'unpaid';
-            }
-            // Kiểm tra nếu đơn hàng mới được chuyển sang COD
-            if ($currentOrder['payment_method'] !== 'COD') {
-                throw new Exception("Không thể chuyển đổi sang phương thức thanh toán COD sau khi đã đặt hàng");
             }
             
             if (!in_array($data[':payment_status'], ['unpaid','paid'])) {
@@ -127,10 +112,6 @@ class OrderController{
                     throw new Exception("COD chỉ có thể đánh dấu đã thanh toán khi đã giao hàng thành công");
                 }
             }
-            
-           
-            
-            
         }
 
         // Kiểm tra trạng thái đơn hàng đã hoàn thành/hủy

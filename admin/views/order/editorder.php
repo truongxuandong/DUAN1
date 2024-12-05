@@ -24,7 +24,7 @@
                             
                             <div class="form-group">
                                 <label>phone</label>
-                                <input type="text" class="form-control" name="phone_car" 
+                                <input type="text" class="form-control" name="phone" 
                                        value="<?php echo htmlspecialchars($order['phone_car']); ?>" readonly>
                             </div>
 
