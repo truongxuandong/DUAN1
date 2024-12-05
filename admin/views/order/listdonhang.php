@@ -144,12 +144,7 @@
                             </button>
                         </a>
                         
-                        <a href="?act=delete-order&id=<?= $donhang['id'] ?>" 
-                           onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này không?')">
-                            <button class="btn btn-danger btn-sm">
-                                <i class="fas fa fa-trash"></i> Xóa
-                            </button>
-                        </a>
+                        
                 
                 </td>
             </tr>
