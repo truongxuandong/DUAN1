@@ -204,6 +204,14 @@
     .review-link:hover {
         text-decoration: underline;
     }
+    .order-title {
+    white-space: nowrap; /* Ngăn không cho văn bản xuống dòng */
+    overflow: hidden; /* Ẩn phần văn bản bị tràn */
+    text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi văn bản bị cắt */
+    max-width: 450px; /* Giới hạn chiều rộng tối đa là 400px */
+}
+
+
   </style>
 </head>
 
@@ -266,245 +274,427 @@
 
   <!-- Tab Content -->
   <div class="tab-content">
-    <!-- Tất cả -->
-    <div class="tab-pane fade show active" id="all-orders">
-      <?php foreach ($orders_items as $order): ?>
-        
-        <?php if ($_SESSION['user_id'] == $order['user_id']): ?>
-          <div class="order-card">
-            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
+
+ <!-- Tất cả -->
+<div class="tab-pane fade show active" id="all-orders">
+    <?php
+    // Sắp xếp các đơn hàng theo thời gian đặt (order_date)
+    usort($orders_items, function ($a, $b) {
+        return strtotime($b['order_date']) - strtotime($a['order_date']);
+    });
+
+    // Nhóm các đơn hàng theo order_id để gộp sản phẩm trùng
+    $groupedOrders = [];
+    foreach ($orders_items as $order) {
+        if ($_SESSION['user_id'] == $order['user_id']) {
+            // Kiểm tra nếu order_id đã tồn tại trong mảng groupedOrders
+            if (!isset($groupedOrders[$order['order_id']])) {
+                $groupedOrders[$order['order_id']] = [
+                    'order_id' => $order['order_id'],
+                    'user_id' => $order['user_id'],
+                    'shipping_status' => $order['shipping_status'],
+                    'order_date' => $order['order_date'],
+                    'comics' => [],  // Đổi tên mảng từ 'products' thành 'comics'
+                    'quantity' => 0,
+                ];
+            }
+            // Thêm sản phẩm vào mảng của đơn hàng
+            $groupedOrders[$order['order_id']]['comics'][] = $order; // Thêm vào comics thay vì products
+            $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
+        }
+    }
+    ?>
+    <?php foreach ($groupedOrders as $order): ?>
+        <div class="order-card">
+            <!-- Hiển thị thông tin đơn hàng -->
+            <img src="<?= htmlspecialchars($order['comics'][0]['image']) ?>" alt="Product Image" class="order-image">
+
             <div class="order-info">
-              <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
-              <p class="order-status">
-                Trạng thái: 
-                <span class="<?= $order['shipping_status'] === 'delivered' ? 'text-success' : ($order['shipping_status'] === 'cancelled' ? 'text-danger' : 'text-warning') ?>">
-                  <?= $order['shipping_status'] === 'pending' ? 'Chờ xác nhận' : 
-                      ($order['shipping_status'] === 'delivering' ? 'Đang giao' : 
-                      ($order['shipping_status'] === 'delivered' ? 'Hoàn thành' : 
-                      ($order['shipping_status'] === 'cancelled' ? 'Đã hủy' : 'Trả hàng/hoàn tiền'))) ?>
-                </span>
-              </p>
-              <p class="order-quantity">Số lượng: <?= htmlspecialchars($order['quantity']) ?></p>
+                <p class="order-title">
+                    <?php 
+                        // Hiển thị tên tất cả các sản phẩm trong đơn hàng
+                        $comicNames = [];
+                        foreach ($order['comics'] as $comic) {
+                            if (isset($comic['title'])) {
+                                $comicNames[] = htmlspecialchars($comic['title']);
+                            }
+                        }
+                        echo implode(', ', $comicNames); // Nối tên các sản phẩm lại với nhau
+                    ?>
+                </p>
+                <p class="order-status">
+                    Trạng thái: 
+                    <span class="<?= $order['shipping_status'] === 'delivered' ? 'text-success' : ($order['shipping_status'] === 'cancelled' ? 'text-danger' : 'text-warning') ?>">
+                        <?= $order['shipping_status'] === 'pending' ? 'Chờ xác nhận' : 
+                            ($order['shipping_status'] === 'delivering' ? 'Đang giao' : 
+                            ($order['shipping_status'] === 'delivered' ? 'Hoàn thành' : 
+                            ($order['shipping_status'] === 'cancelled' ? 'Đã hủy' : 'Trả hàng/hoàn tiền'))) ?>
+                    </span>
+                </p>
+                <p class="order-quantity">Số lượng: <?= $order['quantity'] ?></p>
             </div>
             <button 
-              class="btn btn-outline-primary btn-sm order-btn" 
-              onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
-              Xem chi tiết
+                class="btn btn-outline-primary btn-sm order-btn" 
+                onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
+                Xem chi tiết
             </button>
-            <!-- Hiển thị nút Đánh giá nếu sản phẩm chưa được đánh giá -->
+
+            <?php if ($order['shipping_status'] == 'delivered'): ?>
+                <button 
+                    class="btn btn-outline-danger btn-sm order-btn" 
+                    onclick="if(confirm('Bạn chắc chắn muốn yêu cầu trả hàng và hoàn tiền cho sản phẩm này?')) window.location.href='?act=update-status&order_id=<?= $order['order_id'] ?>&status=returned'">
+                    Trả hàng và Hoàn tiền
+                </button>
+            <?php endif; ?>
+
+            <?php if ($order['shipping_status'] == 'pending'): ?>
+                <button 
+                    class="btn btn-outline-danger btn-sm order-btn" 
+                    onclick="if(confirm('Bạn chắc chắn muốn hủy đơn hàng này?')) window.location.href='?act=huy-don-hang&order_id=<?= $order['order_id'] ?>&status=cancelled'">
+                    Hủy đơn hàng
+                </button>
+            <?php endif; ?>
+
             <?php
-// Kiểm tra xem đã đánh giá chưa
-$hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id']);
-?>
+            $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'], $order['order_id']);
+            ?>
 
-<?php if ($order['shipping_status'] == 'delivered' && !$hasReviewed): ?>
-    <a href="javascript:void(0);" class="review-link" onclick="toggleForm()">Đánh giá</a>
-
-    <!-- Form đánh giá -->
-    <div class="overlay" id="reviewOverlay" style="display: none;">
-        <div class="main-container">
-            <div class="form-container">
-                <h1>Đánh giá sản phẩm</h1>
-                <form action="?act=add-reviews" method="POST">
-                    <!-- Input ẩn -->
-                    <input type="hidden" id="comic_id" name="comic_id" value="<?=$order['id']?>">
-                    <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id'] ?>">
-
-                    <!-- Đánh giá sao -->
-                    <label for="rating">Chọn Đánh Giá:</label>
-                    <div class="rating">
-                      <input type="radio" id="star5" name="rating" value="excellent">
-                      <label for="star5" title="Xuất sắc">&#9733;</label>
-
-                      <input type="radio" id="star4" name="rating" value="good">
-                      <label for="star4" title="Tốt">&#9733;</label>
-
-                      <input type="radio" id="star3" name="rating" value="average">
-                      <label for="star3" title="Bình thường">&#9733;</label>
-
-                      <input type="radio" id="star2" name="rating" value="bad">
-                      <label for="star2" title="Tệ">&#9733;</label>
-
-                      <input type="radio" id="star1" name="rating" value="very_bad">
-                      <label for="star1" title="Rất tệ">&#9733;</label>
+            <?php if ($order['shipping_status'] == 'delivered' && !$hasReviewed): ?>
+                <a href="javascript:void(0);" class="review-link" onclick="toggleForm()">Đánh giá</a>
+                <div class="overlay" id="reviewOverlay" style="display: none;">
+                    <div class="main-container">
+                        <div class="form-container">
+                            <h1>Đánh giá sản phẩm</h1>
+                            <form action="?act=add-reviews" method="POST">
+                                <input type="hidden" id="order_id" name="order_id" value="<?= $order['order_id'] ?>">
+                                <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <label for="rating">Chọn Đánh Giá:</label>
+                                <div class="rating">
+                                    <input type="radio" id="star5" name="rating" value="excellent">
+                                    <label for="star5" title="Xuất sắc">&#9733;</label>
+                                    <input type="radio" id="star4" name="rating" value="good">
+                                    <label for="star4" title="Tốt">&#9733;</label>
+                                    <input type="radio" id="star3" name="rating" value="average">
+                                    <label for="star3" title="Bình thường">&#9733;</label>
+                                    <input type="radio" id="star2" name="rating" value="bad">
+                                    <label for="star2" title="Tệ">&#9733;</label>
+                                    <input type="radio" id="star1" name="rating" value="very_bad">
+                                    <label for="star1" title="Rất tệ">&#9733;</label>
+                                </div>
+                                <label for="review_text">Nội dung đánh giá:</label>
+                                <textarea id="review_text" name="review_text" placeholder="Nhập đánh giá của bạn..." required></textarea>
+                                <div class="form-actions">
+                                    <button type="button" onclick="toggleForm()">Hủy</button>
+                                    <button type="submit">Gửi đánh giá</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-
-                    <!-- Nội dung đánh giá -->
-                    <label for="review_text">Nội dung đánh giá:</label>
-                    <textarea id="review_text" name="review_text" placeholder="Nhập đánh giá của bạn..." required></textarea>
-
-                    <!-- Nút gửi -->
-                    <div class="form-actions">
-                        <button type="button" onclick="toggleForm()">Hủy</button>
-                        <button type="submit">Gửi đánh giá</button>
-                    </div>
-
-                </form>
-            </div>
+                </div>
+            <?php elseif ($hasReviewed): ?>
+                <p>Đã đánh giá</p>
+            <?php endif; ?>
         </div>
-    </div>
-<?php elseif ($hasReviewed): ?>
-    <p>Bạn đã đánh giá sản phẩm này.</p>
-<?php endif; ?>
-
-          </div>
-        <?php endif; ?>
-      <?php endforeach; ?>
-    </div>
-
-    <!-- Chờ xác nhận -->
-    <div class="tab-pane fade" id="pending-orders">
-      <?php foreach ($orders_items as $order): ?>
-        <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'pending'): ?>
-          <div class="order-card">
-            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
-            <div class="order-info">
-              <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
-              <p class="order-status">
-                Trạng thái: <span class="text-warning">Chờ xác nhận</span>
-              </p>
-              <p class="order-quantity">Số lượng: <?= htmlspecialchars($order['quantity']) ?></p>
-            </div>
-            <button class="btn btn-outline-primary btn-sm order-btn">Xem chi tiết</button>
-          </div>
-        <?php endif; ?>
-      <?php endforeach; ?>
-    </div>
-
-    <!-- Đang giao -->
-    <div class="tab-pane fade" id="shipping-orders">
-      <?php foreach ($orders_items as $order): ?>
-        <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'delivering'): ?>
-          <div class="order-card">
-            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
-            <div class="order-info">
-              <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
-              <p class="order-status">
-                Trạng thái: <span class="text-primary">Đang giao</span>
-              </p>
-              <p class="order-quantity">Số lượng: <?= htmlspecialchars($order['quantity']) ?></p>
-            </div>
-            <button class="btn btn-outline-primary btn-sm order-btn">Xem chi tiết</button>
-          </div>
-        <?php endif; ?>
-      <?php endforeach; ?>
-    </div>
-
-    <!-- Hoàn thành -->
-<div class="tab-pane fade" id="completed-orders">
-  <?php foreach ($orders_items as $order): ?>
-    <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'delivered'): ?>
-      <div class="order-card">
-        <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
-        <div class="order-info">
-          <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
-          <p class="order-status">
-            Trạng thái: <span class="text-success">Hoàn thành</span>
-          </p>
-          <p class="order-quantity">Số lượng: <?= htmlspecialchars($order['quantity']) ?></p>
-        </div>
-        <button class="btn btn-outline-primary btn-sm order-btn" onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
-          Xem chi tiết
-        </button>
-
-        <?php
-// Kiểm tra xem đã đánh giá chưa
-$hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'] , $order['id']);
-?>
-
-<?php if ($order['shipping_status'] == 'delivered' && !$hasReviewed): ?>
-    <a href="javascript:void(0);" class="review-link" onclick="toggleForm()">Đánh giá</a>
-
-    <!-- Form đánh giá -->
-    <div class="overlay" id="reviewOverlay" style="display: none;">
-        <div class="main-container">
-            <div class="form-container">
-                <h1>Đánh giá sản phẩm</h1>
-                <form action="?act=add-reviews" method="POST">
-                    <!-- Input ẩn -->
-                    <input type="hidden" id="comic_id" name="comic_id" value="<?=$order['id']?>">
-                    <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id'] ?>">
-
-                    <!-- Đánh giá sao -->
-                    <label for="rating">Chọn Đánh Giá:</label>
-                    <div class="rating">
-                      <input type="radio" id="star5" name="rating" value="excellent">
-                      <label for="star5" title="Xuất sắc">&#9733;</label>
-
-                      <input type="radio" id="star4" name="rating" value="good">
-                      <label for="star4" title="Tốt">&#9733;</label>
-
-                      <input type="radio" id="star3" name="rating" value="average">
-                      <label for="star3" title="Bình thường">&#9733;</label>
-
-                      <input type="radio" id="star2" name="rating" value="bad">
-                      <label for="star2" title="Tệ">&#9733;</label>
-
-                      <input type="radio" id="star1" name="rating" value="very_bad">
-                      <label for="star1" title="Rất tệ">&#9733;</label>
-                    </div>
-
-                    <!-- Nội dung đánh giá -->
-                    <label for="review_text">Nội dung đánh giá:</label>
-                    <textarea id="review_text" name="review_text" placeholder="Nhập đánh giá của bạn..." required></textarea>
-
-                    <!-- Nút gửi -->
-                    <div class="form-actions">
-                        <button type="button" onclick="toggleForm()">Hủy</button>
-                        <button type="submit">Gửi đánh giá</button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-<?php elseif ($hasReviewed): ?>
-    <p>Bạn đã đánh giá sản phẩm này.</p>
-<?php endif; ?>
-      </div>
-    <?php endif; ?>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
 </div>
 
 
-    <!-- Đã hủy -->
-    <div class="tab-pane fade" id="canceled-orders">
-      <?php foreach ($orders_items as $order): ?>
-        <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'cancelled'): ?>
-          <div class="order-card">
-            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
-            <div class="order-info">
-              <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
-              <p class="order-status">
-                Trạng thái: <span class="text-danger">Đã hủy</span>
-              </p>
-              <p class="order-quantity">Số lượng: <?= htmlspecialchars($order['quantity']) ?></p>
-            </div>
-            <button class="btn btn-outline-primary btn-sm order-btn">Xem chi tiết</button>
-          </div>
-        <?php endif; ?>
-      <?php endforeach; ?>
-    </div>
 
-    <!-- Trả hàng/hoàn tiền -->
-    <div class="tab-pane fade" id="refund-orders">
-      <?php foreach ($orders_items as $order): ?>
-        <?php if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'return'): ?>
-          <div class="order-card">
-            <img src="<?= removeFirstChar($order['image']) ?>" alt="Product Image" class="order-image">
+  <!-- Chờ xác nhận -->
+<div class="tab-pane fade" id="pending-orders">
+    <?php
+    // Sắp xếp các đơn hàng theo thời gian đặt (order_date)
+    usort($orders_items, function ($a, $b) {
+        return strtotime($b['order_date']) - strtotime($a['order_date']);
+    });
+
+    // Nhóm các đơn hàng theo order_id để gộp sản phẩm trùng
+    $groupedOrders = [];
+    foreach ($orders_items as $order) {
+        if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'pending') {
+            // Kiểm tra nếu order_id đã tồn tại trong mảng groupedOrders
+            if (!isset($groupedOrders[$order['order_id']])) {
+                $groupedOrders[$order['order_id']] = [
+                    'order_id' => $order['order_id'],
+                    'user_id' => $order['user_id'],
+                    'shipping_status' => $order['shipping_status'],
+                    'order_date' => $order['order_date'],
+                    'products' => [],
+                    'quantity' => 0,
+                ];
+            }
+            // Thêm sản phẩm vào mảng của đơn hàng
+            $groupedOrders[$order['order_id']]['products'][] = $order;
+            $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
+        }
+    }
+    ?>
+    <?php foreach ($groupedOrders as $order): ?>
+        <div class="order-card">
+            <!-- Hiển thị thông tin đơn hàng -->
+            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+
             <div class="order-info">
-              <p class="order-title"><?= htmlspecialchars($order['title']) ?></p>
-              <p class="order-status">
-                Trạng thái: <span class="text-warning">Trả hàng/hoàn tiền</span>
-              </p>
-              <p class="order-quantity">Số lượng: <?= htmlspecialchars($order['quantity']) ?></p>
+                <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
+                <p class="order-status">
+                    Trạng thái: <span class="text-warning">Chờ xác nhận</span>
+                </p>
+                <p class="order-quantity">Số lượng: <?= $order['quantity'] ?></p>
             </div>
-            <button class="btn btn-outline-primary btn-sm order-btn">Xem chi tiết</button>
-          </div>
-        <?php endif; ?>
-      <?php endforeach; ?>
-    </div>
-  </div>
+            <button 
+                class="btn btn-outline-primary btn-sm order-btn" 
+                onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
+                Xem chi tiết
+            </button>
+
+
+            <!-- Hiển thị nút Hủy nếu trạng thái là đang xác nhận -->
+            <?php if ($order['shipping_status'] == 'pending'): ?>
+                <button 
+                    class="btn btn-outline-danger btn-sm order-btn" 
+                    onclick="if(confirm('Bạn chắc chắn muốn hủy đơn hàng này?')) window.location.href='?act=huy-don-hang&order_id=<?= $order['order_id'] ?>&status=cancelled'">
+                    Hủy đơn hàng
+                </button>
+            <?php endif; ?>
+
+        </div>
+    <?php endforeach; ?>
+</div>
+
+
+   <!-- Đang giao -->
+<div class="tab-pane fade" id="shipping-orders">
+    <?php
+    // Sắp xếp các đơn hàng theo thời gian đặt (order_date)
+    usort($orders_items, function ($a, $b) {
+        return strtotime($b['order_date']) - strtotime($a['order_date']);
+    });
+
+    // Nhóm các đơn hàng theo order_id để gộp sản phẩm trùng
+    $groupedOrders = [];
+    foreach ($orders_items as $order) {
+        if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'delivering') {
+            if (!isset($groupedOrders[$order['order_id']])) {
+                $groupedOrders[$order['order_id']] = [
+                    'order_id' => $order['order_id'],
+                    'user_id' => $order['user_id'],
+                    'shipping_status' => $order['shipping_status'],
+                    'order_date' => $order['order_date'],
+                    'products' => [],
+                    'quantity' => 0,
+                ];
+            }
+            $groupedOrders[$order['order_id']]['products'][] = $order;
+            $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
+        }
+    }
+    ?>
+    <?php foreach ($groupedOrders as $order): ?>
+        <div class="order-card">
+            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <div class="order-info">
+                <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
+                <p class="order-status">
+                    Trạng thái: <span class="text-primary">Đang giao</span>
+                </p>
+                <p class="order-quantity">Số lượng: <?= $order['quantity'] ?></p>
+            </div>
+            <button 
+                class="btn btn-outline-primary btn-sm order-btn" 
+                onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
+                Xem chi tiết
+            </button>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<!-- Hoàn thành -->
+<div class="tab-pane fade" id="completed-orders">
+    <?php
+    // Sắp xếp các đơn hàng theo thời gian đặt (order_date)
+    usort($orders_items, function ($a, $b) {
+        return strtotime($b['order_date']) - strtotime($a['order_date']);
+    });
+
+    // Nhóm các đơn hàng theo order_id để gộp sản phẩm trùng
+    $groupedOrders = [];
+    foreach ($orders_items as $order) {
+        if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'delivered') {
+            if (!isset($groupedOrders[$order['order_id']])) {
+                $groupedOrders[$order['order_id']] = [
+                    'order_id' => $order['order_id'],
+                    'user_id' => $order['user_id'],
+                    'shipping_status' => $order['shipping_status'],
+                    'order_date' => $order['order_date'],
+                    'products' => [],
+                    'quantity' => 0,
+                ];
+            }
+            $groupedOrders[$order['order_id']]['products'][] = $order;
+            $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
+        }
+    }
+    ?>
+    <?php foreach ($groupedOrders as $order): ?>
+        <div class="order-card">
+            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <div class="order-info">
+                <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
+                <p class="order-status">
+                    Trạng thái: <span class="text-success">Hoàn thành</span>
+                </p>
+                <p class="order-quantity">Số lượng: <?= $order['quantity'] ?></p>
+            </div>
+            <button class="btn btn-outline-primary btn-sm order-btn" onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
+                Xem chi tiết
+            </button>
+            <!-- Nút Hoàn tiền và Trả hàng gộp lại thành một nút -->
+            <button 
+                class="btn btn-outline-danger btn-sm order-btn" 
+                onclick="if(confirm('Bạn chắc chắn muốn yêu cầu trả hàng và hoàn tiền cho sản phẩm này?')) window.location.href='?act=update-status&order_id=<?= $order['order_id'] ?>&status=returned'">
+                Trả hàng và Hoàn tiền
+            </button>
+            <!-- Đánh giá -->
+            <?php
+            // Kiểm tra xem đã đánh giá chưa
+            $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'], $order['order_id']);
+            ?>
+            <?php if (!$hasReviewed): ?>
+                <a href="javascript:void(0);" class="review-link" onclick="toggleForm()">Đánh giá</a>
+                <div class="overlay" id="reviewOverlay" style="display: none;">
+                    <div class="main-container">
+                        <div class="form-container">
+                            <h1>Đánh giá sản phẩm</h1>
+                            <form action="?act=add-reviews" method="POST">
+                                <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
+                                <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <label for="rating">Chọn Đánh Giá:</label>
+                                <div class="rating">
+                                    <input type="radio" id="star5" name="rating" value="excellent">
+                                    <label for="star5" title="Xuất sắc">&#9733;</label>
+                                    <input type="radio" id="star4" name="rating" value="good">
+                                    <label for="star4" title="Tốt">&#9733;</label>
+                                    <input type="radio" id="star3" name="rating" value="average">
+                                    <label for="star3" title="Bình thường">&#9733;</label>
+                                    <input type="radio" id="star2" name="rating" value="bad">
+                                    <label for="star2" title="Tệ">&#9733;</label>
+                                    <input type="radio" id="star1" name="rating" value="very_bad">
+                                    <label for="star1" title="Rất tệ">&#9733;</label>
+                                </div>
+                                <label for="review_text">Nội dung đánh giá:</label>
+                                <textarea id="review_text" name="review_text" placeholder="Nhập đánh giá của bạn..." required></textarea>
+                                <div class="form-actions">
+                                    <button type="button" onclick="toggleForm()">Hủy</button>
+                                    <button type="submit">Gửi đánh giá</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php elseif ($hasReviewed): ?>
+                <p>Đã đánh giá</p>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+
+<!-- Đã hủy -->
+<div class="tab-pane fade" id="canceled-orders">
+    <?php
+    // Sắp xếp các đơn hàng theo thời gian đặt (order_date)
+    usort($orders_items, function ($a, $b) {
+        return strtotime($b['order_date']) - strtotime($a['order_date']);
+    });
+
+    // Nhóm các đơn hàng theo order_id để gộp sản phẩm trùng
+    $groupedOrders = [];
+    foreach ($orders_items as $order) {
+        if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'cancelled') {
+            if (!isset($groupedOrders[$order['order_id']])) {
+                $groupedOrders[$order['order_id']] = [
+                    'order_id' => $order['order_id'],
+                    'user_id' => $order['user_id'],
+                    'shipping_status' => $order['shipping_status'],
+                    'order_date' => $order['order_date'],
+                    'products' => [],
+                    'quantity' => 0,
+                ];
+            }
+            $groupedOrders[$order['order_id']]['products'][] = $order;
+            $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
+        }
+    }
+    ?>
+    <?php foreach ($groupedOrders as $order): ?>
+        <div class="order-card">
+            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+
+            <div class="order-info">
+                <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
+                <p class="order-status">
+                    Trạng thái: <span class="text-danger">Đã hủy</span>
+                </p>
+                <p class="order-quantity">Số lượng: <?= $order['quantity'] ?></p>
+            </div>
+            <button 
+                class="btn btn-outline-primary btn-sm order-btn" 
+                onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
+                Xem chi tiết
+            </button>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+
+<!-- Trả hàng/hoàn tiền -->
+<div class="tab-pane fade" id="refund-orders">
+    <?php
+    // Sắp xếp các đơn hàng theo thời gian đặt (order_date)
+    usort($orders_items, function ($a, $b) {
+        return strtotime($b['order_date']) - strtotime($a['order_date']);
+    });
+
+    // Nhóm các đơn hàng theo order_id để gộp sản phẩm trùng
+    $groupedOrders = [];
+    foreach ($orders_items as $order) {
+        if ($_SESSION['user_id'] == $order['user_id'] && $order['shipping_status'] === 'returned') {
+            if (!isset($groupedOrders[$order['order_id']])) {
+                $groupedOrders[$order['order_id']] = [
+                    'order_id' => $order['order_id'],
+                    'user_id' => $order['user_id'],
+                    'shipping_status' => $order['shipping_status'],
+                    'order_date' => $order['order_date'],
+                    'products' => [],
+                    'quantity' => 0,
+                ];
+            }
+            $groupedOrders[$order['order_id']]['products'][] = $order;
+            $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
+        }
+    }
+    ?>
+    <?php foreach ($groupedOrders as $order): ?>
+        <div class="order-card">
+            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+
+            <div class="order-info">
+                <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
+                <p class="order-status">
+                    Trạng thái: <span class="text-warning">Trả hàng/hoàn tiền</span>
+                </p>
+                <p class="order-quantity">Số lượng: <?= $order['quantity'] ?></p>
+            </div>
+            <button 
+                class="btn btn-outline-primary btn-sm order-btn" 
+                onclick="window.location.href='?act=chi-tiet-don-hang&order_id=<?= htmlspecialchars($order['order_id']) ?>'">
+                Xem chi tiết
+            </button>
+        </div>
+    <?php endforeach; ?>
+</div>
+</div>
+
 </section>
 
 

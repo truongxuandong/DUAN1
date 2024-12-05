@@ -90,5 +90,73 @@ class Order{
         return $count > 0; // Trả về true nếu đã đánh giá
     }
     
+    public function getOrderById($order_id) {
+        try {
+            $sql = "SELECT * FROM orders WHERE order_id = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$order_id]);
+            return $stmt->fetch(); // Lấy thông tin chi tiết của 1 đơn hàng
+        } catch (PDOException $e) {
+            echo "Lỗi kết nối: " . $e->getMessage();
+        }
+    }
+    
+    public function updateOrderStatus($order_id, $status) {
+        $sql = "UPDATE orders SET shipping_status = :status WHERE id = :order_id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ':status' => $status,
+            ':order_id' => $order_id
+        ]);
+    }
+    //
+     // Lấy thông tin khách hàng từ đơn hàng
+     public function getOrderThongTinKhachHang($id) {
+        try {
+            $sql = "SELECT 
+                        orders.id, 
+                        orders.receiver_name, 
+                        users.email, 
+                        orders.phone_car, 
+                        orders.shipping_address, 
+                        orders.payment_method 
+                    FROM orders 
+                    JOIN users ON users.id = orders.user_id 
+                    WHERE orders.id = :id";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            throw new Exception("Error fetching order customer information: " . $e->getMessage());
+        }
+    }
+
+    // Lấy chi tiết đơn hàng
+    public function getOrderDetailsThongTin($id) {
+        try {
+            $sql = "SELECT 
+                        order_items.order_id,
+                        order_items.quantity,
+                        order_items.unit_price,
+                        (order_items.quantity * order_items.unit_price) AS subtotal,
+                        comics.title,
+                        comics.image,
+                        orders.order_date,
+                        orders.shipping_status,
+                        orders.shipping_address,
+                        orders.user_id
+                    FROM order_items
+                    JOIN comics ON order_items.comic_id = comics.id
+                    JOIN orders ON order_items.order_id = orders.id
+                    WHERE order_items.order_id = :id";
+                    
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            throw new Exception("Error fetching order details: " . $e->getMessage());
+        }
+    }
 
 }
