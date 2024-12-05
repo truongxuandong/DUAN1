@@ -134,6 +134,14 @@
         <!-- Shop Product Start -->
 <div class="col-lg-9 col-md-12">
     <?php
+    // Lọc sản phẩm theo từ khóa tìm kiếm
+    if (!empty($_GET['keyword'])) {
+        $keyword = strtolower($_GET['keyword']);
+        $listsp = array_filter($listsp, function($sp) use ($keyword) {
+            return str_contains(strtolower($sp['title']), $keyword);
+        });
+    }
+
     // Khởi tạo các biến phân trang
     $items_per_page = 8; // Số sản phẩm trên mỗi trang
     $total_products = count($listsp); // Tổng số sản phẩm
