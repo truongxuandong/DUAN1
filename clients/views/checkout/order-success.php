@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt hàng thành công</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./clients/assets/css/order-success.css">
 </head>
 <body>
@@ -38,27 +39,57 @@
                     <span class="label">Phương thức thanh toán:</span>
                     <span class="value"><?= htmlspecialchars($order['payment_method']) ?></span>
                 </div>
+                <div class="info-item">
+                    <span class="label">Trạng thái thanh toán:</span>
+                    <span class="value"><?= htmlspecialchars($order['payment_status']) ?></span>
+                </div>
             </div>
         </div>
 
         <div class="order-summary">
             <div class="summary-header">
-                <h3>Chi Tiết đơn hàng</h3>
+                <h3>Chi tiết đơn hàng</h3>
             </div>
 
             <div class="cart-items">
-                <?php foreach ($orderItems as $item): ?>
-                <div class="cart-item">
-                    <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>">
-                    <div class="item-info">
-                        <h4><?= $item['title'] ?></h4>
-                        <div class="item-details">
-                            <span>Số lượng: <?= $item['quantity'] ?></span>
-                            <span class="price"><?= number_format($item['unit_price'], 0, ',', '.') ?>đ</span>
+                <?php 
+                $totalAmount = 0;
+                
+                // Trường hợp mua ngay
+                if (isset($_SESSION['buy_now_item'])) {
+                    $item = $_SESSION['buy_now_item'];
+                    $totalAmount = $item['price'] * $item['quantity'];
+                ?>
+                    <div class="cart-item">
+                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= htmlspecialchars($item['title']) ?>">
+                        <div class="item-info">
+                            <h4><?= htmlspecialchars($item['title']) ?></h4>
+                            <div class="item-details">
+                                <span>Số lượng: <?= $item['quantity'] ?></span>
+                                <span class="price"><?= number_format($item['unit_price'], 0, ',', '.') ?>đ</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <?php endforeach; ?>
+                <?php
+                } 
+                // Trường hợp đặt hàng từ giỏ hàng
+                else {
+                    foreach ($orderItems as $item): 
+                        $totalAmount += $item['unit_price'] * $item['quantity'];
+                ?>
+                    <div class="cart-item">
+                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= htmlspecialchars($item['title']) ?>">
+                        <div class="item-info">
+                            <h4><?= htmlspecialchars($item['title']) ?></h4>
+                            <div class="item-details">
+                                <span>Số lượng: <?= $item['quantity'] ?></span>
+                                <span class="price"><?= number_format($item['unit_price'], 0, ',', '.') ?>đ</span>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach;
+                }
+                ?>
             </div>
 
             <div class="summary-footer">
@@ -84,28 +115,46 @@
     </div>
 
     <style>
-        .order-summary {
-            background: #fff;
+        .order-success-container {
+            max-width: 1200px;
+            margin: 30px auto;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-top: 20px;
         }
 
-        .summary-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
+        .success-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .success-header i {
+            color: #28a745;
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             margin-bottom: 20px;
         }
 
-        .cart-items {
-            margin-bottom: 20px;
+        .info-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .info-item .label {
+            font-weight: bold;
+            color: #666;
         }
 
         .cart-item {
             display: flex;
-            padding: 15px 0;
+            padding: 15px;
             border-bottom: 1px solid #eee;
+            align-items: center;
         }
 
         .cart-item img {
@@ -119,16 +168,10 @@
             flex: 1;
         }
 
-        .item-info h4 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
-        }
-
         .item-details {
             display: flex;
             justify-content: space-between;
-            color: #666;
-            font-size: 14px;
+            margin-top: 10px;
         }
 
         .price {
@@ -138,37 +181,38 @@
 
         .summary-footer {
             margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
-            font-size: 14px;
         }
 
         .summary-row.total {
             font-size: 18px;
             font-weight: bold;
             color: #e53637;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #ddd;
             padding-top: 10px;
             margin-top: 10px;
         }
 
         .action-buttons {
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
-            gap: 10px;
             justify-content: center;
+            gap: 15px;
         }
 
         .btn {
             padding: 10px 20px;
             border-radius: 4px;
             text-decoration: none;
+            font-weight: bold;
         }
 
         .btn-primary {
@@ -181,6 +225,12 @@
             border: 1px solid #e53637;
             color: #e53637;
             background: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            transition: all 0.2s;
         }
     </style>
 </body>

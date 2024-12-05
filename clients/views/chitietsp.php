@@ -1,5 +1,8 @@
 <?php
 
+require_once 'commons/core.php';
+$conn = connectDB();
+
 if (!empty($sanphamct)): ?>
     <div class="row px-xl-5">
         <div class="col-lg-5 pb-5">
@@ -76,24 +79,95 @@ if (!empty($sanphamct)): ?>
 
 
             <div class="product-details mb-4">
-                <?php if (!empty($sanphamct['variants'])): ?>
-                    <div class="variants-container">
-                        <?php foreach ($sanphamct['variants'] as $variant): ?>
 
-                            <button class="btn btn-outline-primary variant-btn"
-                                data-price="<?= $variant['price'] ?>"
-                                data-stock="<?= $variant['stock_quantity'] ?>"
-                                data-image="<?= removeFirstChar($variant['image']) ?>"
-                                data-format="<?= $variant['format'] ?>"
-                                data-language="<?= $variant['language'] ?>"
-                                data-sale-value="<?= $variant['sale_value'] ?>"
-                                onclick="updateVariantInfo(this)">
-                                <?= $variant['format'] ?> + <?= $variant['language'] ?>
-                            </button>
-                        <?php endforeach; ?>
+                <form action="?act=add-item-to-cart" method="POST">
+                    <input type="hidden" name="comic_id" value="<?= $sanphamct['id'] ?>">
+                    <input type="hidden" name="variant_id" id="selected_variant_id" value="">
+
+                    <?php if (!empty($sanphamct['variants'])): ?>
+                        <div class="variants-container mb-3">
+                            <label class="mb-2">Chọn phiên bản (tùy chọn):</label>
+                            <div class="variant-buttons">
+                                <!-- Nút cho sản phẩm gốc -->
+                                <button type="button"
+                                    class="btn btn-outline-primary variant-btn mb-2 active"
+                                    onclick="selectVariant(this, '')"
+                                    data-price="<?= $sanphamct['price'] ?>"
+                                    data-stock="<?= $sanphamct['stock_quantity'] ?>">
+                                    Phiên bản gốc
+                                    - <?= number_format($sanphamct['price'], 0, ',', '.') ?>đ
+                                    (Còn <?= $sanphamct['stock_quantity'] ?> sản phẩm)
+                                </button>
+
+                                <!-- Các nút cho biến thể -->
+                                <?php foreach ($sanphamct['variants'] as $variant): ?>
+                                    <button type="button"
+                                        class="btn btn-outline-primary variant-btn mb-2"
+                                        onclick="selectVariant(this, '<?= $variant['id'] ?>')"
+                                        data-price="<?= $variant['price'] ?>"
+                                        data-stock="<?= $variant['stock_quantity'] ?>">
+                                        <?= $variant['format'] ?> + <?= $variant['language'] ?>
+                                        - <?= number_format($variant['price'], 0, ',', '.') ?>đ
+                                        (Còn <?= $variant['stock_quantity'] ?> sản phẩm)
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="d-flex align-items-center mb-4 pt-2">
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()" 
+                                        <?= ($sanphamct['stock_quantity'] <= 0) ? 'disabled' : '' ?>>
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" name="quantity" id="quantity" class="form-control bg-secondary text-center"
+                                style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>"
+                                <?= ($sanphamct['stock_quantity'] <= 0) ? 'disabled' : '' ?>>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()"
+                                        <?= ($sanphamct['stock_quantity'] <= 0) ? 'disabled' : '' ?>>
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" name="add-to-cart" class="btn btn-primary px-3" 
+                                <?= ($sanphamct['stock_quantity'] <= 0) ? 'disabled' : '' ?>>
+                            <i class="fa fa-shopping-cart mr-1"></i> 
+                            <?= ($sanphamct['stock_quantity'] <= 0) ? 'Hết hàng' : 'Thêm vào giỏ' ?>
+                        </button>
                     </div>
-
-                <?php endif; ?>
+                </form>
+              
+              
+              <form action="?act=thanhtoan" method="POST" style="display: inline;" onsubmit="return validateBeforeCheckout()">
+                <input type="hidden" name="buy_now" value="1">
+                <input type="hidden" name="comic_id" value="<?= htmlspecialchars($sanphamct['id']) ?>">
+                <input type="hidden" name="quantity" id="buy_now_quantity" value="1">
+                <input type="hidden" name="title" value="<?= htmlspecialchars($sanphamct['title']) ?>">
+                <input type="hidden" name="image" value="<?= htmlspecialchars($sanphamct['image']) ?>">
+                
+                <?php
+                $final_price = $sanphamct['price'];
+                if (!empty($sanphamct['sale_value'])) {
+                    if ($sanphamct['sale_value'] < 100) {
+                        $final_price = $sanphamct['price'] - ($sanphamct['price'] * $sanphamct['sale_value'] / 100);
+                    } else {
+                        $final_price = $sanphamct['price'] - $sanphamct['sale_value'];
+                    }
+                }
+                ?>
+                <input type="hidden" name="price" value="<?= $final_price ?>">
+                
+                <button type="submit" class="btn btn-danger px-3 ml-2" 
+                        <?= ($sanphamct['stock_quantity'] <= 0) ? 'disabled' : '' ?>>
+                    <i class="fa fa-flash mr-1"></i> 
+                    <?= ($sanphamct['stock_quantity'] <= 0) ? 'Hết hàng' : 'Mua ngay' ?>
+                </button>
+            </form>
+       
             </div>
             <p class="mb-4" id="stock-display">Còn : <?= $sanphamct['stock_quantity'] ?? '' ?> sản phẩm</p>
 
@@ -129,44 +203,6 @@ if (!empty($sanphamct)): ?>
             </div>
             <p class="mb-4"><?= $sanphamct['description'] ?? '' ?></p>
 
-            <form action="?act=add-item-to-cart" method="POST" class="d-flex align-items-center mb-4 pt-2">
-                <!-- ID sản phẩm hoặc biến thể -->
-                <input type="hidden" name="variant_id" value="<?= htmlspecialchars($sanphamct['id'] ?? '') ?>">
-                <input type="hidden" name="comic_id" value="<?= htmlspecialchars($sanphamct['comic_id'] ?? $sanphamct['id'] ?? '') ?>">
-
-                <?php if (($sanphamct['stock_quantity'] ?? 0) > 0): ?>
-                    <div class="input-group quantity mr-3" style="width: 130px;">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-minus" onclick="decreaseValue()">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                        </div>
-                        <input type="text" name="quantity" id="quantity" class="form-control bg-secondary text-center"
-                            style="padding: 10px;" value="1" min="1" max="<?= (int) $sanphamct['stock_quantity'] ?>">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-plus" onclick="increaseValue()">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="submit" name="view-shopping-cart" class="btn btn-primary px-3">
-                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-                    </button>
-                <?php else: ?>
-                    <div class="alert alert-warning mb-0">Out of stock</div>
-                <?php endif; ?>
-            </form>
-            <form action="?act=checkout" method="POST" style="display: inline;" onsubmit="return validateBeforeCheckout()">
-                <input type="hidden" name="buy_now" value="1">
-                <input type="hidden" name="comic_id" value="<?= htmlspecialchars($sanphamct['id'] ?? '') ?>">
-                <input type="hidden" name="quantity" id="buy_now_quantity" value="1">
-                <input type="hidden" name="price" value="<?= htmlspecialchars($final_price ?? $sanphamct['price'] ?? '') ?>">
-                <input type="hidden" name="title" value="<?= htmlspecialchars($sanphamct['title'] ?? '') ?>">
-                <input type="hidden" name="image" value="<?= htmlspecialchars($sanphamct['image'] ?? '') ?>">
-                <button type="submit" class="btn btn-danger px-3 ml-2">
-                    <i class="fa fa-flash mr-1"></i> Mua ngay
-                </button>
-            </form>
         </div>
     </div>
 <?php else: ?>
@@ -407,23 +443,20 @@ if (!empty($sanphamct)): ?>
                     <?php endif; ?>
                 </div>
             </div>
-            <!-- Nút điều hướng -->
-            <button class="btn-carousel btn-left">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="btn-carousel btn-right">
-                <i class="fas fa-chevron-right"></i>
-            </button>
 
 
             <script>
                 function increaseValue() {
                     var input = document.getElementById('quantity');
-                    var max = parseInt(input.getAttribute('max'));
-                    var value = parseInt(input.value);
 
-                    if (value < max) {
-                        input.value = value + 1;
+                    var value = parseInt(input.value);
+                    var maxStock = parseInt(input.getAttribute('max'));
+
+                    if (isNaN(value)) value = 0;
+                    if (value < maxStock) {
+                        value++;
+                        input.value = value;
+
                     }
                 }
 
@@ -431,34 +464,34 @@ if (!empty($sanphamct)): ?>
                     var input = document.getElementById('quantity');
                     var value = parseInt(input.value);
 
+                    if (isNaN(value)) value = 0;
                     if (value > 1) {
-                        input.value = value - 1;
+                        value--;
+                        input.value = value;
                     }
                 }
 
-                // Thêm validation khi người dùng nhập trực tiếp
-                document.getElementById('quantity').addEventListener('change', function() {
+                // Thêm sự kiện kiểm tra khi người dùng nhập trực tiếp
+                document.getElementById('quantity').addEventListener('input', function() {
                     var value = parseInt(this.value);
-                    var max = parseInt(this.getAttribute('max'));
+                    var maxStock = parseInt(this.getAttribute('max'));
 
                     if (isNaN(value) || value < 1) {
                         this.value = 1;
-                    } else if (value > max) {
-                        this.value = max;
+                    } else if (value > maxStock) {
+                        this.value = maxStock;
+
                     }
                 });
 
                 function updateVariantInfo(button) {
-                    // Lấy các giá trị từ data-* của nút
+                    // Lấy các giá trị của biến thể được chọn
                     var price = parseFloat(button.getAttribute('data-price'));
-                    var stock = parseInt(button.getAttribute('data-stock'));
+                    var stock = button.getAttribute('data-stock');
                     var image = button.getAttribute('data-image');
                     var saleValue = parseFloat(button.getAttribute('data-sale-value') || 0);
 
-                    // Kiểm tra các giá trị đã được lấy đúng chưa
-                    console.log('Price:', price, 'Stock:', stock, 'Image:', image, 'Sale Value:', saleValue);
-
-                    // Tính giá sau giảm giá nếu có
+                    // Tính giá sau khi giảm giá
                     var finalPrice = price;
                     if (saleValue > 0) {
                         if (saleValue < 100) {
@@ -474,77 +507,24 @@ if (!empty($sanphamct)): ?>
                     document.getElementById('product-price').textContent =
                         new Intl.NumberFormat('vi-VN').format(Math.max(finalPrice, 0)) + ' đ';
 
-                    // Cập nhật số lượng tồn kho
-                    var stockDisplay = document.getElementById('stock-display');
-                    stockDisplay.textContent = `Còn : ${stock} sản phẩm`;
-
-                    // Cập nhật hình ảnh sản phẩm
-                    document.getElementById('product-image').src = image ? image : '';
-
-                    // Cập nhật số lượng tối đa (max) cho input số lượng
-                    var quantityInput = document.getElementById('quantity');
-                    quantityInput.setAttribute('max', stock);
-                    quantityInput.value = Math.min(quantityInput.value, stock);
-
-                    // Cập nhật giá trị số lượng "mua ngay"
-                    document.getElementById('buy_now_quantity').value = Math.min(1, stock);
-                }
-
-
-                function validateBeforeCheckout() {
-                    // Kiểm tra đăng nhập
-                    <?php if (!isset($_SESSION['user'])): ?>
-                        Swal.fire({
-                            title: 'Thông báo',
-                            text: 'Vui lòng đăng nhập để mua hàng!',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Đăng nhập',
-                            cancelButtonText: 'Hủy'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = 'index.php?act=login';
-                            }
-                        });
-                        return false;
-                    <?php endif; ?>
-
-                    // Kiểm tra số lượng tồn kho
-                    const quantity = parseInt(document.getElementById('quantity').value);
-                    const stock = parseInt(document.getElementById('quantity').getAttribute('max'));
-
-                    if (quantity > stock) {
-                        Swal.fire({
-                            title: 'Lỗi',
-                            text: 'Số lượng vượt quá tồn kho!',
-                            icon: 'error'
-                        });
-                        return false;
+                    // Hiển thị giá gốc nếu có giảm giá
+                    if (saleValue > 0) {
+                        document.getElementById('original-price').style.display = 'inline';
+                        document.getElementById('original-price').textContent =
+                            new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+                    } else {
+                        document.getElementById('original-price').style.display = 'none';
                     }
 
-                    // Cập nhật số lượng cho form mua ngay
-                    document.getElementById('buy_now_quantity').value = quantity;
-                    return true;
+                    // Cập nhật số lượng tồn kho
+                    document.querySelector('.variant-stock').textContent = stock ? stock : '0';
+
+                    // Cập nhật hình ảnh
+                    document.getElementById('product-image').src = image ? image : '';
+
+                    // Cập nhật thông tin biến thể đã chọn
+                    document.querySelector('.selected-variant-info').style.display = 'block';
                 }
-
-                // Hiển thị giá gốc nếu có giảm giá
-                if (saleValue > 0) {
-                    document.getElementById('original-price').style.display = 'inline';
-                    document.getElementById('original-price').textContent =
-                        new Intl.NumberFormat('vi-VN').format(price) + ' đ';
-                } else {
-                    document.getElementById('original-price').style.display = 'none';
-                }
-
-                // Cập nhật số lượng tồn kho
-                document.querySelector('.variant-stock').textContent = stock ? stock : '0';
-
-                // Cập nhật hình ảnh
-                document.getElementById('product-image').src = image ? image : '';
-
-                // Cập nhật thông tin biến thể đã chọn
-                document.querySelector('.selected-variant-info').style.display = 'block';
-
 
                 function validateBeforeCheckout() {
                     // Kiểm tra đăng nhập
@@ -567,6 +547,15 @@ if (!empty($sanphamct)): ?>
                     // Kiểm tra số lượng tồn kho
                     const quantity = parseInt(document.getElementById('quantity').value);
                     const stock = parseInt('<?= $sanphamct['stock_quantity'] ?? 0 ?>');
+
+                    if (stock <= 0) {
+                        Swal.fire({
+                            title: 'Thông báo',
+                            text: 'Sản phẩm đã hết hàng!',
+                            icon: 'error'
+                        });
+                        return false;
+                    }
 
                     if (quantity > stock) {
                         Swal.fire({
@@ -648,251 +637,55 @@ if (!empty($sanphamct)): ?>
                 }
             </style>
             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    const productContainers = document.querySelectorAll('.products-container');
-
-                    productContainers.forEach(container => {
-                        const wrapper = container.querySelector('.products-wrapper');
-                        const btnLeft = container.parentElement.querySelector('.btn-left');
-                        const btnRight = container.parentElement.querySelector('.btn-right');
-
-                        // Ngăn chặn kéo hình ảnh
-                        wrapper.querySelectorAll('img').forEach(img => {
-                            img.addEventListener('dragstart', (e) => e.preventDefault());
-                            img.style.pointerEvents = 'none'; // Vô hiệu hóa tương tác chuột với hình ảnh
-                        });
-
-                        let isDragging = false;
-                        let startX;
-                        let scrollLeft;
-                        let momentum = 0;
-                        let animationId;
-
-                        // Mouse events với momentum scrolling
-                        wrapper.addEventListener('mousedown', (e) => {
-                            isDragging = true;
-                            wrapper.classList.add('dragging');
-                            startX = e.pageX;
-                            scrollLeft = wrapper.scrollLeft;
-                            momentum = 0;
-                            cancelAnimationFrame(animationId);
-                            e.preventDefault(); // Ngăn chặn hành vi mặc định
-                        });
-
-                        wrapper.addEventListener('mousemove', (e) => {
-                            if (!isDragging) return;
-                            e.preventDefault();
-
-                            const x = e.pageX;
-                            const delta = (startX - x);
-                            wrapper.scrollLeft = scrollLeft + delta;
-
-                            momentum = delta * 0.1;
-                            startX = x;
-                            scrollLeft = wrapper.scrollLeft;
-                        });
-
-                        // Thêm event listener cho document để xử lý mouseup bên ngoài wrapper
-                        document.addEventListener('mouseup', finishDragging);
-                        document.addEventListener('mouseleave', finishDragging);
-
-                        function finishDragging() {
-                            if (!isDragging) return;
-                            isDragging = false;
-                            wrapper.classList.remove('dragging');
-
-                            function momentumScroll() {
-                                if (Math.abs(momentum) > 0.1) {
-                                    wrapper.scrollLeft += momentum;
-                                    momentum *= 0.95;
-                                    animationId = requestAnimationFrame(momentumScroll);
-                                }
-                            }
-                            momentumScroll();
-                        }
-
-                        // Button navigation với animation mượt
-                        btnLeft.addEventListener('click', () => {
-                            const scrollAmount = wrapper.offsetWidth * 0.8;
-                            smoothScroll(wrapper, -scrollAmount);
-                        });
-
-                        btnRight.addEventListener('click', () => {
-                            const scrollAmount = wrapper.offsetWidth * 0.8;
-                            smoothScroll(wrapper, scrollAmount);
-                        });
-
-                        function smoothScroll(element, amount) {
-                            const start = element.scrollLeft;
-                            const target = start + amount;
-                            const duration = 500; // ms
-                            const startTime = performance.now();
-
-                            function animation(currentTime) {
-                                const elapsed = currentTime - startTime;
-                                const progress = Math.min(elapsed / duration, 1);
-
-                                // Easing function for smoother animation
-                                const easeProgress = 1 - Math.pow(1 - progress, 4);
-
-                                element.scrollLeft = start + (amount * easeProgress);
-
-                                if (progress < 1) {
-                                    requestAnimationFrame(animation);
-                                }
-                            }
-
-                            requestAnimationFrame(animation);
-                        }
-                    });
-                });
-            </script>
-
-
-
 
             <style>
-                .btn-carousel {
-                    position: absolute;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background-color: rgba(0, 123, 255, 0.8);
-                    /* Màu nền xanh mờ */
-                    color: white;
-                    /* Màu chữ trắng */
-                    border: 2px solid transparent;
-                    /* Border mặc định trong suốt */
-                    border-radius: 50%;
-                    /* Bo góc tròn */
-                    width: 40px;
-                    /* Kích thước nhỏ hơn */
-                    height: 40px;
-                    /* Kích thước nhỏ hơn */
+                .variant-btn {
+                    border: 1px solid #ddd;
+                    padding: 8px 15px;
+                    border-radius: 4px;
+                    transition: all 0.3s;
+                    width: calc(50% - 10px);
+                    /* Chiếm 50% chiều rộng trừ đi khoảng cách */
+                    margin: 0;
+                    white-space: normal;
+                    height: auto;
+                    min-height: 60px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    cursor: pointer;
-                    z-index: 10;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                    /* Hiệu ứng bóng */
-                    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+                    text-align: center;
                 }
 
-                .btn-carousel:hover {
-                    background-color: rgba(0, 123, 255, 1);
-                    /* Màu nền đậm hơn khi hover */
-                    transform: translateY(-50%) scale(1.1);
-                    /* Phóng to nhẹ khi hover */
-                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-                    /* Tăng độ bóng khi hover */
+                .variant-btn:hover {
+                    border-color: #e53637;
+                    color: #e53637;
                 }
 
-                .btn-carousel:active {
-                    border: 2px solid black;
-                    /* Border đen khi nhấn */
-                    transform: translateY(-50%) scale(0.95);
-                    /* Thu nhỏ nhẹ khi nhấn */
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                    /* Giảm bóng khi nhấn */
+                .variant-btn.active {
+                    background-color: #e53637;
+                    border-color: #e53637;
+                    color: white;
                 }
 
-                .btn-left {
-                    left: -5px;
-                    /* Vị trí nút bên trái */
-                }
-
-                .btn-right {
-                    right: -5px;
-                    /* Vị trí nút bên phải */
-                }
-
-                .btn-carousel i {
-                    font-size: 18px;
-                    /* Kích thước icon nhỏ hơn */
-                }
-
-                .products-wrapper {
+                .variant-buttons {
                     display: flex;
-                    overflow-x: auto;
-                    scroll-behavior: auto;
-                    /* Thay đổi từ smooth sang auto để tránh xung đột với custom scrolling */
-                    -webkit-overflow-scrolling: touch;
-                    cursor: grab;
-                    user-select: none;
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    scroll-snap-type: x proximity;
-                    /* Thay đổi từ mandatory sang proximity để mượt hơn */
-                    gap: 10px;
-                    /* Thêm khoảng cách giữa các items */
-                }
-
-                .products-wrapper::-webkit-scrollbar {
-                    display: none;
-                }
-
-                .products-wrapper.dragging {
-                    cursor: grabbing;
-                    scroll-behavior: auto;
-                    scroll-snap-type: none;
-                    /* Tắt snap trong khi kéo */
-                }
-
-                .product-card {
-                    flex: 0 0 20%;
-                    max-width: 20%;
-                    padding: 0 10px;
-                    box-sizing: border-box;
-                    scroll-snap-align: start;
-                    transition: transform 0.3s ease;
-                }
-
-                .product-card:hover {
-                    transform: translateY(-5px);
-                }
-
-                /* Thêm media query để điều chỉnh vị trí nút trên màn hình nhỏ */
-                @media (max-width: 1200px) {
-                    .btn-left {
-                        left: 10px;
-                    }
-
-                    .btn-right {
-                        right: 10px;
-                    }
-                }
-
-                /* Thêm overflow-x: hidden cho container để tránh thanh cuộn ngang */
-                .container-fluid {
-                    overflow-x: hidden;
-                }
-
-                /* Đảm bảo scroll smooth hoạt động trên tất cả các trình duyệt */
-                @supports (scroll-behavior: smooth) {
-                    .products-wrapper {
-                        scroll-behavior: smooth;
-                    }
-                }
-
-                /* Thêm styles để ngăn chặn việc chọn text */
-                .products-wrapper {
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    user-select: none;
-                }
-
-                .product-img img {
-                    pointer-events: none;
-                    /* Vô hiệu hóa tương tác chuột với hình ảnh */
-                    -webkit-user-drag: none;
-                    /* Ngăn kéo hình ảnh trên Chrome/Safari */
-                    -khtml-user-drag: none;
-                    /* Ngăn kéo hình ảnh trên các trình duyệt khác */
-                    -moz-user-drag: none;
-                    -o-user-drag: none;
-                    -user-drag: none;
+                    flex-wrap: wrap;
+                    gap: 20px;
+                    width: 100%;
                 }
             </style>
+
+            <script>
+                function selectVariant(button, variantId) {
+                    // Xóa class active từ tất cả các nút
+                    document.querySelectorAll('.variant-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Thêm class active cho nút được chọn
+                    button.classList.add('active');
+
+                    // Cập nhật variant_id trong form (có thể là rỗng cho sản phẩm gốc)
+                    document.getElementById('selected_variant_id').value = variantId;
+                }
+            </script>
