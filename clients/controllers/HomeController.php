@@ -6,12 +6,14 @@ class HomeController
     public $modelDanhMuc;
     public $modelSanPham;
     public $modelBinhluan;
+    public $modelBanner;
 
 
     public function __construct() {
         $this->modelDanhMuc = new DanhMuc();
         $this->modelSanPham = new SanPham();
         $this->modelBinhluan = new Binhluan();
+        $this->modelBanner = new Banner();
 
     }
 
@@ -21,6 +23,8 @@ class HomeController
             $sanphamnew = $this->modelSanPham->getAllSanPham();
             $sanphams_hot = $this->modelSanPham->getAllSanPhamHot();
             $sanphams_sale=$this->modelSanPham->getAllSanPhamSale();
+            $banners=$this->modelBanner->getAllbanner();
+
            
             
             require_once 'clients/views/layout/navbar.php';

@@ -7,7 +7,7 @@ $pdo = new PDO('mysql:host=localhost;dbname=duan1', 'root', '');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 require_once './commons/env.php';
-require_once './clients/views/layout/header.php';
+
 
 #require Controller
 require_once './clients/controllers/HomeController.php';
@@ -26,12 +26,16 @@ require_once './clients/models/oder.php';
 require_once './clients/models/danhmuc.php';
 require_once './clients/models/sanpham.php';
 require_once './clients/models/binhluan.php';
+require_once './clients/models/Banner.php';
 
 $home = new HomeController();
 
 // Route
 $act = $_GET['act'] ?? '/';
-
+$publicRoutes = ['login', 'register'];
+if (!in_array($act, $publicRoutes)) {
+    include_once './clients/views/layout/header.php';
+}
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
     '/' => $home->views_home(),
@@ -57,9 +61,14 @@ match ($act) {
     'process-checkout' => (new CheckoutController())->processCheckout(),
     'order-success' => (new CheckoutController())->orderSuccess(),
     'don-hang'=>(new OrderController())->views_order(),
-    'chi-tiet-don-hang'=>(new OrderController())->formchitietdonhang(),
+    // 'chi-tiet-don-hang'=>(new OrderController())->formchitietdonhang(),
+    'chi-tiet-don-hang'=>(new OrderController())->getChiTietDonHang(),
     'add-reviews'=>(new OrderController())->addReview(),
+    'update-status'=>(new OrderController())->handleRequest(),
+    'huy-don-hang'=>(new OrderController())->huydonhang(),
 
 };
 
-require_once './clients/views/layout/footer.php';
+if (!in_array($act, $publicRoutes)) {
+    include_once './clients/views/layout/footer.php';
+}
