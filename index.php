@@ -7,7 +7,7 @@ $pdo = new PDO('mysql:host=localhost;dbname=duan1', 'root', '');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 require_once './commons/env.php';
-require_once './clients/views/layout/header.php';
+
 
 #require Controller
 require_once './clients/controllers/HomeController.php';
@@ -31,7 +31,10 @@ $home = new HomeController();
 
 // Route
 $act = $_GET['act'] ?? '/';
-
+$publicRoutes = ['login', 'register'];
+if (!in_array($act, $publicRoutes)) {
+    include_once './clients/views/layout/header.php';
+}
 // kiểm tra act và điều hướng tới các controller phù hợp
 match ($act) {
     '/' => $home->views_home(),
@@ -62,4 +65,6 @@ match ($act) {
 
 };
 
-require_once './clients/views/layout/footer.php';
+if (!in_array($act, $publicRoutes)) {
+    include_once './clients/views/layout/footer.php';
+}
