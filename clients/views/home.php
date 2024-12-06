@@ -8,9 +8,11 @@
         <!-- Wrapper sản phẩm -->
         <div class="products-container overflow-hidden" style="position: relative; width: 100%;">
             <div class="products-wrapper d-flex" style="transition: transform 0.5s ease;">
+            
                 <?php
                 $displayed_products = array();
                 foreach ($sanphams_hot as $sanpham):
+                    
                     if (in_array($sanpham['id'], $displayed_products)) continue;
                     $displayed_products[] = $sanpham['id'];
                 ?>
@@ -29,14 +31,15 @@
                                             ?>
                                         </div>
                                     <?php endif; ?>
-                                    <img class="img-fluid w-100" src="<?php echo $sanpham['image'] ?>" alt="" style="width: 50%; height: auto;">
+                                    
+                                    <img class="img-fluid w-100" src="<?php  echo removeFirstChar($sanpham['image']) ?>" alt="" style="width: 50%; height: auto;">
                                 </div>
 
                                 <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                     <h6 class="text-truncate mb-3"><?php echo $sanpham['title'] ?></h6>
                                     
                                     <div class="d-flex justify-content-center">
-                                        <h5 class="small-price">
+                                        <h5 class=" text-danger small-price">
                                             <?php
                                             $original_price = $sanpham['original_price'];
                                             $final_price = $original_price;
@@ -157,12 +160,12 @@
                                             ?>
                                         </div>
                                     <?php endif; ?>
-                                    <img class="img-fluid w-100" src="<?php echo $sp['image'] ?>" alt="" style="height: auto;">
+                                    <img class="img-fluid w-100" src="<?php echo removeFirstChar($sp['image']) ?>" alt="" style="height: auto;">
                                 </div>
                                 <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                     <h6 class="text-truncate mb-3"><?php echo $sp['title'] ?></h6>
                                     <div class="d-flex justify-content-center">
-                                        <h5 class="small-price">
+                                        <h5 class="text-danger small-price">
                                             <?php
                                             $original_price = $sp['original_price'];
                                             $final_price = $original_price;
@@ -270,14 +273,14 @@
                                             ?>
                                         </div>
                                     <?php endif; ?>
-                                    <img class="img-fluid w-100" src="<?php echo $spsale['image'] ?>" alt="" style="width: 50%; height: auto;">
+                                    <img class="img-fluid w-100" src="<?php echo removeFirstChar($spsale['image']) ?>" alt="" style="width: 50%; height: auto;">
                                 </div>
 
                                 <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                     <h6 class="text-truncate mb-3"><?php echo $spsale['title'] ?></h6>
                                     
                                     <div class="d-flex justify-content-center">
-                                        <h5 class="small-price">
+                                        <h5 class="text-danger small-price">
                                             <?php
                                             $original_price = $spsale['original_price'];
                                             $final_price = $original_price;

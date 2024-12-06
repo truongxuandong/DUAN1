@@ -1,5 +1,5 @@
  <!-- Footer -->
-<?php
+ <?php
 ob_start();
 ?>
 <footer class="site-footer">

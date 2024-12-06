@@ -52,7 +52,7 @@
                             <?php foreach ($cartItems as $item): ?>
                                 <tr id="cart-item-<?= $item['id'] ?>">
                                     <td class="text-center" style="width: 100px;">
-                                        <img src="<?= $item['image'] ?>" alt="<?= $item['title'] ?>" class="img-fluid" style="max-width: 80px;">
+                                        <img src="<?= removeFirstChar($item['image']) ?>" alt="<?= $item['title'] ?>" class="img-fluid" style="max-width: 80px;">
                                     </td>
                                     <td><?= $item['title'] ?></td>
                                     <td class="text-right">
@@ -167,7 +167,7 @@
                     success: function(response) {
                         const result = JSON.parse(response);
                         if (result.success) {
-                            // Thêm hiệu ���ng fade out trước khi xóa
+                            // Thêm hiệu ng fade out trước khi xóa
                             $('#cart-item-' + itemId).fadeOut(300, function() {
                                 $(this).remove();
                                 $('#cart-total').html('<strong>' + result.newTotal + 'đ</strong>');
@@ -267,16 +267,23 @@
         function checkoutHandler(event) {
             event.preventDefault();
             const checkboxes = document.getElementsByClassName('item-checkbox');
-            let hasCheckedItems = false;
+            let selectedItems = [];
 
             for(let checkbox of checkboxes) {
                 if(checkbox.checked) {
-                    hasCheckedItems = true;
-                    break;
+                    const row = checkbox.closest('tr');
+                    const itemId = row.id.replace('cart-item-', '');
+                    
+                    // Thêm thông tin chi tiết của sản phẩm được chọn
+                    selectedItems.push({
+                        id: itemId,
+                        quantity: parseInt(checkbox.getAttribute('data-quantity')),
+                        price: parseFloat(checkbox.getAttribute('data-price'))
+                    });
                 }
             }
 
-            if(!hasCheckedItems) {
+            if(selectedItems.length === 0) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Thông báo',
@@ -286,8 +293,21 @@
                 return false;
             }
 
-            // Nếu có sản phẩm được chọn, chuyển đến trang thanh toán
-            window.location.href = '?act=checkout';
+            // Tạo form ẩn để gửi dữ liệu
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '?act=checkout';
+
+            // Thêm input ẩn chứa thông tin sản phẩm đã chọn
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selected_items';
+            input.value = JSON.stringify(selectedItems);
+            form.appendChild(input);
+
+            console.log('Selected Items:', selectedItems); // Để debug
+            document.body.appendChild(form);
+            form.submit();
         }
 
         function updateTotal() {

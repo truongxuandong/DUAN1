@@ -8,6 +8,12 @@ class OrderModel {
 
     public function createOrder($data) {
         try {
+            if ($data['payment_method'] === 'COD') {
+                $data['payment_status'] = 'unpaid';
+            } else {
+                // Các phương thức thanh toán khác sẽ là processing
+                $data['payment_status'] = 'processing';
+            } 
             $sql = "INSERT INTO orders (user_id, total_amount, payment_method, shipping_address, payment_status, receiver_name, phone_car) 
                     VALUES (:user_id, :total_amount, :payment_method, :shipping_address, :payment_status, :receiver_name, :phone_car)";
             
