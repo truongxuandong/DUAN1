@@ -1,3 +1,6 @@
+
+Ghi chú
+Đánh dấu
 <?php
 class KhuyenMaiModel {
     public $conn;

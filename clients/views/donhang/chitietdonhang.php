@@ -40,7 +40,7 @@ if (!empty($orderDetails)):
             <tr>
                 <td><?php echo htmlspecialchars($item['title']); ?></td>
                 <td>
-                    <img src="<?php echo $item['image']; ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" style="width: 50px; height: 50px;">
+                    <img src="<?php echo removeFirstChar($item['image']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" style="width: 50px; height: 50px;">
                 </td>
                 <td><?php echo $item['quantity']; ?></td>
                 <td><?php echo number_format($item['unit_price'], 0, ',', '.'); ?> VND</td>

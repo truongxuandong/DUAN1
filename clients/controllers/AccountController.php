@@ -27,39 +27,44 @@ class AccountController
     // Phương thức sửa hồ sơ
     public function editProfile()
     {
-        // Kiểm tra người dùng đã đăng nhập chưa
         if (!isset($_SESSION['user'])) {
             header("Location: ?act=login");
             exit();
         }
 
-        // Nếu gửi form sửa hồ sơ
+        // Lấy thông tin đầy đủ của user từ database
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->execute(['id' => $_SESSION['user']['id']]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Lấy thông tin từ form
             $name = $_POST['name'] ?? '';
             $email = $_POST['email'] ?? '';
-            $phone = $_POST['phone'] ?? ''; // Lấy số điện thoại
-            $avatar = $_FILES['avatar'] ?? null;
+            $phone = $_POST['phone'] ?? '';
+            
+            // Tạo đối tượng User và cập nhật thông tin
+            $userObj = new User($_SESSION['user'], $this->pdo);
+            $updated = $userObj->updateProfile($_SESSION['user']['id'], [
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone
+            ]);
 
-            // Cập nhật thông tin người dùng trong session
-            $_SESSION['user']['name'] = $name;
-            $_SESSION['user']['email'] = $email;
-            $_SESSION['user']['phone'] = $phone; // Lưu số điện thoại vào session
-
-            // Nếu có ảnh đại diện, xử lý upload (nếu cần)
-            if ($avatar) {
-                // Xử lý upload ảnh ở đây
+            if ($updated) {
+                // Cập nhật session với thông tin mới
+                $_SESSION['user']['name'] = $name;
+                $_SESSION['user']['email'] = $email;
+                $_SESSION['user']['phone'] = $phone;
+                $_SESSION['success'] = "Cập nhật thông tin thành công!";
+            } else {
+                $_SESSION['error'] = "Có lỗi xảy ra khi cập nhật thông tin!";
             }
 
-            // Chuyển hướng về trang profile
             header("Location: ?act=don-hang");
             exit();
         }
 
-        // Lấy thông tin người dùng từ session
-        $user = $_SESSION['user'];
-
-        // Gọi view sửa hồ sơ
+        // Hiển thị form chỉnh sửa với thông tin đầy đủ từ database
         require_once 'clients/views/account/edit-profile.php';
     }
 
@@ -103,9 +108,6 @@ class AccountController
 
         // Cập nhật mật khẩu mới vào cơ sở dữ liệu
         $user->updatePassword($userId, $newPassword);
-
-        // Cập nhật mật khẩu mới vào session (nếu cần)
-        $_SESSION['user']['password'] = $newPassword;
 
         // Thiết lập thông báo thành công vào session
         $_SESSION['success'] = "Mật khẩu đã được thay đổi thành công.";

@@ -136,9 +136,10 @@
     <?php
     // Lọc sản phẩm theo từ khóa tìm kiếm
     if (!empty($_GET['keyword'])) {
-        $keyword = strtolower($_GET['keyword']);
+        $keyword = mb_strtolower(trim($_GET['keyword']), 'UTF-8'); // Chuyển keyword về chữ thường và loại bỏ khoảng trắng thừa
         $listsp = array_filter($listsp, function($sp) use ($keyword) {
-            return str_contains(strtolower($sp['title']), $keyword);
+            $title = mb_strtolower($sp['title'], 'UTF-8'); // Chuyển tên sản phẩm về chữ thường
+            return str_contains($title, $keyword);
         });
     }
 

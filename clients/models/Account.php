@@ -21,10 +21,35 @@ class User {
     }
 
     // Cập nhật mật khẩu người dùng
+    public function updateProfile($userId, $data) {
+        try {
+            $sql = "UPDATE users 
+                    SET name = :name, 
+                        email = :email, 
+                        phone = :phone,
+                        updated_at = NOW() 
+                    WHERE id = :id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'id' => $userId
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
     public function updatePassword($userId, $newPassword) {
-        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT); // Mã hóa mật khẩu mới
-        $stmt = $this->pdo->prepare("UPDATE users SET password = :password, updated_at = NOW() WHERE id = :id");
-        $stmt->execute(['password' => $hashedPassword, 'id' => $userId]);
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = $this->pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
+        return $stmt->execute([
+            'password' => $hashedPassword,
+            'id' => $userId
+        ]);
     }
 
     // Các phương thức khác liên quan đến người dùng có thể được thêm vào đây

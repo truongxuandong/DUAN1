@@ -96,7 +96,7 @@ class SanPhamController {
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
                     $image = $uploadFile;
                 } else {
-                    $_SESSION['error'] = "Không thể tải lên ảnh mới.";
+                    $_SESSION['error'] = "Không thể ti lên ảnh mới.";
                     header('Location: ?act=san-pham&method=formEditSanPham&id=' . $comicId);
                     exit();
                 }
@@ -119,6 +119,13 @@ class SanPhamController {
     {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
+
+            // Check if product exists in any orders
+            if ($this->modelSanPham->isProductInOrders($id)) {
+                $_SESSION['error'] = "Không thể xóa sản phẩm vì đang có trong đơn hàng!";
+                header('Location: ?act=san-pham');
+                exit();
+            }
 
             // Delete product
             if ($this->modelSanPham->deleteSanPham($id)) {
@@ -317,7 +324,7 @@ class SanPhamController {
                     unlink($imagePath);
                 }
 
-                $_SESSION['success'] = "Biến thể đã được xóa thành công!";
+                $_SESSION['success'] = "Biến thể ��ã được xóa thành công!";
                 header('Location: ?act=chi-tiet-bien-the-sp&id=' . $comicId);
                 exit();
             } else {
