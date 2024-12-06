@@ -288,19 +288,17 @@
     foreach ($orders_items as $order) { 
         // Kiểm tra nếu user_id của đơn hàng khớp với người dùng hiện tại
         if ($_SESSION['user_id'] == $order['user_id']) {
-            // Kiểm tra nếu order_id đã tồn tại trong mảng groupedOrders
             if (!isset($groupedOrders[$order['order_id']])) {
                 $groupedOrders[$order['order_id']] = [
                     'order_id' => $order['order_id'],
                     'user_id' => $order['user_id'],
                     'shipping_status' => $order['shipping_status'],
                     'order_date' => $order['order_date'],
-                    'comics' => [],  // Đổi tên mảng từ 'products' thành 'comics'
+                    'comics' => [],
                     'quantity' => 0,
                 ];
             }
-            // Thêm sản phẩm vào mảng của đơn hàng
-            $groupedOrders[$order['order_id']]['comics'][] = $order; // Thêm vào comics thay vì products
+            $groupedOrders[$order['order_id']]['comics'][] = $order;
             $groupedOrders[$order['order_id']]['quantity'] += $order['quantity'];
         }
     }
@@ -308,19 +306,17 @@
 
     <?php foreach ($groupedOrders as $groupedOrder): ?>
         <div class="order-card">
-            <!-- Hiển thị thông tin đơn hàng -->
             <img src="<?= htmlspecialchars($groupedOrder['comics'][0]['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
                 <p class="order-title">
                     <?php 
-                        // Hiển thị tên tất cả các sản phẩm trong đơn hàng
                         $comicNames = [];
                         foreach ($groupedOrder['comics'] as $comic) {
                             if (isset($comic['title'])) {
                                 $comicNames[] = htmlspecialchars($comic['title']);
                             }
                         }
-                        echo implode(', ', $comicNames); // Nối tên các sản phẩm lại với nhau
+                        echo implode(', ', $comicNames);
                     ?>
                 </p>
                 <p class="order-status">
@@ -354,51 +350,36 @@
                 </button>
             <?php endif; ?>
 
-            <!-- Hiển thị nút Đánh giá nếu sản phẩm đã được giao và chưa đánh giá -->
+            <!-- Kiểm tra trạng thái đánh giá -->
             <?php
-            // Kiểm tra xem đã đánh giá chưa
-            $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'], $order['id']);
+            $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'], $groupedOrder['order_id']);
             ?>
 
             <?php if ($groupedOrder['shipping_status'] == 'delivered' && !$hasReviewed): ?>
                 <button class="btn btn-outline-danger btn-sm order-btn">
-                    <a href="javascript:void(0);"  onclick="toggleForm()">Đánh giá</a>
+                    <a href="javascript:void(0);" onclick="toggleForm()">Đánh giá</a>
                 </button>
 
-                <!-- Form đánh giá -->
                 <div class="overlay" id="reviewOverlay" style="display: none;">
                     <div class="main-container">
                         <div class="form-container">
                             <h1>Đánh giá sản phẩm</h1>
                             <form action="?act=add-reviews" method="POST">
-                                <!-- Input ẩn -->
-                                <input type="hidden" id="comic_id" name="comic_id" value="<?= $order['id'] ?>">
-                                <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <input type="hidden" name="comic_id" value="<?= htmlspecialchars($groupedOrder['comics'][0]['id']) ?>">
+                                <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <input type="hidden" name="order_id" value="<?= htmlspecialchars($groupedOrder['order_id']) ?>">
 
-                                <!-- Đánh giá sao -->
                                 <label for="rating">Chọn Đánh Giá:</label>
                                 <div class="rating">
-                                    <input type="radio" id="star5" name="rating" value="excellent">
-                                    <label for="star5" title="Xuất sắc">&#9733;</label>
-
-                                    <input type="radio" id="star4" name="rating" value="good">
-                                    <label for="star4" title="Tốt">&#9733;</label>
-
-                                    <input type="radio" id="star3" name="rating" value="average">
-                                    <label for="star3" title="Bình thường">&#9733;</label>
-
-                                    <input type="radio" id="star2" name="rating" value="bad">
-                                    <label for="star2" title="Tệ">&#9733;</label>
-
-                                    <input type="radio" id="star1" name="rating" value="very_bad">
-                                    <label for="star1" title="Rất tệ">&#9733;</label>
+                                    <?php for ($i = 5; $i >= 1; $i--): ?>
+                                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>">
+                                        <label for="star<?= $i ?>" title="Sao <?= $i ?>">&#9733;</label>
+                                    <?php endfor; ?>
                                 </div>
 
-                                <!-- Nội dung đánh giá -->
                                 <label for="review_text">Nội dung đánh giá:</label>
                                 <textarea id="review_text" name="review_text" placeholder="Nhập đánh giá của bạn..." required></textarea>
 
-                                <!-- Nút gửi -->
                                 <div class="form-actions">
                                     <button type="button" onclick="toggleForm()">Hủy</button>
                                     <button type="submit">Gửi đánh giá</button>
@@ -413,6 +394,7 @@
         </div>
     <?php endforeach; ?>
 </div>
+
 
 
 
@@ -585,32 +567,50 @@
             <!-- Đánh giá -->
             <?php
             // Kiểm tra xem đã đánh giá chưa
-            $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'], $order['id']);
+            $hasReviewed = $this->modelOrder->hasReviewed($_SESSION['user_id'], $order['order_id']);
             ?>
-            <?php if (!$hasReviewed): ?>
-                <a href="javascript:void(0);" class="review-link" onclick="toggleForm()">Đánh giá</a>
+
+            <?php if ($groupedOrder['shipping_status'] == 'delivered' && !$hasReviewed): ?>
+                <button class="btn btn-outline-danger btn-sm order-btn">
+                    <a href="javascript:void(0);"  onclick="toggleForm()">Đánh giá</a>
+                </button>
+
+                <!-- Form đánh giá -->
                 <div class="overlay" id="reviewOverlay" style="display: none;">
                     <div class="main-container">
                         <div class="form-container">
                             <h1>Đánh giá sản phẩm</h1>
                             <form action="?act=add-reviews" method="POST">
-                            <input type="hidden" id="comic_id" name="comic_id" value="<?=$groupedOrder['comics'][0]['id']?>">
-                            <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <!-- Input ẩn -->
+                                <input type="hidden" id="comic_id" name="comic_id" value="<?= $order['id'] ?>">
+                                <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <input type="hidden" id="order_id" name="order_id" value="<?= $order['order_id'] ?>">
+                            <!-- <?php var_dump($order['order_id']) ?> -->
+
+                                <!-- Đánh giá sao -->
                                 <label for="rating">Chọn Đánh Giá:</label>
                                 <div class="rating">
                                     <input type="radio" id="star5" name="rating" value="excellent">
                                     <label for="star5" title="Xuất sắc">&#9733;</label>
+
                                     <input type="radio" id="star4" name="rating" value="good">
                                     <label for="star4" title="Tốt">&#9733;</label>
+
                                     <input type="radio" id="star3" name="rating" value="average">
                                     <label for="star3" title="Bình thường">&#9733;</label>
+
                                     <input type="radio" id="star2" name="rating" value="bad">
                                     <label for="star2" title="Tệ">&#9733;</label>
+
                                     <input type="radio" id="star1" name="rating" value="very_bad">
                                     <label for="star1" title="Rất tệ">&#9733;</label>
                                 </div>
+
+                                <!-- Nội dung đánh giá -->
                                 <label for="review_text">Nội dung đánh giá:</label>
                                 <textarea id="review_text" name="review_text" placeholder="Nhập đánh giá của bạn..." required></textarea>
+
+                                <!-- Nút gửi -->
                                 <div class="form-actions">
                                     <button type="button" onclick="toggleForm()">Hủy</button>
                                     <button type="submit">Gửi đánh giá</button>
@@ -620,7 +620,7 @@
                     </div>
                 </div>
             <?php elseif ($hasReviewed): ?>
-                <p>Đã đánh giá</p>
+                <p>Đã Đánh giá</p>
             <?php endif; ?>
         </div>
     <?php endforeach; ?>
