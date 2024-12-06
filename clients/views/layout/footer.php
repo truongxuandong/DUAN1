@@ -5,7 +5,7 @@
             <a href="" class="text-decoration-none">
                 <h1 class="mb-4 display-5 font-weight-semi-bold">
 
-                <a class="navbar-brand" href="./"><img src="../views/assets/logo/logo.png" alt="Logo" style="width:150px; height:60px; margin-top:-6px ;"></a>
+                <img src="clients/assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
 
                 </h1>
             </a>
