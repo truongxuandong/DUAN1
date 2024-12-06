@@ -274,6 +274,7 @@
 
   <!-- Tab Content -->
   <div class="tab-content">
+
  <!-- Tất cả -->
 <div class="tab-pane fade show active" id="all-orders">
     <?php
@@ -414,6 +415,7 @@
 </div>
 
 
+
   <!-- Chờ xác nhận -->
 <div class="tab-pane fade" id="pending-orders">
     <?php
@@ -447,6 +449,7 @@
         <div class="order-card">
             <!-- Hiển thị thông tin đơn hàng -->
             <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
                 <p class="order-status">
@@ -460,6 +463,7 @@
                 Xem chi tiết
             </button>
 
+
             <!-- Hiển thị nút Hủy nếu trạng thái là đang xác nhận -->
             <?php if ($order['shipping_status'] == 'pending'): ?>
                 <button 
@@ -468,6 +472,7 @@
                     Hủy đơn hàng
                 </button>
             <?php endif; ?>
+
         </div>
     <?php endforeach; ?>
 </div>
@@ -652,6 +657,7 @@
     <?php foreach ($groupedOrders as $order): ?>
         <div class="order-card">
             <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
                 <p class="order-status">
@@ -667,6 +673,7 @@
         </div>
     <?php endforeach; ?>
 </div>
+
 
 <!-- Trả hàng/hoàn tiền -->
 <div class="tab-pane fade" id="refund-orders">
@@ -698,6 +705,7 @@
     <?php foreach ($groupedOrders as $order): ?>
         <div class="order-card">
             <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
                 <p class="order-status">
