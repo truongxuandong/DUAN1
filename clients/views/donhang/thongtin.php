@@ -306,7 +306,7 @@
 
     <?php foreach ($groupedOrders as $groupedOrder): ?>
         <div class="order-card">
-            <img src="<?= htmlspecialchars($groupedOrder['comics'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($groupedOrder['comics'][0]['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
                 <p class="order-title">
                     <?php 
@@ -430,7 +430,7 @@
     <?php foreach ($groupedOrders as $order): ?>
         <div class="order-card">
             <!-- Hiển thị thông tin đơn hàng -->
-            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
 
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
@@ -489,7 +489,7 @@
     ?>
     <?php foreach ($groupedOrders as $order): ?>
         <div class="order-card">
-            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
                 <p class="order-status">
@@ -536,7 +536,7 @@
 
     <?php foreach ($groupedOrders as $groupedOrder): ?>
         <div class="order-card">
-            <img src="<?= htmlspecialchars($groupedOrder['comics'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($groupedOrder['comics'][0]['image']) ?>" alt="Product Image" class="order-image">
             <div class="order-info">
                 <p class="order-title">
                     <?php 
@@ -656,7 +656,7 @@
     ?>
     <?php foreach ($groupedOrders as $order): ?>
         <div class="order-card">
-            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
 
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>
@@ -704,7 +704,7 @@
     ?>
     <?php foreach ($groupedOrders as $order): ?>
         <div class="order-card">
-            <img src="<?= htmlspecialchars($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
+            <img src="<?= removeFirstChar($order['products'][0]['image']) ?>" alt="Product Image" class="order-image">
 
             <div class="order-info">
                 <p class="order-title"><?= htmlspecialchars($order['products'][0]['title']) ?></p>

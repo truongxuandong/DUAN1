@@ -4,9 +4,7 @@
         <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
             <a href="" class="text-decoration-none">
                 <h1 class="mb-4 display-5 font-weight-semi-bold">
-
                 <img src="clients/assets/logo/logo.png" alt="Logo" style="max-width: 100%; height: 80px">
-
                 </h1>
             </a>
             <p>Dolore erat dolor sit lorem vero amet. Sed sit lorem magna, ipsum no sit erat lorem et magna ipsum dolore amet erat.</p>

@@ -129,6 +129,21 @@ class SanPham {
             return false;
         }
     }
+
+    public function isProductInOrders($id) {
+        try {
+            $sql = "SELECT COUNT(*) FROM order_items WHERE comic_id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            echo "Lỗi: " . $e->getMessage();
+            return false;
+        }
+    }
 }
 
 ?>
+
+

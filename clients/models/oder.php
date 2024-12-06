@@ -91,8 +91,6 @@ class Order{
         return $count > 0; // Trả về true nếu đã có dòng dữ liệu trùng
     }
     
-    
-    
     public function getOrderById($order_id) {
         try {
             $sql = "SELECT * FROM orders WHERE order_id = ?";

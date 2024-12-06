@@ -49,7 +49,6 @@ class OrderController{
             }
         }
     }
-    
     public function viewOrder($order_id) {
         $order = $this->modelOrder->getOrderById($order_id);
         if ($order) {

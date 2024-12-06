@@ -1,3 +1,4 @@
+
 <?php
 class KhuyenMaiController
 {
@@ -215,5 +216,4 @@ class KhuyenMaiController
             header('location: ?act=khuyen-mai');
         }
 }
-
 

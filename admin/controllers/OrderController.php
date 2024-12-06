@@ -77,7 +77,7 @@ class OrderController{
 
             // Kiểm tra điều kiện shipping_status
             if ($data[':shipping_status'] !== $currentOrder['shipping_status']) {
-                if ($currentOrder['payment_status'] === 'failed' || $currentOrder['payment_status'] === 'unpaid') {
+                 if ($currentOrder['payment_status'] === 'failed' || $currentOrder['payment_status'] === 'unpaid') {
                     if ($data[':shipping_status'] !== 'cancelled') {
                         throw new Exception("Không thể thay đổi trạng thái đơn hàng khi thanh toán chưa thành công");
                     }
