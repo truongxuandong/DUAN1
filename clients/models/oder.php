@@ -56,16 +56,17 @@ class Order{
             echo 'Lỗi: ' . $e->getMessage();
         }
     }
-    public function addReview($user_id, $comic_id, $rating, $review_text) {
+    public function addReview($user_id, $comic_id, $order_id, $rating, $review_text) {
         try {
-            $sql = "INSERT INTO reviews (user_id, comic_id, rating, review_text, status, created_at) 
-                    VALUES (:user_id, :comic_id, :rating, :review_text, :status, NOW())";
+            $sql = "INSERT INTO reviews (user_id, comic_id, order_id, rating, review_text, status, created_at) 
+                    VALUES (:user_id, :comic_id, :order_id, :rating, :review_text, :status, NOW())";
             $stmt = $this->conn->prepare($sql);
     
             // Thực thi câu lệnh SQL
             $stmt->execute([
                 'user_id' => $user_id,
                 'comic_id' => $comic_id,
+                'order_id' => $order_id,
                 'rating' => $rating,
                 'review_text' => $review_text,
                 'status' => 'approved' // Đặt trạng thái mặc định là "approved"
@@ -78,16 +79,16 @@ class Order{
             return false; // Thất bại
         }
     }
-    //hàm kiểm tra đánh giá chưa
-    public function hasReviewed($user_id, $comic_id) {
-        $sql = "SELECT COUNT(*) FROM reviews WHERE user_id = :user_id AND comic_id = :comic_id";
+    
+    public function hasReviewed($user_id, $order_id) {
+        $sql = "SELECT COUNT(*) FROM reviews WHERE user_id = :user_id AND order_id = :order_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'user_id' => $user_id,
-            'comic_id' => $comic_id
+            'order_id' => $order_id
         ]);
         $count = $stmt->fetchColumn();
-        return $count > 0; // Trả về true nếu đã đánh giá
+        return $count > 0; // Trả về true nếu đã có dòng dữ liệu trùng
     }
     
     public function getOrderById($order_id) {

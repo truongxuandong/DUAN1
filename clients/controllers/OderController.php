@@ -22,23 +22,24 @@ class OrderController{
         
     }
     public function addReview() {
-        // var_dump($_SERVER['REQUEST_METHOD']);
+        // Kiểm tra phương thức yêu cầu
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Lấy dữ liệu từ form
             $user_id = $_POST['user_id'] ?? null;
             $comic_id = $_POST['comic_id'] ?? null;
+            $order_id = $_POST['order_id'] ?? null;
             $rating = $_POST['rating'] ?? null;
             $review_text = $_POST['review_text'] ?? '';
-
+    
             // Kiểm tra dữ liệu hợp lệ
-            if (empty($user_id) || empty($comic_id) || empty($rating) || empty($review_text)) {
+            if (empty($user_id) || empty($comic_id) || empty($order_id) || empty($rating) || empty($review_text)) {
                 echo "Dữ liệu không hợp lệ. Vui lòng điền đầy đủ thông tin!";
                 return false;
             }
-
+    
             // Gọi model để thêm đánh giá
-            $result = $this->modelOrder->addReview($user_id, $comic_id, $rating, $review_text);
-
+            $result = $this->modelOrder->addReview($user_id, $comic_id, $order_id, $rating, $review_text);
+    
             if ($result) {
                 // Điều hướng hoặc phản hồi nếu thành công
                 header("Location: ?act=don-hang");
