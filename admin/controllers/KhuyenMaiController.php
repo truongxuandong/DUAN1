@@ -1,3 +1,4 @@
+
 <?php
 class KhuyenMaiController
 {
@@ -232,5 +233,4 @@ public function deleteKhuyenMai()
     header('location: ?act=khuyen-mai');
 }
 }
-
 
