@@ -118,7 +118,7 @@
                         echo '<span class="badge bg-success" style="font-size: 15px;">Đã giao hàng</span>';
                         break;
                     case 'returned': // Đã trả lại
-                        echo '<span class="badge bg-info" style="font-size: 15px;">Đã trả lại</span>';
+                        echo '<span class="badge bg-info" style="font-size: 15px;">Hoàn trả</span>';
                         break;
                     case 'cancelled': // Đã hủy
                         echo '<span class="badge bg-danger" style="font-size: 15px;">Đã hủy</span>';

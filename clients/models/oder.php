@@ -102,7 +102,19 @@ class Order{
     }
     
     public function updateOrderStatus($order_id, $status) {
-        $sql = "UPDATE orders SET shipping_status = :status WHERE id = :order_id";
+        // For refund, we'll update both shipping_status and payment_status
+        if ($status === 'refunded') {
+            $sql = "UPDATE orders 
+                    SET shipping_status = :status, 
+                        payment_status = 'refunded' 
+                    WHERE id = :order_id 
+                    AND payment_status = 'paid'";
+        } else {
+            $sql = "UPDATE orders 
+                    SET shipping_status = :status 
+                    WHERE id = :order_id";
+        }
+        
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             ':status' => $status,
