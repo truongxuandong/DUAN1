@@ -24,8 +24,8 @@ class KhuyenMaiController
         $sale_type = $_POST['sale_type'];
         $sale_value = $_POST['sale_value'];
         $status = $_POST['status'];
-        $start_date = strtotime($_POST['start_date']);
-        $end_date = strtotime($_POST['end_date']);
+        $start_date = strtotime($_POST['start_date'] . ' ' . $_POST['start_time']);
+        $end_date = strtotime($_POST['end_date'] . ' ' . $_POST['end_time']);
         $today = strtotime(date('Y-m-d'));
 
         if ($start_date < $today) {
@@ -123,8 +123,8 @@ class KhuyenMaiController
         $sale_type = $_POST['sale_type'];
         $sale_value = $_POST['sale_value'];
         $status = $_POST['status'];
-        $start_date = strtotime($_POST['start_date']);
-        $end_date = strtotime($_POST['end_date']);
+        $start_date = strtotime($_POST['start_date'] . ' ' . $_POST['start_time']);
+        $end_date = strtotime($_POST['end_date'] . ' ' . $_POST['end_time']);
         $today = strtotime(date('Y-m-d'));
 
         
@@ -209,11 +209,28 @@ class KhuyenMaiController
         }
     }
 }
-        public function deleteKhuyenMai()
-        {
-            $this->modelKhuyenMai->deleteKhuyenMai($_GET['id']);
-            header('location: ?act=khuyen-mai');
-        }
+public function deleteKhuyenMai()
+{
+    $id = $_GET['id'];
+    $khuyenmai = $this->modelKhuyenMai->getKhuyenMaiById($id); // Lấy thông tin khuyến mãi
+
+    // Kiểm tra xem khuyến mãi có còn hiệu lực không
+    $today = strtotime(date('Y-m-d'));
+
+    // Chuyển đổi end_date sang timestamp nếu cần
+    $end_date = strtotime($khuyenmai['end_date']);
+
+    // Kiểm tra nếu ngày hiện tại nhỏ hơn hoặc bằng ngày kết thúc
+    if ($today <= $end_date) {
+        $_SESSION['error'] = 'Không thể xóa khuyến mãi còn hiệu lực.';
+        header('location: ?act=khuyen-mai');
+        exit();
+    }
+
+    // Nếu đã hết hạn, thực hiện xóa
+    $this->modelKhuyenMai->deleteKhuyenMai($id);
+    header('location: ?act=khuyen-mai');
+}
 }
 
 
