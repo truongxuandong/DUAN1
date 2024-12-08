@@ -21,7 +21,15 @@
         </div>
         <?php unset($_SESSION['message']); ?>
       <?php endif; ?>
-
+      <?php if(isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa fa-exclamation-circle"></i> <?= $_SESSION['error'] ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
       <div class="col-12">
         <div class="card">
           <div class="card-header">
@@ -39,7 +47,6 @@
                   <th>Tên sản phẩm</th>
                   <th>Tên tác giả</th>
                   <th>Thể loại</th>
-                  
                   <th>Ngày phát hành</th>
                   <th>Sale</th>
                   <th>Giá bán</th>

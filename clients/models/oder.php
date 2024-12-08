@@ -56,17 +56,16 @@ class Order{
             echo 'Lỗi: ' . $e->getMessage();
         }
     }
-    public function addReview($user_id, $comic_id, $order_id, $rating, $review_text) {
+    public function addReview($user_id, $comic_id, $rating, $review_text) {
         try {
-            $sql = "INSERT INTO reviews (user_id, comic_id, order_id, rating, review_text, status, created_at) 
-                    VALUES (:user_id, :comic_id, :order_id, :rating, :review_text, :status, NOW())";
+            $sql = "INSERT INTO reviews (user_id, comic_id, rating, review_text, status, created_at) 
+                    VALUES (:user_id, :comic_id, :rating, :review_text, :status, NOW())";
             $stmt = $this->conn->prepare($sql);
     
             // Thực thi câu lệnh SQL
             $stmt->execute([
                 'user_id' => $user_id,
                 'comic_id' => $comic_id,
-                'order_id' => $order_id,
                 'rating' => $rating,
                 'review_text' => $review_text,
                 'status' => 'approved' // Đặt trạng thái mặc định là "approved"
@@ -79,16 +78,16 @@ class Order{
             return false; // Thất bại
         }
     }
-    
-    public function hasReviewed($user_id, $order_id) {
-        $sql = "SELECT COUNT(*) FROM reviews WHERE user_id = :user_id AND order_id = :order_id";
+    //hàm kiểm tra đánh giá chưa
+    public function hasReviewed($user_id, $comic_id) {
+        $sql = "SELECT COUNT(*) FROM reviews WHERE user_id = :user_id AND comic_id = :comic_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'user_id' => $user_id,
-            'order_id' => $order_id
+            'comic_id' => $comic_id
         ]);
         $count = $stmt->fetchColumn();
-        return $count > 0; // Trả về true nếu đã có dòng dữ liệu trùng
+        return $count > 0; // Trả về true nếu đã đánh giá
     }
     
     public function getOrderById($order_id) {
@@ -103,7 +102,19 @@ class Order{
     }
     
     public function updateOrderStatus($order_id, $status) {
-        $sql = "UPDATE orders SET shipping_status = :status WHERE id = :order_id";
+        // For refund, we'll update both shipping_status and payment_status
+        if ($status === 'refunded') {
+            $sql = "UPDATE orders 
+                    SET shipping_status = :status, 
+                        payment_status = 'refunded' 
+                    WHERE id = :order_id 
+                    AND payment_status = 'paid'";
+        } else {
+            $sql = "UPDATE orders 
+                    SET shipping_status = :status 
+                    WHERE id = :order_id";
+        }
+        
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             ':status' => $status,

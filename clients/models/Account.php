@@ -27,6 +27,7 @@ class User {
                     SET name = :name, 
                         email = :email, 
                         phone = :phone,
+                        avatar = :avatar,
                         updated_at = NOW() 
                     WHERE id = :id";
             
@@ -35,6 +36,7 @@ class User {
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
+                'avatar' => $data['avatar'],
                 'id' => $userId
             ]);
         } catch (PDOException $e) {
