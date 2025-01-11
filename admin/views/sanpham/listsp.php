@@ -90,7 +90,7 @@
                         <button class="btn btn-danger">Xóa</button>
                       </a>
                       <a href="?act=chi-tiet-bien-the-sp&id=<?= $sanPham['id'] ?>">
-                        <button class="btn btn-info">Chi tiết</button>
+                        <button class="btn btn-info">Biến thể</button>
                       </a>
                       <!-- Manage Variants Button -->
                      

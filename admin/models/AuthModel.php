@@ -48,7 +48,7 @@ class Auth {
         }
         
         // Chuyển hướng về trang login
-        header('Location: index.php?act=show-login-form');
+        header('Location: ?act=show-login-form');
         exit;
     }
 
@@ -69,7 +69,7 @@ class Auth {
                     $_SESSION['is_logged_in'] = true;
                     $_SESSION['last_activity'] = time(); // Thêm timestamp
                     
-                    header('Location: index.php');
+                    header('Location: ./');
                     exit;
                 } else {
                     $_SESSION['error'] = 'Email hoặc mật khẩu không đúng';

@@ -125,6 +125,7 @@
         display: flex;
         justify-content: center;
         margin: 10px 0;
+        direction: rtl; /* Đảo ngược hướng để sao được chọn từ trái qua phải */
     }
 
     .rating input {

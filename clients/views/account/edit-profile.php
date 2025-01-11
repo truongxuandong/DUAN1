@@ -29,7 +29,7 @@
                        name="phone" 
                        value="<?php echo isset($user['phone']) ? htmlspecialchars($user['phone']) : ''; ?>"
                        pattern="[0-9]{10}"
-                       title="Vui lòng nhập số điện thoại hợp lệ (10 số)"
+                       title="Vui lòng nhập số điện thoại hợp lệ (10 số)">
                       
             </div>
             <div class="mb-3">

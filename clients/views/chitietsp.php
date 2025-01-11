@@ -215,6 +215,7 @@ if (!empty($sanphamct)): ?>
                         <div id="comment-list">
                             <?php foreach ($binhluans as $key => $binhluan): ?>
                                 <?php if ($binhluan['comics_id'] == $sanphamct['id']): ?>
+                                    <?php if ($binhluan['status']=='2'): ?>
                                     <?php $has_comments = true; ?>
                                     <div class="media mb-4 pl-3 comment-item" style="display: <?= $comments_shown < 5 ? 'block' : 'none'; ?>; flex-direction: column; border-bottom: 1px solid #ddd;">
                                         <div class="media-body">
@@ -223,6 +224,7 @@ if (!empty($sanphamct)): ?>
                                         </div>
                                     </div>
                                     <?php $comments_shown++; ?>
+                                <?php endif; ?>
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </div>
@@ -285,6 +287,7 @@ if (!empty($sanphamct)): ?>
 
                     <?php foreach ($danhgias as $key => $danhgia): ?>
                         <?php if ($sanphamct['id'] == $danhgia['comic_id']): ?>
+                            <?php if($danhgia['status']=='approved'):?>
                             <!-- <?php var_dump($danhgia); ?> -->
                             <div class="media" style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; transition: all 0.3s ease;">
                                 <div class="media-body">
@@ -320,6 +323,7 @@ if (!empty($sanphamct)): ?>
                                     </p>
                                 </div>
                             </div>
+                        <?php endif; ?>
                         <?php endif; ?>
                     <?php endforeach; ?>
 
