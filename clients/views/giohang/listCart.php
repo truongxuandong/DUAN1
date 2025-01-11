@@ -59,7 +59,27 @@
                                         <?= number_format($item['price'], 0, ',', '.') ?>đ
                                     </td>
                                     <td class="text-center" style="width: 150px;">
-                                        <?= $item['quantity'] ?>
+                                        <div class="input-group">
+                                            <span class="input-group-prepend">
+                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                        onclick="updateQuantity(<?= $item['id'] ?>, -1)">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </span>
+                                            <input type="text" 
+                                                   class="form-control form-control-sm text-center quantity-input" 
+                                                   data-item-id="<?= $item['id'] ?>" 
+                                                   value="<?= $item['quantity'] ?>" 
+                                                   min="1" 
+                                                   max="99"
+                                                   onchange="saveQuantity(<?= $item['id'] ?>)">
+                                            <span class="input-group-append">
+                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                        onclick="updateQuantity(<?= $item['id'] ?>, 1)">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="text-right item-total" id="subtotal-<?= $item['id'] ?>">
                                         <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?>đ
@@ -198,63 +218,71 @@
             }
         }
 
-        // function updateQuantity(itemId, change) {
-        //     const input = document.querySelector(`input[data-item-id="${itemId}"]`);
-        //     let newQuantity = parseInt(input.value) + change;
+        function updateQuantity(itemId, change) {
+            const input = document.querySelector(`.quantity-input[data-item-id="${itemId}"]`);
+            let newQuantity = parseInt(input.value) + change;
 
-        //     // Đảm bảo số lượng không nhỏ hơn 1
-        //     if (newQuantity < 1) {
-        //         newQuantity = 1;
-        //     }
+            // Đảm bảo số lượng không nhỏ hơn 1 và không lớn hơn 99
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            if (newQuantity > 99) {
+                newQuantity = 99;
+            }
 
-        //     input.value = newQuantity;
-        // }
+            input.value = newQuantity;
+            saveQuantity(itemId);
+        }
 
-        // function saveQuantity(itemId) {
-        //     const input = document.querySelector(`input[data-item-id="${itemId}"]`);
-        //     const newQuantity = parseInt(input.value);
+        function saveQuantity(itemId) {
+            const input = document.querySelector(`.quantity-input[data-item-id="${itemId}"]`);
+            const newQuantity = parseInt(input.value);
 
-        //     if (newQuantity < 1) {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Lỗi',
-        //             text: 'Số lượng phải lớn hơn 0!'
-        //         });
-        //         return;
-        //     }
+            // Gửi yêu cầu AJAX để cập nhật số lượng
+            $.ajax({
+                url: '?act=update-quantity',
+                method: 'POST',
+                data: {
+                    item_id: itemId,
+                    quantity: newQuantity
+                },
+                success: function(response) {
+                    const result = JSON.parse(response);
+                    if (result.success) {
+                        // Cập nhật thành tiền và tổng tiền
+                        $(`#subtotal-${itemId}`).text(`${result.itemSubtotal}đ`);
+                        $('#cart-total').html(`<strong>${result.newTotal}đ</strong>`);
 
-        //     // Gửi form cập nhật số lượng
-        //     const formData = new FormData();
-        //     formData.append('item_id', itemId);
-        //     formData.append('quantity', newQuantity);
+                        // Hiển thị thông báo thành công
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: result.message,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
 
-        //     fetch('?act=update-quantity', {
-        //             method: 'POST',
-        //             body: formData
-        //         })
-        //         .then(response => response.text())
-        //         .then(() => {
-        //             // Hiển thị thông báo thành công
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Thành công',
-        //                 text: 'Cập nhật số lượng thành công!',
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             }).then(() => {
-        //                 // Reload trang sau khi hiển thị thông báo
-        //                 window.location.reload();
-        //             });
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Lỗi',
-        //                 text: 'Có lỗi xảy ra khi cập nhật số lượng!'
-        //             });
-        //         });
-        // }
+                        // Cập nhật lại tổng tiền khi chọn sản phẩm
+                        updateTotal();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: result.message || 'Đã xảy ra lỗi khi cập nhật',
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi kết nối',
+                        text: 'Không thể kết nối đến máy chủ!',
+                    });
+                }
+            });
+        }
 
         function toggleAll(source) {
             const checkboxes = document.getElementsByClassName('item-checkbox');
@@ -359,6 +387,16 @@
 
         #checkout-btn i {
             margin-left: 8px;
+        }
+
+        .quantity-input {
+            max-width: 70px;
+            text-align: center;
+        }
+        .input-group-prepend .btn,
+        .input-group-append .btn {
+            padding: 0.25rem 0.5rem;
+            line-height: 1.25;
         }
     </style>
 </body>

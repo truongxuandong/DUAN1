@@ -11,7 +11,7 @@ class AuthController {
 
     public function showLoginForm() {
         if (isset($_SESSION['admin_id']) && $this->auth->isAdmin()) {
-            header('Location: index.php');
+            header('Location: ./');
             exit;
         }
         require_once './views/login.php';
@@ -31,7 +31,7 @@ class AuthController {
                     $_SESSION['admin_id'] = $admin['id'];
                     $_SESSION['admin_name'] = $admin['name'];
                     
-                    header('Location: index.php');
+                    header('Location: ./');
                     exit;
                 } else {
                     $_SESSION['error'] = 'Email hoặc mật khẩu không đúng';

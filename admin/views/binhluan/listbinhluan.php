@@ -27,7 +27,7 @@
                     <td><?= $binhLuan['Content'] ?></td>
                     <td><?= $binhLuan['title'] ?></td>
                     <td><?= $binhLuan['Create_at'] ?></td>
-                    <td><?= $binhLuan['status'] == 1 ? 'Hiển thị' : 'Ẩn' ?></td>
+                    <td><?= $binhLuan['status'] == 1 ? 'Ẩn' : 'Hiển thị'?></td>
 
                     <td>
                       <div class="btn-group">
@@ -36,7 +36,7 @@
                           <input type="hidden" name="id_binh_luan" value="<?= $binhLuan['ID'] ?>">
                           <input type="hidden" name="name_view" value="detail_khach">
                           <button type="submit" class="btn btn-warning">
-                              <?= $binhLuan['status'] == 1 ? 'Ẩn' : 'Bỏ ẩn' ?>
+                              <?= $binhLuan['status'] == 1 ?  'Bỏ ẩn' : 'Ẩn' ?>
                           </button>
                       </form>
 

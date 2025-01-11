@@ -104,8 +104,15 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
             </nav>
             <div id="header-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
-                      <?php foreach ($banners as $index => $banner): ?>
-        <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>" style="height: 410px;">
+                <?php 
+$firstActive = true; // Biến kiểm tra để gán "active" cho banner đầu tiên hợp lệ
+$hasActiveBanner = false; // Biến kiểm tra xem có banner nào hiển thị không
+
+foreach ($banners as $banner): 
+    if ($banner['Status'] == 1): // Kiểm tra trạng thái
+        $hasActiveBanner = true; // Có ít nhất một banner hợp lệ
+?>
+        <div class="carousel-item <?= $firstActive ? 'active' : '' ?>" style="height: 410px;">
             <img class="img-fluid" src="admin/<?= $banner['Img'] ?>" alt="">
             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                 <div class="p-3" style="max-width: 700px;">
@@ -115,7 +122,27 @@ $listdm = $modelDanhMuc->getAllDanhMuc();
                 </div>
             </div>
         </div>
-    <?php endforeach; ?>
+<?php 
+        $firstActive = false; // Gán active cho banner đầu tiên, các banner sau không cần
+    endif;
+endforeach; 
+
+// Nếu không có banner nào hiển thị, hiển thị banner mặc định
+if (!$hasActiveBanner): 
+?>
+    <div class="carousel-item active" style="height: 410px;">
+        <img class="img-fluid" src="https://simg.zalopay.com.vn/zlp-website/assets/Y6_Banner_Zalo_Pay_4de4797d25.jpg" alt="Default Banner">
+        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+            <div class="p-3" style="max-width: 700px;">
+                <h4 class="text-light text-uppercase font-weight-medium mb-3">Welcome to Our Store</h4>
+                <h3 class="display-4 text-white font-weight-semi-bold mb-4">Discover Amazing Products</h3>
+                <a href="?act=sanpham" class="btn btn-light py-2 px-3">Shop Now</a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+
                 </div>
                 <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
                     <div class="btn btn-dark" style="width: 45px; height: 45px;">
